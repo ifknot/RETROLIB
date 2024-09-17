@@ -9,6 +9,13 @@
  *
  */
 
-int main(int argc, char* argv[]) {
+#include "JOT/jot_macros.h"
+
+int main() {
+
+	//REDIRECT_STDERR("log.txt");
+	INFO(" info ");
+
+	return 0;
 
 }

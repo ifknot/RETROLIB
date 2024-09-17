@@ -1,0 +1,16 @@
+!define BLANK ""
+C:\Users\ifkno\DOSBOX\DOS16\RETROLIB\main.obj : C:\Users\ifkno\DOSBOX\DOS16\&
+RETROLIB\main.c .AUTODEPEND
+ @C:
+ cd C:\Users\ifkno\DOSBOX\DOS16\RETROLIB
+ *wcc main.c -i="C:\WATCOM/h" -w4 -e25 -zq -od -d2 -bt=dos -fo=.obj -ml
+
+C:\Users\ifkno\DOSBOX\DOS16\RETROLIB\retrolib.exe : C:\Users\ifkno\DOSBOX\DO&
+S16\RETROLIB\main.obj .AUTODEPEND
+ @C:
+ cd C:\Users\ifkno\DOSBOX\DOS16\RETROLIB
+ @%write retrolib.lk1 FIL main.obj
+ @%append retrolib.lk1 
+ *wlink name retrolib d all sys dos op m op maxe=25 op q op symf @retrolib.l&
+k1
+
