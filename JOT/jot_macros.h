@@ -4,12 +4,22 @@
  *  @details   ~
  *  @author    Jeremy Thornton
  *  @date      17.09.2024
- *  @copyright © Jeremy Thornton, 2024. All right reserved.
+ *  @copyright Â© Jeremy Thornton, 2024. All right reserved.
  *
  */
 #ifndef JOT_MACROS_H
 #define JOT_MACROS_H
 
+/**
+* TODO:
+* [ ] DEFAULT_STDERR
+* [ ] LOG
+* [ ] LOGHEX
+* [ ] LOGBIN
+* [ ] ASSERT
+* [ ] YESNO
+* [ ] ANYKEY
+*/
 
 #include <stdio.h>
 
