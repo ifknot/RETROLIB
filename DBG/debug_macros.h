@@ -12,7 +12,7 @@
 
 /**
 * TODO:
-* [ ] DEFAULT_STDERR
+* [x] DEFAULT_STDERR
 * [ ] LOG
 * [ ] LOGHEX
 * [ ] LOGBIN
@@ -22,6 +22,13 @@
 */
 
 #include <stdio.h>
+
+/*
+* @brief __fprintf_as_binary(sizeof(x), x);
+* @note Assumes little endian
+* @url https://stackoverflow.com/questions/111928/is-there-a-printf-converter-to-print-in-binary-format
+*/
+void __fprintf_as_binary(size_t const size, void const* const ptr);
 
 #ifdef NDEBUG
 #define REDIRECT_STDERR(path)
@@ -44,6 +51,22 @@
 #else
 #define INFO(msg) do { \
 					fprintf(stderr,"\n%s",msg); \
+				} while(0)
+#endif
+
+#ifdef NDEBUG
+#define LOG(var, spec)
+#else
+#define LOG(var, spec) do { \
+					fprintf(stderr, "\n%s=" #spec, #var, var); \
+				} while(0)
+#endif
+
+#ifdef NDEBUG
+#define LOGBIN(var)
+#else
+#define LOGBIN(var) do { \
+					__fprintf_as_binary(sizeof(var), &var); \
 				} while(0)
 #endif
 
