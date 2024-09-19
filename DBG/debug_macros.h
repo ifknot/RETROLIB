@@ -32,6 +32,14 @@
 #endif
 
 #ifdef NDEBUG
+#define DEFAULT_STDERR(path)
+#else
+#define DEFAULT_STDERR() do { \
+					freopen("CON","w",stderr); \
+				} while(0)
+#endif
+
+#ifdef NDEBUG
 #define INFO(msg)
 #else
 #define INFO(msg) do { \

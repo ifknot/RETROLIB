@@ -9,7 +9,7 @@
  *
  */
 
-#include "JOT/jot_macros.h"
+#include "DBG/debug_macros.h"
 
 /**
 * TODO:
@@ -22,8 +22,10 @@
 */
 int main() {
 
-	//REDIRECT_STDERR("log.txt");
-	INFO(" info ");
+	REDIRECT_STDERR("log.txt");
+	INFO(" file info ");
+	DEFAULT_STDERR();
+	INFO(" con info ");
 
 	return 0;
 
