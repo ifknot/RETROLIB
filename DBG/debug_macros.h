@@ -7,15 +7,13 @@
  *  @copyright © Jeremy Thornton, 2024. All right reserved.
  *
  */
-#ifndef JOT_MACROS_H
-#define JOT_MACROS_H
+#ifndef DEBUG_MACROS_H
+#define DEBUG_MACROS_H
 
 /**
 * TODO:
 * [x] DEFAULT_STDERR
-* [ ] LOG
-* [ ] LOGHEX
-* [ ] LOGBIN
+* [x] LOG
 * [ ] ASSERT
 * [ ] YESNO
 * [ ] ANYKEY
@@ -28,7 +26,16 @@
 * @note Assumes little endian
 * @url https://stackoverflow.com/questions/111928/is-there-a-printf-converter-to-print-in-binary-format
 */
-void __fprintf_as_binary(size_t const size, void const* const ptr);
+static void __fprintf_as_binary(size_t const size, void const* const ptr);
+
+/**
+* Helper functions user interaction
+*/
+static bool __yesno(char* msg);
+
+static void __pressenter(char* msg);
+
+static char __anykey(char* msg);
 
 #ifdef NDEBUG
 #define REDIRECT_STDERR(path)
@@ -68,6 +75,24 @@ void __fprintf_as_binary(size_t const size, void const* const ptr);
 #define LOGBIN(var) do { \
 					__fprintf_as_binary(sizeof(var), &var); \
 				} while(0)
+#endif
+
+#ifdef NDEBUG
+#define YESNO(msg)
+#else
+#define YESNO(msg) __yesno(msg)
+#endif
+
+#ifdef NDEBUG
+#define PRESSENTER(msg)
+#else 
+#define PRESSENTER(msg) __pressenter(msg)
+#endif
+
+#ifdef NDEBUG
+#define ANYKEY(msg)
+#else
+#define ANYKEY(msg) __anykey(msg)
 #endif
 
 #endif
