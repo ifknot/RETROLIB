@@ -10,16 +10,6 @@
 #ifndef DEBUG_MACROS_H
 #define DEBUG_MACROS_H
 
-/**
-* TODO:
-* [x] DEFAULT_STDERR
-* [x] LOG
-* [ ] ASSERT
-* [ ] YESNO
-* [ ] ENTER
-* [ ] ANYKEY
-*/
-
 #include <stdio.h>
 
 /*

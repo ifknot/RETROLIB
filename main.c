@@ -9,7 +9,7 @@
  *
  */
 
-#include "DBG/debug_macros.h"
+#include "DBG/debug_demo.h"
 
 /**
 * TODO:
@@ -22,21 +22,8 @@
 */
 int main() {
 
-	int x = 11;
-	float f = 11.1;
-	if (YESNO("test?")) {
-		REDIRECT_STDERR("log.txt");
-		INFO(" file info ");
-		DEFAULT_STDERR();
-		INFO(" con info ");
-		ANYKEY("any key");
-		LOG(x, % d);
-		LOG(x, % X);
-		LOG(f, % 9.3f);
-		PRESSENTER("");
-		LOG(&x, % p);
-		LOGBIN(x);
-	}
+	debug_demo();
+	
 	return 0;
 
 }
