@@ -22,3 +22,19 @@ void __fprintf_as_binary(size_t const size, void const* const ptr) {
         }
     }
 }
+
+int __yesno(char* msg) {
+    char key;
+    printf("\n%s Y/N ", msg);
+    return scanf(" %c", &key) == 1 && key == 'Y' || key == 'y';
+}
+
+void __pressenter(char* msg) {
+    printf("\n%s Press <ENTER> ", msg);
+	while (getchar() != '\n');
+}
+
+char __anykey(char* msg) {
+    printf("\n%s ", msg);
+	return getchar();
+}

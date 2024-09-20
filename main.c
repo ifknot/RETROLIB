@@ -24,15 +24,19 @@ int main() {
 
 	int x = 11;
 	float f = 11.1;
-	REDIRECT_STDERR("log.txt");
-	INFO(" file info ");
-	DEFAULT_STDERR();
-	INFO(" con info ");
-	LOG(x, %d);
-	LOG(x, %X);
-	LOG(f, %9.3f);
-	LOG(&x, % p);
-	LOGBIN(x);
+	if (YESNO("test?")) {
+		REDIRECT_STDERR("log.txt");
+		INFO(" file info ");
+		DEFAULT_STDERR();
+		INFO(" con info ");
+		ANYKEY("any key");
+		LOG(x, % d);
+		LOG(x, % X);
+		LOG(f, % 9.3f);
+		PRESSENTER("");
+		LOG(&x, % p);
+		LOGBIN(x);
+	}
 	return 0;
 
 }

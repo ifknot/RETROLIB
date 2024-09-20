@@ -16,6 +16,7 @@
 * [x] LOG
 * [ ] ASSERT
 * [ ] YESNO
+* [ ] ENTER
 * [ ] ANYKEY
 */
 
@@ -26,16 +27,13 @@
 * @note Assumes little endian
 * @url https://stackoverflow.com/questions/111928/is-there-a-printf-converter-to-print-in-binary-format
 */
-static void __fprintf_as_binary(size_t const size, void const* const ptr);
+void __fprintf_as_binary(size_t const size, void const* const ptr);
 
-/**
-* Helper functions user interaction
-*/
-static bool __yesno(char* msg);
+int __yesno(char* msg);
 
-static void __pressenter(char* msg);
+void __pressenter(char* msg);
 
-static char __anykey(char* msg);
+char __anykey(char* msg);
 
 #ifdef NDEBUG
 #define REDIRECT_STDERR(path)
