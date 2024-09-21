@@ -24,7 +24,7 @@
 
 	float fixed_unfix_fractional_part(fixed_Q10_6_t q);
 
-	fixed_Q10_6_t  fixed_saturate(int32_t n);
+	fixed_Q10_6_t fixed_saturate(int32_t n);
 
 	int16_t fixed_truncate(fixed_Q10_6_t n);
 

@@ -1,0 +1,3 @@
+FIXED\fixed_test.h(56): Warning! E1056: Too many parameters given for macro 'assert'
+FIXED\fixed_test.h(57): Warning! E1056: Too many parameters given for macro 'assert'
+FIXED\fixed_test.h(26): Warning! W202: Symbol 'sin2' has been defined, but not referenced

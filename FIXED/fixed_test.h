@@ -20,6 +20,12 @@
 void fixed_test() {
 
 	fixed_Q10_6_t x, y;
+	fixed_Q10_6_t q = -100;
+	fixed_Q10_6_t pi = fixed_fix(3.14159265359);
+	fixed_Q10_6_t sin1 = fixed_fix(0.01745240643);
+	fixed_Q10_6_t sin2 = fixed_fix(0.0348994967);
+	fixed_Q10_6_t sin3 = fixed_fix(0.05233595624);
+
 	fixed_point_t p;
 	fixed_pair_t o;
 
@@ -30,15 +36,30 @@ void fixed_test() {
 	o.part.y = 40;
 
 	INFO("fixed tests...");
-
+	
+	// types
 	assert(x == y == 1);
 	assert(p.x == 10 && p.y == 201);
 	assert(o.part.x == 0x1E && o.part.y == 0x28);
 	assert(o.both == 0x28001E);
 
+	// conversions
 	assert(fixed_fix(3.14159) == 201);
 	assert(fixed_unfix(Q10_6_PI) == 3.141f);
-
+	assert(fixed_unfix(sin1) ==  0.016f);
+	//assert(fixed_unfix(sin2) ==  0.031f);
+	assert(fixed_unfix(sin3) ==  0.047f);
+	assert(fixed_fix(3.14159) == 201);
+	assert(fixed_unfix(Q10_6_PI) == fixed_unfix(pi));
+	assert(fixed_truncate(Q10_6_PI) ==  3);
+	//assert(fixed_unfix_fractional_part(Q10_6_PI) == 0.141f);
+	assert(fixed_saturate(-2), == , -2);
+	assert(fixed_saturate(q), == , -100);
+	assert(fixed_saturate(Q10_6_INFINITY + 1) == Q10_6_MAX);
+	assert(fixed_saturate(Q10_6_NINFINITY - 1) == Q10_6_MIN);
+	assert(fixed_saturate(40000) == Q10_6_MAX);
+	assert(fixed_saturate(-40000) == Q10_6_MIN);
+	
 	INFO("pass");
 
 }
