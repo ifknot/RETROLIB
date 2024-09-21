@@ -17,7 +17,7 @@
 
 #include "fixed.h"
 
-void fixed_test() {
+void test_fixed() {
 
 	fixed_Q10_6_t x, y;
 	fixed_Q10_6_t q = -100;
@@ -47,12 +47,12 @@ void fixed_test() {
 	assert(fixed_fix(3.14159) == 201);
 	assert(fixed_unfix(Q10_6_PI) == 3.141f);
 	assert(fixed_unfix(sin1) ==  0.016f);
-	//assert(fixed_unfix(sin2) ==  0.031f);
+	assert(fixed_unfix(sin2) ==  0.032f);
 	assert(fixed_unfix(sin3) ==  0.047f);
 	assert(fixed_fix(3.14159) == 201);
 	assert(fixed_unfix(Q10_6_PI) == fixed_unfix(pi));
 	assert(fixed_truncate(Q10_6_PI) ==  3);
-	//assert(fixed_unfix_fractional_part(Q10_6_PI) == 0.141f);
+	assert(fixed_unfix_fractional_part(Q10_6_PI) == 0.140625f);
 	assert(fixed_saturate(-2), == , -2);
 	assert(fixed_saturate(q), == , -100);
 	assert(fixed_saturate(Q10_6_INFINITY + 1) == Q10_6_MAX);
