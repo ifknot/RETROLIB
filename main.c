@@ -9,7 +9,8 @@
  *
  */
 
-#include "DBG/debug_demo.h"
+//#include "DBG/debug_demo.h"
+#include "FIXED/fixed_test.h"
 
 /**
 * TODO:
@@ -22,7 +23,7 @@
 */
 int main() {
 
-	debug_demo();
+	fixed_test();
 	
 	return 0;
 

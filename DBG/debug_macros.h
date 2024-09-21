@@ -1,6 +1,6 @@
 /**
  *
- *  @brief     
+ *  @brief
  *  @details   ~
  *  @author    Jeremy Thornton
  *  @date      17.09.2024
@@ -11,6 +11,8 @@
 #define DEBUG_MACROS_H
 
 #include <stdio.h>
+
+#define DEBUG_VERBOSE
 
 /*
 * @brief __fprintf_as_binary(sizeof(x), x);
@@ -29,40 +31,40 @@ char __anykey(char* msg);
 #define REDIRECT_STDERR(path)
 #else
 #define REDIRECT_STDERR(path) do { \
-					freopen(path, "w", stderr); \
-				} while(0)
+    freopen(path, "w", stderr); \
+} while(0)
 #endif
 
 #ifdef NDEBUG
 #define DEFAULT_STDERR(path)
 #else
 #define DEFAULT_STDERR() do { \
-					freopen("CON","w",stderr); \
-				} while(0)
+    freopen("CON","w",stderr); \
+} while(0)
 #endif
 
 #ifdef NDEBUG
 #define INFO(msg)
 #else
 #define INFO(msg) do { \
-					fprintf(stderr,"\n%s",msg); \
-				} while(0)
+    fprintf(stderr,"\n%s",msg); \
+} while(0)
 #endif
 
 #ifdef NDEBUG
 #define LOG(var, spec)
 #else
 #define LOG(var, spec) do { \
-					fprintf(stderr, "\n%s=" #spec, #var, var); \
-				} while(0)
+    fprintf(stderr, "\n%s=" #spec, #var, var); \
+} while(0)
 #endif
 
 #ifdef NDEBUG
 #define LOGBIN(var)
 #else
 #define LOGBIN(var) do { \
-					__fprintf_as_binary(sizeof(var), &var); \
-				} while(0)
+    __fprintf_as_binary(sizeof(var), &var); \
+} while(0)
 #endif
 
 #ifdef NDEBUG
@@ -73,7 +75,7 @@ char __anykey(char* msg);
 
 #ifdef NDEBUG
 #define PRESSENTER(msg)
-#else 
+#else
 #define PRESSENTER(msg) __pressenter(msg)
 #endif
 
