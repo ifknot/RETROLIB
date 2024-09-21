@@ -7,12 +7,12 @@
  *  @copyright © Jeremy Thornton, 2024. All right reserved.
  *
  */
-#ifndef DEBUG_DEMO_H
-#define DEBUG_DEMO_H
+#ifndef DEMO_DEBUG_H
+#define DEMO_DEBUG_H
 
-#include "DBG/debug_macros.h"
+#include "DBG\debug_macros.h"
 
-void debug_demo() {
+void demo_debug() {
 
 	int x = 11;
 	float f = 11.1;

@@ -1,2 +1,3 @@
-FIXED\test_fixed.h(56): Warning! E1056: Too many parameters given for macro 'assert'
-FIXED\test_fixed.h(57): Warning! E1056: Too many parameters given for macro 'assert'
+HARDWARE\demo_hw.h(27): Warning! W138: No newline at end of file
+HARDWARE\demo_hw.h(27): Warning! W129: #endif matches #if in different source file 'HARDWARE\demo_hw.h'
+HARDWARE\hw_constants_graphics.h(40): Warning! W202: Symbol 'hw_video_adapter_names' has been defined, but not referenced
