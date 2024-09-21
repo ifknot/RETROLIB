@@ -10,5 +10,8 @@
 #ifndef FIXED_H
 #define FIXED_H
 
+#include "fixed_constants.h"
+#include "fixed_types.h"
+#include "fixed_conversions.h"
 
 #endif

@@ -52,6 +52,14 @@ char __anykey(char* msg);
 #endif
 
 #ifdef NDEBUG
+#define L(var)
+#else
+#define L(var) do { \
+    fprintf(stderr, "\n%s=%i", #var, var); \
+} while(0)
+#endif
+
+#ifdef NDEBUG
 #define LOG(var, spec)
 #else
 #define LOG(var, spec) do { \

@@ -15,7 +15,7 @@
 
 #include "../DBG/debug_macros.h"
 
-#include "fixed_types.h"
+#include "fixed.h"
 
 void fixed_test() {
 
@@ -25,16 +25,19 @@ void fixed_test() {
 
 	x = y = 1;
 	p.x = 10;
-	p.y = 20;
+	p.y = Q10_6_PI;
 	o.part.x = 30;
 	o.part.y = 40;
 
-	INFO("fixed_test");
+	INFO("fixed tests...");
 
 	assert(x == y == 1);
-	assert(p.x == 10 && p.y == 20);
+	assert(p.x == 10 && p.y == 201);
 	assert(o.part.x == 0x1E && o.part.y == 0x28);
 	assert(o.both == 0x28001E);
+
+	assert(fixed_fix(3.14159) == 201);
+	assert(fixed_unfix(Q10_6_PI) == 3.141f);
 
 	INFO("pass");
 
