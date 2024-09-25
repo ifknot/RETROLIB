@@ -10,6 +10,8 @@
  */
 #include "hw_detect_graphics_adapter.h"
 
+#include "../HGA/hga_detect_adapter.h"
+
 uint8_t hw_detect_monochrome_adapter() {
-	return 0;// hga_detect_adapter();
+	return hga_detect_adapter();
 }

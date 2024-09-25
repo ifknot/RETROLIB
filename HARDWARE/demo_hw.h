@@ -14,14 +14,14 @@
 
 #include "hw_constants_graphics.h"
 #include "hw_detect_crtc.h"
-//#include "hw_detect_graphics_adapter.h"
+#include "hw_detect_graphics_adapter.h"
 
 void demo_hw() {
 
-	LOG(hw_detect_CRTC_at_port(crtc_port_MDA), %i);
+	LOG(hw_detect_CRTC_at_port(crtc_port_MDA), % i);
 	LOG(hw_detect_CRTC_at_port(crtc_port_HGA), % i);
 	LOG(hw_detect_CRTC_at_port(crtc_port_CGA), % i);
-
+	LOG(hw_video_adapter_names[hw_detect_monochrome_adapter()], % s);
 }
 
 #endif

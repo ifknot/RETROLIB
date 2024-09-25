@@ -13,15 +13,6 @@
 //#include "FIXED/test_fixed.h"
 #include "HARDWARE/demo_hw.h"
 
-/**
-* TODO:
-* [ ] Q10_6_t 
-* [ ] Q vectors
-* [ ] actor model
-* [ ] HGA plot
-* [ ] particles 
-* [ ] gravity
-*/
 int main() {
 
 	demo_hw();
