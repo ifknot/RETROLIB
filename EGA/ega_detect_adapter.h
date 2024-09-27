@@ -12,10 +12,6 @@
 
 #include <stdint.h>
 
-namespace ega {
-
-	uint8_t detect_adapter();
-
-}
+uint8_t ega_detect_adapter();
 
 #endif

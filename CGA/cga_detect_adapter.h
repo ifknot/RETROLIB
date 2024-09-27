@@ -12,10 +12,6 @@
 
 #include <stdint.h>
 
-namespace cga {
-
-	uint8_t detect_adapter();
-
-}
+uint8_t cga_detect_adapter();
 
 #endif

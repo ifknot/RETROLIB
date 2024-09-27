@@ -18,10 +18,7 @@
 
 void demo_hw() {
 
-	LOG(hw_detect_CRTC_at_port(crtc_port_MDA), % i);
-	LOG(hw_detect_CRTC_at_port(crtc_port_HGA), % i);
-	LOG(hw_detect_CRTC_at_port(crtc_port_CGA), % i);
-	LOG(hw_video_adapter_names[hw_detect_monochrome_adapter()], % s);
+	LOG(hw_video_adapter_names[hw_detect_colour_adapter()], %s);
 }
 
 #endif

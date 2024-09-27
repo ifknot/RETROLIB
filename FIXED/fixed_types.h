@@ -47,7 +47,7 @@
 	
 	typedef int16_t fixed_Q10_6_t;
 
-	typedef struct _fixed_point_t {
+	typedef struct {
 		fixed_Q10_6_t x;
 		fixed_Q10_6_t y;
 	} fixed_point_t;
@@ -55,7 +55,7 @@
 	/**
 	* A 1D tensor rank two Q10_6_t components <part[0], part[1]> occupying 32 bits of memory
 	*/
-	typedef union _fixed_pair_t {
+	typedef union {
 
 		int32_t			both;
 		fixed_point_t	part;

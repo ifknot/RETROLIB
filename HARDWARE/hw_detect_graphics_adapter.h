@@ -14,4 +14,6 @@
 
 uint8_t hw_detect_monochrome_adapter(); 
 
+uint8_t hw_detect_colour_adapter();
+
 #endif

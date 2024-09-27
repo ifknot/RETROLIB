@@ -28,28 +28,28 @@
 
 
 
-    /**
-    * MDA/HGA and CGA 6845 CRT Controller port numbers.
-    */
-    typedef enum _hw_crtc_port_t {
-        crtc_port_MDA = 0x03B4,
-        crtc_port_HGA = 0x03B4,
-        crtc_port_CGA = 0x03D4
-    } hw_crtc_port_t;
+/**
+* MDA/HGA and CGA 6845 CRT Controller port numbers.
+*/
+enum hw_crtc_port_t {
+    crtc_port_MDA = 0x03B4,
+    crtc_port_HGA = 0x03B4,
+    crtc_port_CGA = 0x03D4
+};
 
-    static char hw_video_adapter_names[12][32] = {
-        "Unknown",
-        "MDA",
-        "Hercules",
-        "Hercules Plus",
-        "Hercules InColor",
-        "Hercules Clone",
-        "CGA",
-        "EGA",
-        "MCGA",
-        "VGA",
-        "SVGA",
-        "Dual Adapters"
-    };
+static char hw_video_adapter_names[12][32] = {
+    "Unknown",
+    "MDA",
+    "Hercules",
+    "Hercules Plus",
+    "Hercules InColor",
+    "Hercules Clone",
+    "CGA",
+    "EGA",
+    "MCGA",
+    "VGA",
+    "SVGA",
+    "Dual Adapters"
+};
 
 #endif
