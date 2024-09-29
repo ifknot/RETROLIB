@@ -11,11 +11,12 @@
 
 //#include "DBG/demo_debug.h"
 //#include "FIXED/test_fixed.h"
-#include "HARDWARE/demo_hw.h"
+//#include "HARDWARE/demo_hw.h"
+#include "HGA/demo_hga.h"
 
 int main() {
 
-	demo_hw();
+	demo_hga();
 	
 	return 0;
 

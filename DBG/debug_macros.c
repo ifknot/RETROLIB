@@ -31,6 +31,7 @@ int __yesno(char* msg) {
 
 void __pressenter(char* msg) {
     printf("\n%s Press <ENTER> ", msg);
+    getchar();
 	while (getchar() != '\n');
 }
 
