@@ -13,6 +13,7 @@
 #include "../HARDWARE/hw_constants_graphics.h"
 #include "../BIOS/bios_video_services.h"
 
+#include "../DBG/debug_macros.h"
 
 /**
 * @brief detect EGA by attempting to use an EGA specific Video Subsystem Configuration (EGA/VGA) function
@@ -36,5 +37,9 @@
 uint8_t ega_detect_adapter() {
 	bios_video_subsystem_config_t info;
 	bios_return_video_configuration_information(&info);
+	LOG(info.color_mode, % i);
+	LOG(info.ega_memory, % i);
+	LOG(info.feature_bits, % i);
+	LOG(info.switch_settings, % i);
 	return (info.ega_memory < 4) ? HW_VIDEO_ADAPTER_EGA : HW_VIDEO_ADAPTER_UKNOWN;
 }

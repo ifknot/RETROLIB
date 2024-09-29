@@ -42,8 +42,8 @@ void bios_get_video_state(bios_video_state_t* state);
 // INT 10,12 - Video subsystem configuration (EGA/VGA)
 //uint8_t bios_video_subsystem_configuration(uint8_t request, uint8_t setting, bios_video_subsystem_config_t* config);
 	
-	//Helper functions
-	void bios_return_video_configuration_information(bios_video_subsystem_config_t* config);
+	//INT 10,12 - broken down into its sub-functions
+	uint8_t bios_return_video_configuration_information(bios_video_subsystem_config_t* config);
 	//bios_select_alternate_print_screen_routine
 	//bios_select_scan_lines_for_alphanumeric_modes
 	//bios_select_default_palette_loading

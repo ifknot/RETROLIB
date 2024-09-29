@@ -1,2 +1,0 @@
-BIOS\bios_video_services.c(73): Warning! W202: Symbol 'v' has been defined, but not referenced
-BIOS\bios_video_services.c(72): Warning! W303: Parameter 'config' has been defined, but not referenced

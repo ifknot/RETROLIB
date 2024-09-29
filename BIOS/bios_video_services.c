@@ -14,6 +14,8 @@
 #include "bios_video_services_constants.h"
 #include "bios_video_services.h"
 
+#include "../DBG/debug_macros.h"
+
 /**
 * @brief INT 10,0 - Set Video Mode
 * AH = 00
@@ -23,9 +25,11 @@
 void bios_set_video_mode(uint8_t mode) {
 	__asm {
 		.8086
+
 		mov		al, mode
 		mov		ah, SET_VIDEO_MODE
 		int		BIOS_VIDEO_SERVICES
+
 	}
 }
 
@@ -49,17 +53,61 @@ void bios_set_video_mode(uint8_t mode) {
 void bios_get_video_state(bios_video_state_t* state) {
 	__asm {
 		.8086
+
 		mov		ah, GET_CURRENT_VIDEO_STATE
 		int		BIOS_VIDEO_SERVICES
-		lds		di, state
-		mov[di], ah				; number of screen columns
-		mov[di + 1], al			; video mode
-		mov[di + 2], bh			; display page
+		les		di, state
+		mov		es:[di], ah				; number of screen columns
+		mov		es:[di + 1], al			; video mode
+		mov		es:[di + 2], bh			; display page
+
 	}
 }
 
-void bios_return_video_configuration_information(bios_video_subsystem_config_t* config) {
-	uint8_t e;
+
+
+/**
+* @brief	INT 10,12 - Video Subsystem Configuration (EGA/VGA)
+* -----------------------------------------------------------------------------------------------------
+*			Sub-function: Return Video Configuration Information
+* -----------------------------------------------------------------------------------------------------
+* @details 
+* AH = 12h
+* BL = 10  return video configuration information
+* 
+* on return:
+* BH = 0 if color mode in effect
+*    = 1 if mono mode in effect
+* BL = 0 if 64k EGA memory
+*    = 1 if 128k EGA memory
+*    = 2 if 192k EGA memory
+*    = 3 if 256k EGA memory
+* CH = feature bits
+* CL = switch settings
+*
+* Info: This obtains miscellaneous information about the EGA switch
+*       settings and the current values of the "feature bits" as read
+*       through those rarely-used RCA connectors on some EGA cards.
+* 
+*  @note If upon return from this call, BL>4, then must be running on a CGA or MDA (not an EGA or VGA).
+*/
+uint8_t bios_return_video_configuration_information(bios_video_subsystem_config_t* config) {
+	uint8_t e = 0;
+	__asm {
+		.8086
+
+		mov		ah, VIDEO_SUBSYSTEM_CONFIGURATION
+		mov		bl,  10h
+		int		BIOS_VIDEO_SERVICES
+		mov		e, al
+		les		di, config
+		mov		es:[di], bh					; color_mode(0 = colour, 1 = mono)
+		mov		es:[di + 1], bl				; EGA memory BL(0 = 64k, 2 = 128k, 2 = 192k, 3 = 256k)
+		mov		es:[di + 2], ch				; feature_bits(values of those RCA connectors)
+		mov		es:[di + 3], cl				; switch_settings
+		
+	}
+	return e;
 }
 
 /**
@@ -169,27 +217,3 @@ void bios_return_video_configuration_information(bios_video_subsystem_config_t* 
 * -----------------------------------------------------------------------------------------------------
 */
 //uint8_t bios_video_subsystem_configuration(uint8_t request, uint8_t setting, bios_video_subsystem_config_t* config);
-
-
-
-
-/*
-uint8_t error = 0;
-	__asm {
-		.8086
-		pushf
-
-		mov		ah, VIDEO_SUBSYSTEM_CONFIGURATION
-		mov		bl, request
-		int		BIOS_VIDEO_SERVICES
-		mov		error, al
-		lds		di, config
-		mov[di], bh					; color_mode(0 = colour, 1 = mono)
-		mov[di + 1], bl				; EGA memory BL(0 = 64k, 2 = 128k, 2 = 192k, 3 = 256k)
-		mov[di + 2], ch				; feature_bits(values of those RCA connectors)
-		mov[di + 3], cl				; switch_settings
-
-EXIT:	popf
-	}
-	assert(!error);
-*/
