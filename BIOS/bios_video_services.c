@@ -230,7 +230,7 @@ uint8_t bios_video_subsystem_configuration(uint8_t request, uint8_t setting, bio
 	case CURSOR_EMULATION:
 	case PS2_VIDEO_DISPLAY_SWITCHING:
 	case VIDEO_REFRESH_CONTROL:
-		bios_helper_video_subsytem_configuration(request, setting);
+		return bios_helper_video_subsytem_configuration(request, setting);
 		break;
 	default:
 		return 0;
