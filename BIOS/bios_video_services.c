@@ -14,8 +14,6 @@
 #include "bios_video_services_constants.h"
 #include "bios_video_services.h"
 
-#include "../DBG/debug_macros.h"
-
 /**
 * @brief INT 10,0 - Set Video Mode
 * AH = 00
@@ -97,7 +95,7 @@ uint8_t bios_return_video_configuration_information(bios_video_subsystem_config_
 		.8086
 
 		mov		ah, VIDEO_SUBSYSTEM_CONFIGURATION
-		mov		bl,  10h
+		mov		bl, 10h						; return video configuration information
 		int		BIOS_VIDEO_SERVICES
 		mov		e, al
 		les		di, config
@@ -113,23 +111,8 @@ uint8_t bios_return_video_configuration_information(bios_video_subsystem_config_
 /**
 * @brief INT 10,12 - Video Subsystem Configuration (EGA/VGA)
 * -----------------------------------------------------------------------------------------------------
-* AH = 12h
-* BL = 10  return video configuration information
-*
-* on return:
-* BH = 0 if color mode in effect
-*    = 1 if mono mode in effect
-* BL = 0 if 64k EGA memory
-*    = 1 if 128k EGA memory
-*    = 2 if 192k EGA memory
-*    = 3 if 256k EGA memory
-* CH = feature bits
-* CL = switch settings
-*
-* Info: This obtains miscellaneous information about the EGA switch
-*       settings and the current values of the "feature bits" as read
-*       through those rarely-used RCA connectors on some EGA cards.
-*  @note If upon return from this call, BL>4, then must be running on a CGA or MDA (not an EGA or VGA).
+* @note Other than Sub-function: Return Video Configuration Information the other subfunctions have a
+* uniform interface 
 * -----------------------------------------------------------------------------------------------------
 * BL = 20  select alternate print screen routine
 *
@@ -216,4 +199,42 @@ uint8_t bios_return_video_configuration_information(bios_video_subsystem_config_
 * @note Be sure to re-enable refresh when finished updating video memory.
 * -----------------------------------------------------------------------------------------------------
 */
-//uint8_t bios_video_subsystem_configuration(uint8_t request, uint8_t setting, bios_video_subsystem_config_t* config);
+uint8_t bios_helper_video_subsytem_configuration(uint8_t request, uint8_t setting) {
+	uint8_t e = 0;
+	__asm {
+		.8086
+
+		mov		ah, VIDEO_SUBSYSTEM_CONFIGURATION
+		mov		bl, request
+		mov		al, setting
+		int		BIOS_VIDEO_SERVICES
+		mov		e, al
+
+	}
+	return e;
+}
+
+/**
+* @brief INT 10,12 - Video Subsystem Configuration (EGA/VGA)
+*/
+uint8_t bios_video_subsystem_configuration(uint8_t request, uint8_t setting, bios_video_subsystem_config_t* config) {	
+	switch (request) {
+	case RETURN_VIDEO_CONFIGURATION_INFORMATION:	// the odd one out of the sub-functions
+		return bios_return_video_configuration_information(config);
+		break;
+	case SELECT_ALTERNATE_PRINT_SCREEN_ROUTINE:
+	case SELECT_SCAN_LINES_FOR_ALPHANUMERIC_MODES:
+	case SELECT_DEFAULT_PALETTE_LOADING:
+	case CPU_ACCESS_TO_VIDEO_RAM:
+	case GRAY_SCALE_SUMMING:
+	case CURSOR_EMULATION:
+	case PS2_VIDEO_DISPLAY_SWITCHING:
+	case VIDEO_REFRESH_CONTROL:
+		bios_helper_video_subsytem_configuration(request, setting);
+		break;
+	default:
+		return 0;
+		break;
+	}
+	return 0;
+}

@@ -40,18 +40,19 @@ void bios_get_video_state(bios_video_state_t* state);
 // INT 10,11 - Character generator routine (EGA/VGA)
 	
 // INT 10,12 - Video subsystem configuration (EGA/VGA)
-//uint8_t bios_video_subsystem_configuration(uint8_t request, uint8_t setting, bios_video_subsystem_config_t* config);
+uint8_t bios_video_subsystem_configuration(uint8_t request, uint8_t setting, bios_video_subsystem_config_t* config);
 	
 	//INT 10,12 - broken down into its sub-functions
 	uint8_t bios_return_video_configuration_information(bios_video_subsystem_config_t* config);
 	//bios_select_alternate_print_screen_routine
 	//bios_select_scan_lines_for_alphanumeric_modes
 	//bios_select_default_palette_loading
-	//bios_cpu_access_to_video_ram
+	//uint8_t bios_cpu_access_to_video_ram(uint8_t enable);
 	//bios_gray_scale_summing
 	//bios_cursor_emulation
 	//bios_ps2_video_display_switching
 	//bios_video_refresh_control
+	uint8_t bios_helper_video_subsytem_configuration(uint8_t request, uint8_t setting);
 
 // INT 10,13 - Write string (BIOS after 1/10/86)
 // INT 10,14 - Load LCD char font (convertible)

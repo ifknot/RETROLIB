@@ -12,10 +12,6 @@
 
 #include <stdint.h>
 
-namespace vga {
-
-	uint8_t detect_adapter();
-
-}
+uint8_t vga_detect_adapter();
 
 #endif
