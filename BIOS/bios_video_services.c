@@ -5,7 +5,7 @@
  *  @details   ~
  *  @author    Jeremy Thornton
  *  @date      4.11.2023
- *  @copyright © Jeremy Thornton, 2023. All right reserved.
+ *  @copyright Â© Jeremy Thornton, 2023. All right reserved.
  *
  */
 #include <assert.h>
@@ -23,11 +23,15 @@
 void bios_set_video_mode(uint8_t mode) {
 	__asm {
 		.8086
-
+		pushf                                ; preserve what int BIOS functions may not
+        	push    ds                           ; due to unreliable behaviour
+	
 		mov		al, mode
 		mov		ah, SET_VIDEO_MODE
 		int		BIOS_VIDEO_SERVICES
 
+		pop 	ds
+		popf
 	}
 }
 
@@ -51,14 +55,18 @@ void bios_set_video_mode(uint8_t mode) {
 void bios_get_video_state(bios_video_state_t* state) {
 	__asm {
 		.8086
-
-		mov		ah, GET_CURRENT_VIDEO_STATE
-		int		BIOS_VIDEO_SERVICES
-		les		di, state
-		mov		es:[di], ah				; number of screen columns
-		mov		es:[di + 1], al			; video mode
-		mov		es:[di + 2], bh			; display page
-
+		pushf
+		push 	ds
+	
+		mov	ah, GET_CURRENT_VIDEO_STATE
+		int	BIOS_VIDEO_SERVICES
+		les	di, state
+		mov	es:[di], ah				; number of screen columns
+		mov	es:[di + 1], al			; video mode
+		mov	es:[di + 2], bh			; display page
+	
+		pop 	ds
+		popf
 	}
 }
 
@@ -93,7 +101,9 @@ uint8_t bios_return_video_configuration_information(bios_video_subsystem_config_
 	uint8_t e = 0;
 	__asm {
 		.8086
-
+		pushf
+		push 	ds
+	
 		mov		ah, VIDEO_SUBSYSTEM_CONFIGURATION
 		mov		bl, 10h						; return video configuration information
 		int		BIOS_VIDEO_SERVICES
@@ -103,7 +113,9 @@ uint8_t bios_return_video_configuration_information(bios_video_subsystem_config_
 		mov		es:[di + 1], bl				; EGA memory BL(0 = 64k, 2 = 128k, 2 = 192k, 3 = 256k)
 		mov		es:[di + 2], ch				; feature_bits(values of those RCA connectors)
 		mov		es:[di + 3], cl				; switch_settings
-		
+
+		pop 	ds
+		popf
 	}
 	return e;
 }
@@ -203,13 +215,17 @@ uint8_t bios_helper_video_subsytem_configuration(uint8_t request, uint8_t settin
 	uint8_t e = 0;
 	__asm {
 		.8086
-
+		pushf
+		push 	ds
+	
 		mov		ah, VIDEO_SUBSYSTEM_CONFIGURATION
 		mov		bl, request
 		mov		al, setting
 		int		BIOS_VIDEO_SERVICES
 		mov		e, al
-
+		
+		pop 	ds
+		popf
 	}
 	return e;
 }
