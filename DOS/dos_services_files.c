@@ -28,7 +28,7 @@
 * - used to determine available space on specified disk
 * - see	INT 21,1B   INT 21,1C
 */
-void dos_get_disk_free_space(uint8_t drive_number, file::disk_space_info_t* info) {
+void dos_get_disk_free_space(uint8_t drive_number, dos_file_disk_space_info_t* info) {
 	__asm {
 		.8086
 		push	ds
@@ -60,7 +60,7 @@ END:		popf
 	}
 #ifndef NDEBUG
 	if (info->sectors_per_cluster == 0xFFFF) {
-		printf("%s drive_number=%i\n", dos_error:_messages[INVALID_DRIVE_SPECIFIED], drive_number;
+		printf("%s drive_number=%i\n", dos_error_messages[INVALID_DRIVE_SPECIFIED], drive_number;
 	}
 #endif
 }
@@ -101,7 +101,7 @@ END:		popf
 	}
 #ifndef NDEBUG	
 	if (err_code) {
-		printf("%s drive_number=%s\n", dos_error:_messages[err_code], path_name;
+		printf("%s drive_number=%s\n", dos_error_messages[err_code], path_name;
 	}
 #endif
 	return fhandle;
