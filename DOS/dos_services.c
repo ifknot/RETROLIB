@@ -13,17 +13,19 @@
 * DS:DX = pointer to interrupt handler
 */
 void dos_set_interrupt_vector(uint8_t vec_num, void* phandler) {
-__asm {
-.8086
-push    ds
-
-lds     dx, phandler                ; copy pointer to handler into DS:DX 
-mov     al, vec_num                 ; interrupt vector number
-mov     ah, SET_INTERRUPT_VECTOR    ; 25h service
-int     DOS_SERVICE
-
-pop     ds
-}
+    __asm {
+        .8086
+        pushf                                ; preserve what int 21h may not
+        push    ds                           ; due to unreliable behaviour
+        
+        lds     dx, phandler                ; copy pointer to handler into DS:DX 
+        mov     al, vec_num                 ; interrupt vector number
+        mov     ah, SET_INTERRUPT_VECTOR    ; 25h service
+        int     DOS_SERVICE
+        
+        pop     ds
+        popf
+    }
 
 }
 
@@ -39,21 +41,23 @@ pop     ds
 * @return void* segment:offset pointer to interrupt handler
 */
 void* dos_get_interrupt_vector(uint8_t vec_num) {
-void* phandler;
-__asm {
-.8086
-push    ds
-
-mov     al, vec_num                 ; interrupt vector number
-mov     ah, GET_INTERRUPT_VECTOR    ; 35h service
-int     DOS_SERVICE
-lea     di, phandler
-mov     [di], bx                    ; copy segment into address_t (little endian)
-mov     [di + 2] , es               ; copy offset
-
-pop     ds
-}
-return phandler;
+    void* phandler;
+    __asm {
+        .8086
+        pushf
+        push    ds
+        
+        mov     al, vec_num                 ; interrupt vector number
+        mov     ah, GET_INTERRUPT_VECTOR    ; 35h service
+        int     DOS_SERVICE
+        lea     di, phandler
+        mov     [di], bx                    ; copy segment into address_t (little endian)
+        mov     [di + 2] , es               ; copy offset
+        
+        pop     ds
+        popf
+    }
+    return phandler;
 }
 
 /**
@@ -91,32 +95,33 @@ return phandler;
 * @return      the segment address of the reserved memory or 0 if request failed
 */
 uint16_t dos_allocate_memory_blocks(uint16_t paragraphs) {
-uint16_t available, mem_seg, err_code = 0;
-__asm {
-.8086
-mov     bx, paragraphs              ; number requested paragraphs
-mov     ah, ALLOCATE_MEMORY_BLOCKS  ; allocate memory
-int     DOS_SERVICE                 ; 48h service
-jnc     OK                          ; success CF = 0
-mov     err_code, ax                ; CF set, and AX = 08 (Not Enough Mem)
-mov     available, bx               ; size in paras of the largest block of memory available
-xor     ax, ax
-OK:     mov     mem_seg, ax
+    uint16_t available, mem_seg, err_code = 0;
+    __asm {
+    .8086
+    pushf
+    push    ds
+    
+    mov     bx, paragraphs              ; number requested paragraphs
+    mov     ah, ALLOCATE_MEMORY_BLOCKS  ; allocate memory
+    int     DOS_SERVICE                 ; 48h service
+    jnc     OK                          ; success CF = 0
+    mov     err_code, ax                ; CF set, and AX = 08 (Not Enough Mem)
+    mov     available, bx               ; size in paras of the largest block of memory available
+    xor     ax, ax
+OK: mov     mem_seg, ax
 
-}
-
+    pop     ds
+    popf
+    }
 #ifndef NDEBUG
-
-if (err_code) {
-std::cout << dos::error::messages[err_code] << '\n';
-if (err_code == dos::error::INSUFFICIENT_MEMORY) {
-    std::cout << " largest block of memory available = " << std::dec << available << " paragraphs" << std::endl;
-}
-}
-
+    if (err_code) {
+        fprintf(stderr, "%s\n", dos_error_messages[err_code];
+        if (err_code == dos::error::INSUFFICIENT_MEMORY) {
+            fprintf(stderr, " largest block of memory available = %i paragraphs(16 bytes)\n", available;
+        }
+    }
 #endif
-
-return mem_seg;
+    return mem_seg;
 }
 
 /**
@@ -139,25 +144,26 @@ return mem_seg;
 * @see  INT 21,4A
 */
 uint16_t dos_free_allocated_memory_blocks(uint16_t segment) {
-uint16_t err_code = 0;
-__asm {
-.8086
-mov     ax, segment                         ; the segment to be released
-mov     es, ax                              ; segment of the block to be returned(MCB + 1para)
-mov     ah, FREE_ALLOCATED_MEMORY_BLOCKS    ; de-allocate memory
-int     DOS_SERVICE                         ; dos call 49h
-jnc     OK                                  ; success CF = 0
-mov     err_code, ax                        ; de-allocation failed ax is dos error code
-OK:
-}
-
-#ifndef NDEBUG
-
-if (err_code) {
-std::cout << dos::error::messages[err_code] << std::hex << segment << std::endl;
-}
-
-#endif
-
-return err_code;
+    uint16_t err_code = 0;
+    __asm {
+        .8086
+        pushf
+        push    ds
+    
+        mov     ax, segment                         ; the segment to be released
+        mov     es, ax                              ; segment of the block to be returned(MCB + 1para)
+        mov     ah, FREE_ALLOCATED_MEMORY_BLOCKS    ; de-allocate memory
+        int     DOS_SERVICE                         ; dos call 49h
+        jnc     OK                                  ; success CF = 0
+        mov     err_code, ax                        ; de-allocation failed ax is dos error code
+    OK:
+        pop     ds
+        popf
+    }    
+#ifndef NDEBUG   
+    if (err_code) {
+        fprintf(stderr, "%s %X\n", dos_error_messages[err_code], segment;
+    }
+#endif    
+    return err_code;
 }
