@@ -5,7 +5,7 @@
  *  @details   ~
  *  @author    Jeremy Thornton
  *  @date      29.10.2023
- *  @copyright © Jeremy Thornton, 2023. All right reserved.
+ *  @copyright Â© Jeremy Thornton, 2023. All right reserved.
  *
  */
 #include "dos_services_files.h"
@@ -13,331 +13,302 @@
 #include "dos_services_types.h"
 #include "dos_error_messages.h"
 
-namespace dos {
+/**
+* INT 21,36 - Get Disk Free Space
+* AH = 36h
+* DL = drive number (0=default, 1=A:)
+* 
+* on return:
+* AX = sectors per cluster
+*    = FFFF if drive is invalid
+* BX = number of available clusters
+* CX = number of bytes per sector
+* DX = number of clusters per drive
+* 
+* - used to determine available space on specified disk
+* - see	INT 21,1B   INT 21,1C
+*/
+void dos_get_disk_free_space(uint8_t drive_number, file::disk_space_info_t* info) {
+	__asm {
+		.8086
+		push	ds
+		pushf
 
+		mov		dl, drive_number
+		mov		ah, GET_DISK_FREE_SPACE
+		int		DOS_SERVICE
+		cmp		ax, DOS_ERROR				; FFFFh invalid drive
+		jne		OK
 
-	/**
-	* INT 21,36 - Get Disk Free Space
-	* AH = 36h
-	* DL = drive number (0=default, 1=A:)
-	* 
-	* on return:
-	* AX = sectors per cluster
-	*    = FFFF if drive is invalid
-	* BX = number of available clusters
-	* CX = number of bytes per sector
-	* DX = number of clusters per drive
-	* 
-	* - used to determine available space on specified disk
-	* - see	INT 21,1B   INT 21,1C
-	*/
-	void get_disk_free_space(uint8_t drive_number, file::disk_space_info_t* info) {
-		__asm {
-			.8086
-			push	ds
-			pushf
+		cld
+		les		di, info
+		stosw								; store the error marker
+		xor ax, ax
+		stosw								; zero the rest of info struct
+		stosw
+		stosw
+		jmp		END
 
-			mov		dl, drive_number
-			mov		ah, GET_DISK_FREE_SPACE
-			int		DOS_SERVICE
-			cmp		ax, DOS_ERROR				; FFFFh invalid drive
-			jne		OK
+OK:		lds		di, info
+		mov		[di], ax					; sectors per cluster
+		mov		[di + 2], bx				; available clusters
+		mov		[di + 4], cx				; bytes per sector
+		mov		[di + 6], dx				; clusters per drive 
 
-			cld
-			les		di, info
-			stosw								; store the error marker
-			xor ax, ax
-			stosw								; zero the rest of info struct
-			stosw
-			stosw
-			jmp		END
-
-	OK:		lds		di, info
-			mov		[di], ax					; sectors per cluster
-			mov		[di + 2], bx				; available clusters
-			mov		[di + 4], cx				; bytes per sector
-			mov		[di + 6], dx				; clusters per drive 
-
-	END:	popf
-			pop		ds
-		}
-
+END:		popf
+		pop		ds
+	}
 #ifndef NDEBUG
-
-		if (info->sectors_per_cluster == 0xFFFF) {
-			std::cout << dos::error::messages[dos::error::INVALID_DRIVE_SPECIFIED] << "drive_number=" << drive_number << std::endl;
-		}
-
+	if (info->sectors_per_cluster == 0xFFFF) {
+		printf("%s drive_number=%i\n", dos_error:_messages[INVALID_DRIVE_SPECIFIED], drive_number;
+	}
 #endif
+}
+
+/**
+* INT 21, 3C - Create File Using Handle
+* AH = 3C
+* CX = file attribute(see FILE ATTRIBUTES)
+* DS:DX = pointer to ASCIIZ path name
+* 
+* on return :
+* CF = 0 if successful
+*    = 1 if error
+* AX = files handle if successful
+*    = error code if failure(see DOS ERROR CODES)
+* 
+* @note - if file already exists, it is truncated to zero bytes on opening
+*/
+dos_file_handle_t dos_create_file_using_handle(const char * path_name, dos_file_attributes_t create_attributes) {
+	dos_file_handle_t fhandle;
+	dos_error_code_t err_code = 0;
+	__asm {
+		.8086
+		push	ds
+		pushf
+
+		lds		dx, path_name
+		mov		cx, create_attributes
+		mov		ah, CREATE_FILE_USING_HANDLE
+		int		DOS_SERVICE
+		jnc		OK
+		mov		err_code, ax
+		xor		ax,ax
+OK:		mov		fhandle, ax
+
+END:		popf
+		pop		ds
+	}
+#ifndef NDEBUG	
+	if (err_code) {
+		printf("%s drive_number=%s\n", dos_error:_messages[err_code], path_name;
+	}
+#endif
+	return fhandle;
+}
+
+/**
+* INT 21,3D Open File Using Handle
+* AH = 3D
+* AL = open access mode
+*      00  read only
+*      01  write only
+*      02  read/write
+* DS:DX = pointer to an ASCIIZ file name
+* 
+* on return:
+* AX = file handle if CF not set
+*    = error code if CF set  (see DOS ERROR CODES)
+*/
+dos_file_handle_t open_file_using_handle(const char * path_name, uint8_t access_attributes) {
+	dos_file_handle_t fhandle;
+	dos_error_code_t err_code = 0;
+	__asm {
+		.8086
+		push	ds
+		pushf
+
+		lds		dx, path_name
+		mov		al, access_attributes
+		mov		ah, OPEN_FILE_USING_HANDLE
+		int		DOS_SERVICE
+		jnc		OK
+		mov		err_code, ax
+		xor		ax, ax
+OK:		mov		fhandle, ax
+
+END:		popf
+		pop		ds
 	}
 
-	/**
-	* INT 21, 3C - Create File Using Handle
-	* AH = 3C
-	* CX = file attribute(see FILE ATTRIBUTES)
-	* DS:DX = pointer to ASCIIZ path name
-	* 
-	* on return :
-	* CF = 0 if successful
-	*    = 1 if error
-	* AX = files handle if successful
-    *    = error code if failure(see DOS ERROR CODES)
-	* 
-	* @note - if file already exists, it is truncated to zero bytes on opening
-	*/
-	file::handle_t create_file_using_handle(const char * path_name, file::attributes_t create_attributes) {
-		file::handle_t fhandle;
-		error_code_t err_code = 0;
-		__asm {
-			.8086
-			push	ds
-			pushf
-
-			lds		dx, path_name
-			mov		cx, create_attributes
-			mov		ah, CREATE_FILE_USING_HANDLE
-			int		DOS_SERVICE
-			jnc		OK
-			mov		err_code, ax
-			xor		ax,ax
-	OK:		mov		fhandle, ax
-
-	END:	popf
-			pop		ds
-		}
-
 #ifndef NDEBUG
-		
-		if (err_code) {
-			std::cout << dos::error::messages[err_code] << "file_path=" << path_name << std::endl;
-		}
-
-#endif
-
-		return fhandle;
+	if (err_code) {
+		printf("%s path name=%s\n", dos_error_messages[err_code], path_name;
 	}
+#endif
+	return fhandle;
+}
 
-	/**
-	* INT 21,3D Open File Using Handle
-	* AH = 3D
-	* AL = open access mode
-	*      00  read only
-	*      01  write only
-	*      02  read/write
-	* DS:DX = pointer to an ASCIIZ file name
-	* 
-	* on return:
-	* AX = file handle if CF not set
-	*    = error code if CF set  (see DOS ERROR CODES)
-	*/
-	file::handle_t open_file_using_handle(const char * path_name, uint8_t access_attributes) {
-		file::handle_t fhandle;
-		error_code_t err_code = 0;
-		__asm {
-			.8086
-			push	ds
-			pushf
+/**
+* INT 21,3E - Close File Using Handle
+* AH = 3E
+* BX = file handle to close
+* 
+* on return:
+* AX = error code if CF set  (see DOS ERROR CODES)
+* 
+* - if file is opened for update, file time and date stamp as well as file size are updated in the directory
+* - handle is freed
+*/
+dos_error_code_t close_file_using_handle(dos_file_handle_t fhandle) {
+	dos_error_code_t err_code = 0;
+	__asm {
+		.8086
+		push	ds
+		pushf
 
-			lds		dx, path_name
-			mov		al, access_attributes
-			mov		ah, OPEN_FILE_USING_HANDLE
-			int		DOS_SERVICE
-			jnc		OK
-			mov		err_code, ax
-			xor		ax, ax
-	OK:		mov		fhandle, ax
+		mov		bx, fhandle
+		mov		ah, CLOSE_FILE_USING_HANDLE
+		int		DOS_SERVICE
+		jnc		END
+		mov		err_code, ax
 
-	END:	popf
-			pop		ds
-		}
-
+END:		popf
+		pop		ds
+	}
 #ifndef NDEBUG
-
-		if (err_code) {
-			std::cout << dos::error::messages[err_code] << "file_path=" << path_name << std::endl;
-		}
-
-#endif
-
-		return fhandle;
+	if (err_code) {
+		printf("%s file_handle==%i\n", dos_error_messages[err_code], fhandle;
 	}
+#endif
+	return err_code;
+}
 
-	/**
-	* INT 21,3E - Close File Using Handle
-	* AH = 3E
-	* BX = file handle to close
-	* 
-	* on return:
-	* AX = error code if CF set  (see DOS ERROR CODES)
-	* 
-	* - if file is opened for update, file time and date stamp as well as file size are updated in the directory
-	* - handle is freed
-	*/
-	error_code_t close_file_using_handle(file::handle_t fhandle) {
-		error_code_t err_code = 0;
-		__asm {
-			.8086
-			push	ds
-			pushf
+/**
+* INT 21,3F - Read From File or Device Using Handle
+* AH = 3F
+* BX = file handle
+* CX = number of bytes to read
+* DS:DX = pointer to read buffer
+* 
+* on return:
+* AX = number of bytes read is CF not set
+*    = error code if CF set  (see DOS ERROR CODES)
+*
+* - read specified number of bytes from file into buffer DS:DX
+* - when AX is not equal to CX then a partial read occurred due to end of file
+* - if AX is zero, no data was read, and EOF occurred before read
+*/
+uint16_t dos_read_file_using_handle(dos_file_handle_t fhandle, char* buffer, uint16_t nbytes) {
+	uint16_t bytes_read = 0;
+	dos_error_code_t err_code = 0;
+	__asm {
+		.8086
+		push	ds
+		pushf
 
-			mov		bx, fhandle
-			mov		ah, CLOSE_FILE_USING_HANDLE
-			int		DOS_SERVICE
-			jnc		END
-			mov		err_code, ax
+		lds		dx, buffer
+		mov		cx,	nbytes
+		mov		bx, fhandle
+		mov		ah, READ_FILE_OR_DEVICE_USING_HANDLE
+		int		DOS_SERVICE
+		jnc		OK
+		mov		err_code, ax
+		jmp		END
 
-	END:	popf
-			pop		ds
-		}
+OK:		mov		bytes_read, ax
 
+END:	popf
+		pop		ds
+	}
 #ifndef NDEBUG
-
-		if (err_code) {
-			std::cout << dos::error::messages[err_code] << "file_handle=" << fhandle << std::endl;
-		}
-
+	if (err_code) {
+		printf("%s file_handle==%i\n", dos_error_messages[err_code], fhandle;
+	}			
 #endif
+	return bytes_read;
+}
 
-		return err_code;
+/**
+* INT 21,40 - Write To File or Device Using Handle
+* AH = 40h
+* BX = file handle
+* CX = number of bytes to write, a zero value truncates/extends the file to the current file position
+* DS:DX = pointer to write buffer
+*
+* on return:
+* AX = number of bytes written if CF not set
+*    = error code if CF set  (see DOS ERROR CODES)
+* 
+* - if AX is not equal to CX on return, a partial write occurred
+* - this function can be used to truncate a file to the current file position by writing zero bytes
+*/
+uint16_t dos_write_file_using_handle(dos_file_handle_t fhandle, char* buffer, uint16_t nbytes) {
+	uint16_t bytes_written = 0;
+	dos_error_code_t err_code = 0;
+	__asm {
+		.8086
+		push	ds
+		pushf
+
+		lds		dx, buffer
+		mov		cx, nbytes
+		mov		bx, fhandle
+		mov		ah, WRITE_FILE_OR_DEVICE_USING_HANDLE
+		int		DOS_SERVICE
+		jnc		OK
+		mov		err_code, ax
+		jmp		END
+
+OK:		mov		bytes_written, ax
+
+END:		popf
+		pop		ds
 	}
-
-	/**
-	* INT 21,3F - Read From File or Device Using Handle
-	* AH = 3F
-	* BX = file handle
-	* CX = number of bytes to read
-	* DS:DX = pointer to read buffer
-	* 
-	* on return:
-	* AX = number of bytes read is CF not set
-	*    = error code if CF set  (see DOS ERROR CODES)
-	*
-	* - read specified number of bytes from file into buffer DS:DX
-	* - when AX is not equal to CX then a partial read occurred due to end of file
-	* - if AX is zero, no data was read, and EOF occurred before read
-	*/
-	uint16_t read_file_using_handle(file::handle_t fhandle, char* buffer, uint16_t nbytes) {
-		uint16_t bytes_read = 0;
-		error_code_t err_code = 0;
-		__asm {
-			.8086
-			push	ds
-			pushf
-
-			lds		dx, buffer
-			mov		cx,	nbytes
-			mov		bx, fhandle
-			mov		ah, READ_FILE_OR_DEVICE_USING_HANDLE
-			int		DOS_SERVICE
-			jnc		OK
-			mov		err_code, ax
-			jmp		END
-
-	OK:		mov		bytes_read, ax
-
-	END:	popf
-			pop		ds
-		}
-
 #ifndef NDEBUG
-
-		if (err_code) {
-			std::cout << dos::error::messages[err_code] << "file_handle=" << fhandle << std::endl;
-		}
-
-#endif
-
-		return bytes_read;
+	if (err_code) {
+		printf("%s file_handle==%i\n", dos_error_messages[err_code], fhandle;
 	}
+#endif
+	return bytes_written;
+}
 
-	/**
-	* INT 21,40 - Write To File or Device Using Handle
-	* AH = 40h
-	* BX = file handle
-	* CX = number of bytes to write, a zero value truncates/extends the file to the current file position
-	* DS:DX = pointer to write buffer
-	*
-	* on return:
-	* AX = number of bytes written if CF not set
-	*    = error code if CF set  (see DOS ERROR CODES)
-	* 
-	* - if AX is not equal to CX on return, a partial write occurred
-	* - this function can be used to truncate a file to the current file position by writing zero bytes
-	*/
-	uint16_t write_file_using_handle(file::handle_t fhandle, char* buffer, uint16_t nbytes) {
-		uint16_t bytes_written = 0;
-		error_code_t err_code = 0;
-		__asm {
-			.8086
-			push	ds
-			pushf
+/**
+* INT 21,41 - Delete File
+* AH = 41h
+* DS:DX = pointer to an ASCIIZ filename
+* 
+* on return:
+* AX = error code if CF set  (see DOS ERROR CODES)
+* 
+* - marks first byte of file directory entry with E5 to indicate the file has been deleted.  
+* - The rest of the directory entry stays intact until reused.   
+* - FAT pointers are returned to DOS
+* @note - documented as not accepting wildcards in filename but actually does in several DOS versions
+*/
+dos_error_code_t dos_delete_file(char* path_name) {
+	dos_error_code_t err_code = 0;
+	__asm {
+		.8086
+		push	ds
+		pushf
 
-			lds		dx, buffer
-			mov		cx, nbytes
-			mov		bx, fhandle
-			mov		ah, WRITE_FILE_OR_DEVICE_USING_HANDLE
-			int		DOS_SERVICE
-			jnc		OK
-			mov		err_code, ax
-			jmp		END
+		lds		dx, path_name
+		mov		ah, DELETE_FILE
+		int		DOS_SERVICE
+		jnc		END
+		mov		err_code, ax
 
-	OK:		mov		bytes_written, ax
-
-	END:	popf
-			pop		ds
-		}
-
+END:		popf
+		pop		ds
+	}
 #ifndef NDEBUG
-
-		if (err_code) {
-			std::cout << dos::error::messages[err_code] << "file_handle=" << fhandle << std::endl;
-		}
-
-#endif
-
-		return bytes_written;
+	if (err_code) {
+		printf("%s path name=%s\n", dos_error_messages[err_code], path_name;
 	}
-
-	/**
-	* INT 21,41 - Delete File
-	* AH = 41h
-	* DS:DX = pointer to an ASCIIZ filename
-	* 
-	* on return:
-	* AX = error code if CF set  (see DOS ERROR CODES)
-	* 
-	* - marks first byte of file directory entry with E5 to indicate the file has been deleted.  
-	* - The rest of the directory entry stays intact until reused.   
-	* - FAT pointers are returned to DOS
-	* @note - documented as not accepting wildcards in filename but actually does in several DOS versions
-	*/
-	error_code_t delete_file(char* path_name) {
-		error_code_t err_code = 0;
-		__asm {
-			.8086
-			push	ds
-			pushf
-
-			lds		dx, path_name
-			mov		ah, DELETE_FILE
-			int		DOS_SERVICE
-			jnc		END
-			mov		err_code, ax
-
-	END:	popf
-			pop		ds
-		}
-
-#ifndef NDEBUG
-
-		if (err_code) {
-			std::cout << dos::error::messages[err_code] << "file_path=" << path_name << std::endl;
-		}
-
 #endif
-
-		return err_code;
-	}
+	return err_code;
+}
 
 	/**
 	* INT 21,42 - Move File Pointer Using Handle
