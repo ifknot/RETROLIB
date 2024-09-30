@@ -8,6 +8,8 @@
  *  @copyright © Jeremy Thornton, 2023. All right reserved.
  *
  */
+#include <stdio.h>
+
 #include "dos_services_files.h"
 #include "dos_services_constants.h"
 #include "dos_services_types.h"
@@ -60,7 +62,7 @@ END:		popf
 	}
 #ifndef NDEBUG
 	if (info->sectors_per_cluster == 0xFFFF) {
-		printf("%s drive_number=%i\n", dos_error_messages[INVALID_DRIVE_SPECIFIED], drive_number;
+		fprintf(stderr, "%s drive_number=%i\n", dos_error_messages[INVALID_DRIVE_SPECIFIED], drive_number;
 	}
 #endif
 }
@@ -101,7 +103,7 @@ END:		popf
 	}
 #ifndef NDEBUG	
 	if (err_code) {
-		printf("%s drive_number=%s\n", dos_error_messages[err_code], path_name;
+		fprintf(stderr, "%s drive_number=%s\n", dos_error_messages[err_code], path_name;
 	}
 #endif
 	return fhandle;
@@ -120,7 +122,7 @@ END:		popf
 * AX = file handle if CF not set
 *    = error code if CF set  (see DOS ERROR CODES)
 */
-dos_file_handle_t open_file_using_handle(const char * path_name, uint8_t access_attributes) {
+dos_file_handle_t dos_open_file_using_handle(const char * path_name, uint8_t access_attributes) {
 	dos_file_handle_t fhandle;
 	dos_error_code_t err_code = 0;
 	__asm {
@@ -143,7 +145,7 @@ END:		popf
 
 #ifndef NDEBUG
 	if (err_code) {
-		printf("%s path name=%s\n", dos_error_messages[err_code], path_name;
+		fprintf(stderr, "%s path name=%s\n", dos_error_messages[err_code], path_name;
 	}
 #endif
 	return fhandle;
@@ -160,7 +162,7 @@ END:		popf
 * - if file is opened for update, file time and date stamp as well as file size are updated in the directory
 * - handle is freed
 */
-dos_error_code_t close_file_using_handle(dos_file_handle_t fhandle) {
+dos_error_code_t dos_close_file_using_handle(dos_file_handle_t fhandle) {
 	dos_error_code_t err_code = 0;
 	__asm {
 		.8086
@@ -178,7 +180,7 @@ END:		popf
 	}
 #ifndef NDEBUG
 	if (err_code) {
-		printf("%s file_handle==%i\n", dos_error_messages[err_code], fhandle;
+		fprintf(stderr, "%s file_handle=%i\n", dos_error_messages[err_code], fhandle;
 	}
 #endif
 	return err_code;
@@ -223,7 +225,7 @@ END:	popf
 	}
 #ifndef NDEBUG
 	if (err_code) {
-		printf("%s file_handle==%i\n", dos_error_messages[err_code], fhandle;
+		fprintf(stderr, "%s file_handle=%i\n", dos_error_messages[err_code], fhandle;
 	}			
 #endif
 	return bytes_read;
@@ -267,7 +269,7 @@ END:		popf
 	}
 #ifndef NDEBUG
 	if (err_code) {
-		printf("%s file_handle==%i\n", dos_error_messages[err_code], fhandle;
+		fprintf(stderr, "%s file_handle=%i\n", dos_error_messages[err_code], fhandle;
 	}
 #endif
 	return bytes_written;
@@ -304,138 +306,130 @@ END:		popf
 	}
 #ifndef NDEBUG
 	if (err_code) {
-		printf("%s path name=%s\n", dos_error_messages[err_code], path_name;
+		fprintf(stderr, "%s path name=%s\n", dos_error_messages[err_code], path_name;
 	}
 #endif
 	return err_code;
 }
 
-	/**
-	* INT 21,42 - Move File Pointer Using Handle
-	* AH = 42h
-	* AL = origin of move:
-	*      00 = beginning of file plus offset  (SEEK_SET)
-	*      01 = current location plus offset	(SEEK_CUR)
-	*      02 = end of file plus offset  (SEEK_END)
-	* BX = file handle
-	* CX:DX = (signed) offset from origin of new file position
-	* CX = high order word of number of bytes to move
-	* DX = low order word of number of bytes to move
-	* 
-	* on return:
-	* CF clear if successful
-	*     DX:AX = new file position in bytes from start of file
-	*     DX = high order word of number of bytes to move
-	*	  AX = low order word of number of bytes to move
-	* CF set on error
-	*    AX = error code
-	* 
-	* @note WARNING: for origins 01h and 02h, the pointer may be positioned before the
-	* start of the file; no error is returned in that case (except under Windows NT), 
-	* but subsequent attempts at I/O will produce errors.
-	* If the new position is beyond the current end of file, the file will be extended by the next write! 
-	* For FAT32 drives, the file must have been opened with AX=6C00h with the "extended size"
-	* flag in order to expand the file beyond 2GB
-	* 
-	* @note BUG: using this method to grow a file from zero bytes to a very large size
-	* can corrupt the FAT in some versions of DOS; the file should first
-	* be grown from zero to one byte and then to the desired large size
-	*/
-	file::position_t move_file_pointer_using_handle(file::handle_t fhandle, uint8_t forigin, file::position_t fposition) {
-		error_code_t err_code = 0;
-		__asm {
-			.8086
-			push	ds
-			pushf
+/**
+* INT 21,42 - Move File Pointer Using Handle
+* AH = 42h
+* AL = origin of move:
+*      00 = beginning of file plus offset  (SEEK_SET)
+*      01 = current location plus offset	(SEEK_CUR)
+*      02 = end of file plus offset  (SEEK_END)
+* BX = file handle
+* CX:DX = (signed) offset from origin of new file position
+* CX = high order word of number of bytes to move
+* DX = low order word of number of bytes to move
+* 
+* on return:
+* CF clear if successful
+*     DX:AX = new file position in bytes from start of file
+*     DX = high order word of number of bytes to move
+*	  AX = low order word of number of bytes to move
+* CF set on error
+*    AX = error code
+* 
+* @note WARNING: for origins 01h and 02h, the pointer may be positioned before the
+* start of the file; no error is returned in that case (except under Windows NT), 
+* but subsequent attempts at I/O will produce errors.
+* If the new position is beyond the current end of file, the file will be extended by the next write! 
+* For FAT32 drives, the file must have been opened with AX=6C00h with the "extended size"
+* flag in order to expand the file beyond 2GB
+* 
+* @note BUG: using this method to grow a file from zero bytes to a very large size
+* can corrupt the FAT in some versions of DOS; the file should first
+* be grown from zero to one byte and then to the desired large size
+*/
+dos_file_position_t dos_move_file_pointer_using_handle(dos_file_handle_t fhandle, uint8_t forigin, dos_file_position_t fposition) {
+	dos_error_code_t err_code = 0;
+	__asm {
+		.8086
+		push	ds
+		pushf
 
-			lea		si, fposition						; DS:SI = address int32_t fposition
-			mov		dx, [si]							; DX low order word of fposition
-			mov		cx, [si + 2]						; CX hi order word of fposition
-			mov		bx, fhandle
-			mov		al, forigin							; SEEK_SET, SEEK_CUR, SEEK_END
-			mov		ah, MOVE_FILE_POINTER_USING_HANDLE
-			int		DOS_SERVICE
-			jnc		OK
-			mov		err_code, ax
-			jmp		END
+		lea		si, fposition						; DS:SI = address int32_t fposition
+		mov		dx, [si]							; DX low order word of fposition
+		mov		cx, [si + 2]						; CX hi order word of fposition
+		mov		bx, fhandle
+		mov		al, forigin							; SEEK_SET, SEEK_CUR, SEEK_END
+		mov		ah, MOVE_FILE_POINTER_USING_HANDLE
+		int		DOS_SERVICE
+		jnc		OK
+		mov		err_code, ax
+		jmp		END
 
-	OK:		lea		di, fposition						; DS:DI = address int32_t fposition
-			mov		[di], ax							; low order word of fposition = AX
-			mov		[di + 2], dx						; hi order word of fposition = DX
+OK:		lea		di, fposition						; DS:DI = address int32_t fposition
+		mov		[di], ax							; low order word of fposition = AX
+		mov		[di + 2], dx						; hi order word of fposition = DX
 
-	END:	popf
-			pop		ds
-		}
-
-#ifndef NDEBUG
-
-		if (err_code) {
-			std::cout << dos::error::messages[err_code] << "file_handle=" << fhandle << std::endl;
-		}
-
-#endif
-
-		return fposition;
+END:		popf
+		pop		ds
 	}
-
-	/**
-	* INT 21,43 - Get/Set File Attributes
-	* AH = 43h
-	* AL = 00 to get attribute
-	*    = 01 to set attribute
-	* DS:DX = pointer to an ASCIIZ path name
-	* CX = attribute to set
-	*
-	* |5|4|3|2|1|0|  CX  valid file attributes
-	*  | | | | | `---- 1 = read only
-	*  | | | | `----- 1 = hidden
-	*  | | | `------ 1 = system
-	*  | `--------- not used for this call
-	*  `---------- 1 = archive
-	*
-	* on return:
-	* AX = error code if CF set  (see DOS ERROR CODES)
-	* CX = the attribute if AL was 00
-	*/
-	file::attributes_t get_file_attributes(char* path_name) {
-		file::attributes_t attributes;
-		error_code_t err_code = 0;
-		__asm {
-			.8086
-			push	ds
-			pushf
-
-			lds		dx, path_name
-			xor		cx, cx
-			xor		al, al						; AL = 00 to get attribute
-			mov		ah, CHANGE_FILE_MODE
-			int		DOS_SERVICE
-			jnc		OK
-			mov		err_code, ax
-			xor		ax, ax
-	OK:		mov		attributes, ax
-
-	END:	popf
-			pop		ds
-		}
-
 #ifndef NDEBUG
-
-		if (err_code) {
-			std::cout << dos::error::messages[err_code] << "file_path=" << path_name << std::endl;
-		}
-
-#endif
-
-		return attributes;
+	if (err_code) {
+		fprintf(stderr, "%s file_handle=%i\n", dos_error_messages[err_code], fhandle;
 	}
+#endif
+	return fposition;
+}
+
+/**
+* INT 21,43 - Get/Set File Attributes
+* AH = 43h
+* AL = 00 to get attribute
+*    = 01 to set attribute
+* DS:DX = pointer to an ASCIIZ path name
+* CX = attribute to set
+*
+* |5|4|3|2|1|0|  CX  valid file attributes
+*  | | | | | `---- 1 = read only
+*  | | | | `----- 1 = hidden
+*  | | | `------ 1 = system
+*  | `--------- not used for this call
+*  `---------- 1 = archive
+*
+* on return:
+* AX = error code if CF set  (see DOS ERROR CODES)
+* CX = the attribute if AL was 00
+*/
+dos_file_attributes_t dos_get_file_attributes(char* path_name) {
+	dos_file_attributes_t attributes;
+	dos_error_code_t err_code = 0;
+	__asm {
+		.8086
+		push	ds
+		pushf
+
+		lds		dx, path_name
+		xor		cx, cx
+		xor		al, al						; AL = 00 to get attribute
+		mov		ah, CHANGE_FILE_MODE
+		int		DOS_SERVICE
+		jnc		OK
+		mov		err_code, ax
+		xor		ax, ax
+OK:		mov		attributes, ax
+
+END:		popf
+		pop		ds
+	}
+#ifndef NDEBUG
+	if (err_code) {
+		fprintf(stderr, "%s path name=%s\n", dos_error_messages[err_code], path_name;
+	}
+#endif
+	return attributes;
+}
 
 	/**
 	* @note DOSBOX does not allow
 	* @see file::attributes_t get_file_attributes(char* path_name)
 	*/
-	error_code_t set_file_attributes(char* path_name, file::attributes_t attributes) {
-		error_code_t err_code = 0;
+	dos_error_code_t dos_set_file_attributes(char* path_name, dos_file_attributes_t attributes) {
+		dos_error_code_t err_code = 0;
 		__asm {
 			.8086
 			push	ds
@@ -452,15 +446,11 @@ END:		popf
 	END:	popf
 			pop		ds
 		}
-
 #ifndef NDEBUG
-
 		if (err_code) {
-			std::cout << dos::error::messages[err_code] << "file_path=" << path_name << std::endl;
+			fprintf(stderr, "%s path name=%s\n", dos_error_messages[err_code], path_name;
 		}
-
 #endif
-
 		return err_code;
 	}
 
