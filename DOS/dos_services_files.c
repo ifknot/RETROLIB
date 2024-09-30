@@ -220,7 +220,7 @@ uint16_t dos_read_file_using_handle(dos_file_handle_t fhandle, char* buffer, uin
 
 OK:		mov		bytes_read, ax
 
-END:	popf
+END:		popf
 		pop		ds
 	}
 #ifndef NDEBUG
