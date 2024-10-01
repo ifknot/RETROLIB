@@ -24,7 +24,7 @@ void bios_set_video_mode(uint8_t mode) {
 	__asm {
 		.8086
 		pushf                                ; preserve what int BIOS functions may not
-        	push    ds                           ; due to unreliable behaviour
+        push    ds                           ; due to unreliable behaviour
 	
 		mov		al, mode
 		mov		ah, SET_VIDEO_MODE

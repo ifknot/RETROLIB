@@ -10,6 +10,8 @@
  */
 #include "hga_display_buffer.h"
 
+#include "hga_constants.h"
+
 void hga_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern) {
 		__asm {
 			.8086
@@ -38,7 +40,7 @@ void hga_select_display_buffer(uint8_t select) {
       mov     dx, HGA_CONTROL_REGISTER
       mov		al, select 
       and		al, 00000001b				; only bit 0 selects buffer 
-      jz      J0                         
+      //jz      J0                         
       mov     al, 10001010b     ; screen on buffer 1 second display page buffer B000 : 800
       jmp     J1
 J0:   mov     al, 00001010b     ; screen on buffer 0 default display page buffer B000 : 000
