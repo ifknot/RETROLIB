@@ -17,6 +17,7 @@
 #include "hga.h"
 #include "../HARDWARE/hw_detect_graphics_adapter.h"
 #include "../BIOS/bios_video_services.h"
+#include "../BIOS/bios_video_services_types.h"
 
 void demo_hga() {
 	uint16_t colour, mono, buffer = HGA_BUFFER_0;

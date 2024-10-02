@@ -31,7 +31,7 @@ typedef uint16_t dos_error_code_t;
 *
 * @note  An undocumented way to find the first or 'base' MemBlockRec to use DOS Fn 52H.
 */
-struct dos_mcb_t {
+typedef struct {
 
 	uint8_t		signature;		// 'M' (4dH)=valid; 'Z'(5aH)=last block in list
 	uint16_t	owner_id;		// segment address of PSP of owner (0=owns self)
@@ -39,6 +39,6 @@ struct dos_mcb_t {
 	uint8_t		reserved[3];
 	char		owner_name[8];	// 7 or fewer bytes, followed by 00H.  When DOS loads a program, this field is filled - Prior to DOS 4.0, this field contained garbage
 
-};
+} dos_mcb_t;
 
 #endif

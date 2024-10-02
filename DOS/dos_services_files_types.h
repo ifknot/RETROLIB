@@ -89,13 +89,13 @@ enum dos_file_access_attributes {
 /**
 * DOS int 21h, 36h	Get Disk Free Space
 */
-struct dos_file_disk_space_info_t {
+typedef struct {
 
 	int16_t sectors_per_cluster;	// 0FFFFH if the drive number is invalid
 	int16_t available_clusters;
 	int16_t bytes_per_sector;
 	int16_t clusters_per_drive;
 
-};
+} dos_file_disk_space_info_t;
 
 #endif
