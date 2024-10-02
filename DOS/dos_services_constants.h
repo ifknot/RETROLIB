@@ -120,7 +120,7 @@
 #define FLUSH_BUFFER	 								// 3.3 + 
 #define GET_SET_DISK_SERIAL_NUMBER						// UNDOCUMENTED
 
-// sOFTWARE INTERRUPT NUMBERS
+// SOFTWARE INTERRUPT NUMBERS
 #define	IDIVIDE_BY_ZERO				0
 #define	ISINGLE_STEP				1
 #define INONMASKABLE				2
@@ -132,6 +132,5 @@
 #define	IDISKETTE					14	
 #define IVIDEO						16
 #define IEQUIPMENT_DETERMINATION	17
-
 
 #endif

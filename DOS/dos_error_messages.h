@@ -50,7 +50,7 @@ enum dos_error_codes {
 * The rest are obtained by issuing the "get extended error" function call
 * \see INT 21, 59
 */
-const char dos_error_messages[85][MAX_ERR_STRING_LEN] = {
+char dos_error_messages[85][MAX_ERR_STRING_LEN] = {
         "00  Success ",
         // DOS 2.0+
         "01  Invalid function number ",

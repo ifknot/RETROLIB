@@ -23,10 +23,10 @@ void dos_get_disk_free_space(uint8_t drive_number, dos_file_disk_space_info_t* i
 // 3B  Change current subdirectory (chdir) 
 // 
 // 3C  Create file using handle
-dos_file_handle_t dos_create_file_using_handle(const char * path_name, dos_file_attributes_t create_attributes);
+dos_file_handle_t dos_create_file_using_handle(char * path_name, dos_file_attributes_t create_attributes);
 
 // 3D  Open file using handle
-dos_file_handle_t dos_open_file_using_handle(const char * path_name, uint8_t access_attributes);
+dos_file_handle_t dos_open_file_using_handle(char * path_name, uint8_t access_attributes);
 
 // 3E  Close file using handle
 dos_error_code_t dos_close_file_using_handle(dos_file_handle_t fhandle);

@@ -1,3 +1,0 @@
-main.c(15): Error! E1063: Missing operand
-main.c(15): Error! E1011: Symbol 's' has not been declared
-main.c(9): Warning! W202: Symbol 'i' has been defined, but not referenced

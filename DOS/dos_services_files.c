@@ -62,7 +62,7 @@ END:		popf
 	}
 #ifndef NDEBUG
 	if (info->sectors_per_cluster == 0xFFFF) {
-		fprintf(stderr, "%s drive_number=%i\n", dos_error_messages[INVALID_DRIVE_SPECIFIED], drive_number;
+		//fprintf("%s drive_number=%i", dos_error_messages[INVALID_DRIVE_SPECIFIED], drive_number);
 	}
 #endif
 }
@@ -81,8 +81,8 @@ END:		popf
 * 
 * @note - if file already exists, it is truncated to zero bytes on opening
 */
-dos_file_handle_t dos_create_file_using_handle(const char * path_name, dos_file_attributes_t create_attributes) {
-	dos_file_handle_t fhandle;
+dos_file_handle_t dos_create_file_using_handle(char* path_name, dos_file_attributes_t create_attributes) {
+	dos_file_handle_t fhandle = 0;
 	dos_error_code_t err_code = 0;
 	__asm {
 		.8086
@@ -98,12 +98,12 @@ dos_file_handle_t dos_create_file_using_handle(const char * path_name, dos_file_
 		xor		ax,ax
 OK:		mov		fhandle, ax
 
-END:		popf
+END:	popf
 		pop		ds
 	}
 #ifndef NDEBUG	
 	if (err_code) {
-		fprintf(stderr, "%s drive_number=%s\n", dos_error_messages[err_code], path_name;
+		fprintf(stderr, "%s drive_number=%s\n", dos_error_messages[err_code], path_name);
 	}
 #endif
 	return fhandle;
@@ -122,8 +122,8 @@ END:		popf
 * AX = file handle if CF not set
 *    = error code if CF set  (see DOS ERROR CODES)
 */
-dos_file_handle_t dos_open_file_using_handle(const char * path_name, uint8_t access_attributes) {
-	dos_file_handle_t fhandle;
+dos_file_handle_t dos_open_file_using_handle(char* path_name, uint8_t access_attributes) {
+	dos_file_handle_t fhandle = 0;
 	dos_error_code_t err_code = 0;
 	__asm {
 		.8086
@@ -145,7 +145,7 @@ END:		popf
 
 #ifndef NDEBUG
 	if (err_code) {
-		fprintf(stderr, "%s path name=%s\n", dos_error_messages[err_code], path_name;
+		fprintf(stderr, "%s path name=%s\n", dos_error_messages[err_code], path_name);
 	}
 #endif
 	return fhandle;
@@ -180,7 +180,7 @@ END:		popf
 	}
 #ifndef NDEBUG
 	if (err_code) {
-		fprintf(stderr, "%s file_handle=%i\n", dos_error_messages[err_code], fhandle;
+		fprintf(stderr, "%s file_handle=%i\n", dos_error_messages[err_code], fhandle);
 	}
 #endif
 	return err_code;
@@ -225,7 +225,7 @@ END:		popf
 	}
 #ifndef NDEBUG
 	if (err_code) {
-		fprintf(stderr, "%s file_handle=%i\n", dos_error_messages[err_code], fhandle;
+		fprintf(stderr, "%s file_handle=%i\n", dos_error_messages[err_code], fhandle);
 	}			
 #endif
 	return bytes_read;
@@ -269,7 +269,7 @@ END:		popf
 	}
 #ifndef NDEBUG
 	if (err_code) {
-		fprintf(stderr, "%s file_handle=%i\n", dos_error_messages[err_code], fhandle;
+		fprintf(stderr, "%s file_handle=%i\n", dos_error_messages[err_code], fhandle);
 	}
 #endif
 	return bytes_written;
@@ -306,7 +306,7 @@ END:		popf
 	}
 #ifndef NDEBUG
 	if (err_code) {
-		fprintf(stderr, "%s path name=%s\n", dos_error_messages[err_code], path_name;
+		fprintf(stderr, "%s path name=%s\n", dos_error_messages[err_code], path_name);
 	}
 #endif
 	return err_code;
@@ -370,7 +370,7 @@ END:		popf
 	}
 #ifndef NDEBUG
 	if (err_code) {
-		fprintf(stderr, "%s file_handle=%i\n", dos_error_messages[err_code], fhandle;
+		fprintf(stderr, "%s file_handle=%i\n", dos_error_messages[err_code], fhandle);
 	}
 #endif
 	return fposition;
@@ -418,40 +418,38 @@ END:		popf
 	}
 #ifndef NDEBUG
 	if (err_code) {
-		fprintf(stderr, "%s path name=%s\n", dos_error_messages[err_code], path_name;
+		fprintf(stderr, "%s path name=%s\n", dos_error_messages[err_code], path_name);
 	}
 #endif
 	return attributes;
 }
 
-	/**
-	* @note DOSBOX does not allow
-	* @see file::attributes_t get_file_attributes(char* path_name)
-	*/
-	dos_error_code_t dos_set_file_attributes(char* path_name, dos_file_attributes_t attributes) {
-		dos_error_code_t err_code = 0;
-		__asm {
-			.8086
-			push	ds
-			pushf
+/**
+* @note DOSBOX does not allow
+* @see file::attributes_t get_file_attributes(char* path_name)
+*/
+dos_error_code_t dos_set_file_attributes(char* path_name, dos_file_attributes_t attributes) {
+	dos_error_code_t err_code = 0;
+	__asm {
+		.8086
+		push	ds
+		pushf
 
-			lds		dx, path_name
-			mov		cx, attributes
-			mov		al, 1					; AL = 01 to set attribute
-			mov		ah, CHANGE_FILE_MODE
-			int		DOS_SERVICE
-			jnc		END
-			mov		err_code, ax
+		lds		dx, path_name
+		mov		cx, attributes
+		mov		al, 1					; AL = 01 to set attribute
+		mov		ah, CHANGE_FILE_MODE
+		int		DOS_SERVICE
+		jnc		END
+		mov		err_code, ax
 
-	END:	popf
-			pop		ds
-		}
-#ifndef NDEBUG
-		if (err_code) {
-			fprintf(stderr, "%s path name=%s\n", dos_error_messages[err_code], path_name;
-		}
-#endif
-		return err_code;
+END:	popf
+		pop		ds
 	}
-
+#ifndef NDEBUG
+	if (err_code) {
+		fprintf(stderr, "%s path name=%s\n", dos_error_messages[err_code], path_name);
+	}
+#endif
+	return err_code;
 }

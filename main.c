@@ -6,13 +6,21 @@
 * Load a text file and convert its characters to pixels
 */
 int main(int argc, char** argv) {
-    int i;
     char help_string[] = {"Usage:TEXT2PIX [path][filename]\nConverts a text file's characters to white pixels, punctuation to a black pixels\nand newlines to blank row of pixels."};
     char file_path[255];
+    dos_file_handle_t fhandle = 0;
+
     if (argc < 2) {
         printf("%s", help_string);
     }
-    sscanf(argv[1], % s, file_path);
-    printf("%s", file_path);
+
+    sscanf(argv[1], "%s", file_path);
+    fhandle = dos_open_file_using_handle(file_path, ACCESS_READ_ONLY);
+
+    dos_move_file_pointer_using_handle(fhandle, SEEK_END, fpos);
+
+
+
+    dos_close_file_using_handle(fhandle);
     return 0;
 }
