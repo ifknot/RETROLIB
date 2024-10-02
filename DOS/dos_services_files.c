@@ -365,7 +365,7 @@ OK:		lea		di, fposition						; DS:DI = address int32_t fposition
 		mov		[di], ax							; low order word of fposition = AX
 		mov		[di + 2], dx						; hi order word of fposition = DX
 
-END:		popf
+END:	popf
 		pop		ds
 	}
 #ifndef NDEBUG

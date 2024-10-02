@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "DOS/dos_services_files.h"
+#include "DOS/dos_tools_files.h"
 
 /**
 * Load a text file and convert its characters to pixels
@@ -17,9 +18,7 @@ int main(int argc, char** argv) {
     sscanf(argv[1], "%s", file_path);
     fhandle = dos_open_file_using_handle(file_path, ACCESS_READ_ONLY);
 
-    dos_move_file_pointer_using_handle(fhandle, SEEK_END, fpos);
-
-
+    printf("file size=%lu bytes", dos_tools_file_size(fhandle));
 
     dos_close_file_using_handle(fhandle);
     return 0;

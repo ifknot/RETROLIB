@@ -9,23 +9,23 @@
  *
  */
 #include "dos_tools_files.h"
+#include "dos_services_files.h"
+
+#include <string.h>
 
 char* dos_tools_file_extension_ptr(char* file_path) {
-	return nullptr;
-}
-
-dos_file_size_t dos_tools_file_size(char* file_path) {
-	return dos_file_size_t();
+	char* p = strrchr(file_path, '.');
+	if (!p || p == file_path) {
+		return 0;
+	}
+	else {
+		return ++p;
+	}
 }
 
 dos_file_size_t dos_tools_file_size(dos_file_handle_t fhandle) {
-	return dos_file_size_t();
-}
-
-dos_file_size_t dos_tools_file_skip_white_space(dos_file_handle_t fhandle, char* whitespaces) {
-	return dos_file_size_t();
-}
-
-dos_file_size_t dos_tools_file_skip_line(const dos_file_handle_t fhandle) {
-	return dos_file_size_t();
+	dos_file_position_t fpos;
+	fpos = dos_move_file_pointer_using_handle(fhandle, FSEEK_END, 0);
+	dos_move_file_pointer_using_handle(fhandle, FSEEK_SET, 0);
+	return fpos;
 }
