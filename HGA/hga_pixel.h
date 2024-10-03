@@ -25,7 +25,7 @@ void hga_plot_pixel_calculate(uint16_t buffer, uint16t x, uint16_t y, uint8_t co
 
 void hga_plot_pixel_mul_jump(uint16_t buffer, uint16t x, uint16_t y, uint8_t colour);
 
-uint8_t hga_read_buffer_byte(uint16_t buffer, uint16t x, uint16_t y);
+uint8_t hga_read_buffer_byte_lookup_table(uint16_t buffer, uint16t x, uint16_t y);
 
 uint8_t hga_read_pixel_lookup_table(uint16_t buffer, uint16t x, uint16_t y, uint16_t* row_table);
 
