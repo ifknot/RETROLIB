@@ -19,15 +19,15 @@ HGA does not require await vertical retrace
 
 #include <stdint.h>
 
-void hga_plot_pixel_lookup_table(uint16_t buffer, uint16t x, uint16_t y, uint8_t colour, uint16_t* row_table);
+void hga_plot_pixel_lookup_table(uint16_t vram_segment, uint16t x, uint16_t y, uint8_t colour, uint16_t* row_table);
 
-void hga_plot_pixel_calculate(uint16_t buffer, uint16t x, uint16_t y, uint8_t colour);
+void hga_plot_pixel_shift_select(uint16_t vram_segment, uint16_t x, uint16_t y, colour_t c);
 
-void hga_plot_pixel_mul_jump(uint16_t buffer, uint16t x, uint16_t y, uint8_t colour);
+void hga_plot_pixel_mul_branch(uint16_t vram_segment, uint16t x, uint16_t y, colour_t c);
 
-uint8_t hga_read_buffer_byte_lookup_table(uint16_t buffer, uint16t x, uint16_t y);
+uint8_t hga_read_buffer_byte_lookup_table(uint16_t vram_segment, uint16t x, uint16_t y);
 
-uint8_t hga_read_pixel_lookup_table(uint16_t buffer, uint16t x, uint16_t y, uint16_t* row_table);
+uint8_t hga_read_pixel_lookup_table(uint16_t vram_segment, uint16t x, uint16_t y, uint16_t* row_table);
 
 inline void hga_plot_pixel(uint16t x, uint16_t y) {
   hga_plot_pixel_lookup_table(HGA_BUFFER_0, x, y, HGA_WHITE);
