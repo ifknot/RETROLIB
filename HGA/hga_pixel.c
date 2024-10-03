@@ -1,6 +1,25 @@
 
 #include "hga_pixel.h"
 
+const uint16_t ROW_TABLE[384] = {
+/*
+graphics mode row table macro
+
+n = 0
+rept 87				; 384 / 4
+
+dw n * 90			; 90 bytes per row 
+dw 2000h + n * 90
+dw 4000h + n * 90
+dw 6000h + n * 90
+
+n++
+loop
+
+HGA does not require await vertical retrace 
+*/
+};
+
 void hga_plot_pixel_lookup_table(uint16_t vram_segment, uint16t x, uint16_t y, uint8_t colour, uint16_t* row_table) {}
 
 void hga_plot_pixel_calculate(uint16_t vram_segment, uint16_t x, uint16_t y, colour_t c) {
