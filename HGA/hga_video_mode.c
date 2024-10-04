@@ -13,7 +13,8 @@
 void hga_video_mode(const uint8_t* presets, uint8_t flags_config, uint8_t flags_ctrl) {
   __asm {
     .8086
-      pushf                    ; preserve flags on entry(direction flag used)
+      push     ds
+      pushf                  
     
       // 1. configure the Hercules control register 
       mov     dx, HGA_CONFIG_REGISTER
@@ -38,6 +39,7 @@ L0:   lodsw                     ; al = register ah = data
       or      al, 00001000b     ; bit 3 = 0 screen on
       out     dx, al
     
-      popf											; restore flags on exit
+      popf											
+      pop     ds
   }
 }
