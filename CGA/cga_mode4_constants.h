@@ -13,8 +13,6 @@
 
 #include <stdint.h>
 
-#include "cga_constants.h"
-
  /**
   * Mode 4 macro definitions for assembly
   * 
@@ -35,7 +33,6 @@
 #define CGA_MODE4_PIXELS_PER_BYTE		4
 
 /**
- *  @namespace cga::mode4::colour
  *  @brief  Three (0, 1, 2) colour palettes are available in mode 4  
  *  @details
  *		Palette 0				Palette 0 high intensity
