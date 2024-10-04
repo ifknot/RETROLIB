@@ -4,7 +4,7 @@
  *  @details   ~
  *  @author    Jeremy Thornton
  *  @date      21.09.2024
- *  @copyright © Jeremy Thornton, 2024. All right reserved.
+ *  @copyright Â© Jeremy Thornton, 2024. All right reserved.
  *
  */
 #ifndef HW_CONSTANTS_GRAPHICS_H
@@ -26,16 +26,14 @@
 #define HW_VIDEO_ADAPTER_VGA           9
 #define HW_VIDEO_ADAPTER_SVGA          10
 
-
-
 /**
 * MDA/HGA and CGA 6845 CRT Controller port numbers.
 */
-enum hw_crtc_port_t {
+typdef enum {
     crtc_port_MDA = 0x03B4,
     crtc_port_HGA = 0x03B4,
     crtc_port_CGA = 0x03D4
-};
+} hw_crtc_port_t;
 
 static char hw_video_adapter_names[12][32] = {
     "Unknown",
