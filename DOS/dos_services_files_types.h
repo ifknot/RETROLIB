@@ -21,11 +21,11 @@ typedef int32_t dos_file_position_t;		// N.B. signed offset
 
 typedef uint32_t dos_file_size_t;
 
-enum dos_file_seek_attributes {
+typedef enum {
 	FSEEK_SET,
 	FSEEK_CUR,
 	FSEEK_END
-};
+}  dos_file_seek_attributes_t;
 
 /**
 * Bitfields for create file attributes:
@@ -45,7 +45,7 @@ enum dos_file_seek_attributes {
 *  | `--------- not used for this call
 *  `--
 */
-enum dos_file_create_attributes {
+typedef enum {
 	CREATE_READ_WRITE = 0,
 	CREATE_READ_ONLY,		
 	CREATE_HIDDEN,
@@ -53,7 +53,7 @@ enum dos_file_create_attributes {
 	CREATE_VOLUME = 8,
 	CREATE_ARCHIVE = 32,
 	CREATE_SHAREABLE = 128,
-};
+} dos_file_create_attributes_t;
 
 /**
 * Access modes in AL:
@@ -74,7 +74,7 @@ enum dos_file_create_attributes {
 * - will open normal, hidden and system files
 * @note file pointer is placed at beginning of file
 */
-enum dos_file_access_attributes {
+typedef enum {
 	ACCESS_READ_ONLY = 0,
 	ACCESS_WRITE_ONLY,
 	ACCESS_READ_WRITE,
@@ -84,7 +84,7 @@ enum dos_file_access_attributes {
 	DENY_READ = 48,
 	SHARE_FULL = 64,
 	PRIVATE = 128
-};
+} dos_file_access_attributes_t;
 
 /**
 * DOS int 21h, 36h	Get Disk Free Space
