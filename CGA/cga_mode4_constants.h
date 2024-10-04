@@ -64,24 +64,24 @@
  */
 
 typedef enum {
-  black	= 0x00,
-  green	= 0x40,
-  red		= 0x80,
-  yellow	= 0xC0
+  cga_black_0	   = 0x00,
+  cga_green_0	   = 0x40,
+  cga_red_0		    = 0x80,
+  cga_yellow_0	  = 0xC0
 } cga_colour_palette_0;
 
 typedef enum {
-  black = 0x00,
-  cyan = 0x40,
-  magenta = 0x80,
-  white = 0xC0
+  cga_black_1    = 0x00,
+  cga_cyan_1     = 0x40,
+  cga_magenta_1  = 0x80,
+  cga_white_1    = 0xC0
 } cga_colour_palette_1;
 
 typedef enum {
-  black	= 0x00,
-  cyan	= 0x40,
-  red		= 0x80,
-  white	= 0xC0
+  cga_black_2	   = 0x00,
+  cga_cyan_2	    = 0x40,
+  cga_red_2		    = 0x80,
+  cga_white_2	   = 0xC0
 } cga_colour_palette_2;
 
 #endif
