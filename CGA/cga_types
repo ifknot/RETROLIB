@@ -4,6 +4,8 @@
 #ifndef CGA_TYPES 
 #define CGA_TYPES
 
+#include <stdint.h>
+
 typedef uint8_t cga_colour_t;
 
 typedef uint8_t cga_attrib_t;
