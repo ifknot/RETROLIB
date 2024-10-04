@@ -21,7 +21,7 @@
 /**
 * Useful for user code to raise first classic 12h codes
 */
-enum dos_error_codes {
+typedef enum {
         SUCCESS = 0,
         INVALID_FUNCTION_NUMBER,
         FILE_NOT_FOUND,
@@ -41,7 +41,7 @@ enum dos_error_codes {
         ATTEMPT_TO_REMOVE_CURRENT_DIRECTORY,
         NOT_SAME_DEVICE,
         NO_MORE_FILES
-};
+} dos_error_codes;
 
 /**
 * \brief translate DOS error code to standard message.
