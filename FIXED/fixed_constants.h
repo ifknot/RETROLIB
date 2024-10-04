@@ -4,7 +4,7 @@
  *  @details   ~
  *  @author    Jeremy Thornton
  *  @date      21.09.2024
- *  @copyright © Jeremy Thornton, 2024. All right reserved.
+ *  @copyright Â© Jeremy Thornton, 2024. All right reserved.
  *
  */
 #ifndef FIXED_CONSTANTS_H
@@ -22,12 +22,11 @@
 #define Q10_6_MININT			-512
 #define Q10_6_FRACTIONAL_MIN	0.015625	// 0000000000.000001
 
-
-										// As 10:6 fixed point Q10_6_ values:
-	const int16_t Q10_6_PI = 201;			//    3.141 
-	const int32_t Q10_6_INFINITY = 32767;	//  511.984 
-	const int32_t Q10_6_NINFINITY = -32768;	// -512.000
-	const float	Q10_6_FLOAT_MAX = 511.984;
-	const float	Q10_6_FLOAT_MIN = -512.0;
+						// As 10:6 fixed point Q10_6_ values:
+const int16_t Q10_6_PI = 201;			//    3.141 
+const int32_t Q10_6_INFINITY = 32767;		//  511.984 
+const int32_t Q10_6_NINFINITY = -32768;		// -512.000
+const float	Q10_6_FLOAT_MAX = 511.984;
+const float	Q10_6_FLOAT_MIN = -512.0;
 
 #endif
