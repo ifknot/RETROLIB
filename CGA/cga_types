@@ -1,0 +1,11 @@
+
+
+
+#ifndef CGA_TYPES 
+#define CGA_TYPES
+
+typedef uint8_t cga_colour_t;
+
+typedef uint8_t cga_attrib_t;
+
+#endif
