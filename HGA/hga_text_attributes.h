@@ -4,13 +4,13 @@
  *  @details   ~
  *  @author    Jeremy Thornton
  *  @date      26.11.2023
- *  @copyright © Jeremy Thornton, 2023. All right reserved.
+ *  @copyright Â© Jeremy Thornton, 2023. All right reserved.
  *
  */
 #ifndef HGA_ATTRIBUTES_H
 #define HGA_ATTRIBUTES_H
 
-enum hga_text_attributes_t {
+typedef enum {
 	BLACK_SPACE = 0,
 	GREEN_ON_BLACK_UNDERSCORE,
 	GREEN_ON_BLACK,
@@ -20,6 +20,6 @@ enum hga_text_attributes_t {
 	DARK_GREEN_ON_GREEN,
 	BLINK_BLACK_ON_GREEN = 240,
 	BLINK_DARK_GREEN_ON_GREEN = 248,
-};
+} hga_text_attributes_t;
 
 #endif
