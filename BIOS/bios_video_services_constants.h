@@ -4,7 +4,7 @@
  *  @details   ~
  *  @author    Jeremy Thornton
  *  @date      4.11.2023
- *  @copyright © Jeremy Thornton, 2023. All right reserved.
+ *  @copyright Â© Jeremy Thornton, 2023. All right reserved.
  *
  */
 #ifndef	BIOS_VIDEO_SERVICES_CONSTANTS_H
@@ -54,7 +54,7 @@
 /**
 * BIOS Video Subsytem Configuration Sub-systems:
 */
-enum bios_video_subsytem_t {
+typedef enum {
     RETURN_VIDEO_CONFIGURATION_INFORMATION = 0x10,
     SELECT_ALTERNATE_PRINT_SCREEN_ROUTINE = 0x20,
     SELECT_SCAN_LINES_FOR_ALPHANUMERIC_MODES = 0x30,
@@ -64,9 +64,9 @@ enum bios_video_subsytem_t {
     CURSOR_EMULATION,
     PS2_VIDEO_DISPLAY_SWITCHING,
     VIDEO_REFRESH_CONTROL
-};
+} bios_video_subsytem_t;
 
-enum bios_video_mode_t {
+typedef enum {
     CGA_TEXT_MONOCHROME_40X25 = 0,              // 00  40x25 B/W text (CGA,EGA,MCGA,VGA)
     CGA_TEXT_16_COLOUR_40X25,                   // 01  40x25 16 color text (CGA,EGA,MCGA,VGA)
     CGA_TEXT_16_GRAY_80X25,                     // 02  80x25 16 shades of gray text (CGA,EGA,MCGA,VGA)
@@ -94,7 +94,7 @@ enum bios_video_mode_t {
     if AL bit 7=1, prevents EGA,MCGA & VGA from clearing display
     N.B. function updates byte at 40:49;  bit 7 of byte 40:87
     */
-};
+} bios_video_mode_t;
 
 const char bios_video_mode_names[20][64] = {
     "00  40x25 B/W text (CGA)",
