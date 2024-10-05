@@ -1,9 +1,9 @@
 #include <stdio.h>
 
-#include "DEMOS/TEX2PIX.h"
+#include "DEMOS/TEXT2PIX.h"
 
-int main(int argc, char** argv) 
-    
-    return text2pix(argc, argv);
+int main(int argc, char** argv) {
+
+	return text2pix(argc, argv);
 
 }

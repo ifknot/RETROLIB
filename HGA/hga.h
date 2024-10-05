@@ -13,7 +13,7 @@
 #include "hga_constants.h"
 #include "hga_detect_adapter.h"
 #include "hga_display_buffer.h"
-#include "hga_text_attributes.h"
+#include "mda_text_attributes.h"
 #include "hga_video_mode.h"
 #include "hga_video_mode_presets.h"
 
