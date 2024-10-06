@@ -1,9 +1,13 @@
 #include <stdio.h>
 
-#include "DEMOS/TEXT2PIX.h"
+// #include "DEMOS/TEXT2PIX.h"
+#include "HGA/demo_hga.h"
 
-int main(int argc, char** argv) {
 
-	return text2pix(argc, argv);
+int main() {
+
+	demo_hga();
+
+	return 0;
 
 }

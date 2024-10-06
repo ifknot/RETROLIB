@@ -1,6 +1,6 @@
 /**
  *
- *  @brief     
+ *  @brief
  *  @details   ~
  *  @author    Jeremy Thornton
  *  @date      5.10.2024
@@ -47,7 +47,7 @@ int text2pix(int argc, char** argv) {
     printf("%s file size=%lu bytes", file_path, dos_tools_file_size(fhandle));
     if (YESNO("Switch to Hercules Graphics Mode and display file as pixels?")) {
         hga_graphics_mode();
-        hga_select_display_buffer(HGA_BUFFER_1);
+        hga_select_display_buffer((char)HGA_BUFFER_1);
         hga_cls(HGA_BUFFER_1);
         PRESSENTER("");
     }

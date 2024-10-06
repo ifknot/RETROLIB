@@ -26,9 +26,10 @@ void demo_hga() {
 	colour = hw_detect_colour_adapter();
 	if (colour) {
 		fprintf(stderr, "\ncolour display = %s\n", hw_video_adapter_names[colour]);
-
-	if(mono) fprintf(stderr, "monochrome display = %s\n", hw_video_adapter_names[mono]);
-
+	}
+	if (mono) {
+		fprintf(stderr, "monochrome display = %s\n", hw_video_adapter_names[mono]);
+	}
 	INFO("***** DEMO HERCULES GRAPHICS FUNCTIONS *****");
 	if (!hga_detect_adapter()) {
 		INFO("ERROR! No Hercules Family Graphics Adapter Installed.");
@@ -49,6 +50,9 @@ void demo_hga() {
 		}
 		if (YESNO("* fill display with FFh pattern ? ")) {
 			hga_fill_vram_buffer(buffer, 0xFF);
+		}
+		if (YESNO("* plot pixels ? ")) {
+			hga_plot_pixel_calculate(buffer, 300, 100, hga_black);
 		}
 		YESNO("* switch back to MDA Text Mode... ");
 		mda_text_mode();

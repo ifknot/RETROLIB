@@ -1,6 +1,6 @@
 /**
  *
- *  @brief     
+ *  @brief
  *  @details   ~
  *  @author    Jeremy Thornton
  *  @date      29.09.2024
@@ -28,7 +28,7 @@ void hga_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern);
 /**
 * @brief clear the specified HGA VRAM buffer to black
 */
-inline void hga_cls(uint16_t vram_segment) {
+void hga_cls(uint16_t vram_segment) {
     hga_fill_vram_buffer(vram_segment, 0);
 }
 

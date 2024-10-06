@@ -1,7 +1,7 @@
 /**
  *
  *  @file      hw_detect_crtc.c
- *  @brief     
+ *  @brief
  *  @details   ~
  *  @author    Jeremy Thornton
  *  @date      21.09.2024
@@ -11,7 +11,7 @@
 #include "hw_detect_crtc.h"
 
 uint8_t hw_detect_CRTC_at_port(uint16_t port_number) {
-	uint8_t found = 0;
+        uint8_t found = 0;
     __asm {
         .8086
         pushf
