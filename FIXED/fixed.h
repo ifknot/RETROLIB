@@ -13,5 +13,6 @@
 #include "fixed_constants.h"
 #include "fixed_types.h"
 #include "fixed_conversions.h"
+#include "fixed_random.h"
 
 #endif

@@ -18,6 +18,7 @@
 #include "../HARDWARE/hw_detect_graphics_adapter.h"
 #include "../BIOS/bios_video_services.h"
 #include "../BIOS/bios_video_services_types.h"
+#include "../FIXED/fixed.h"
 
 void demo_hga() {
 	uint16_t colour, mono, buffer = HGA_BUFFER_0;
@@ -30,6 +31,12 @@ void demo_hga() {
 	if (mono) {
 		fprintf(stderr, "monochrome display = %s\n", hw_video_adapter_names[mono]);
 	}
+
+	LOG(fixed_prng_xorshift(), %i);
+	LOG(fixed_unfix(fixed_prng_xorshift()), % f);
+	LOG(fixed_prng_xorshift(), % i);
+	LOG(fixed_unfix(fixed_prng_xorshift()), % f);
+
 	INFO("***** DEMO HERCULES GRAPHICS FUNCTIONS *****");
 	if (!hga_detect_adapter()) {
 		INFO("ERROR! No Hercules Family Graphics Adapter Installed.");
