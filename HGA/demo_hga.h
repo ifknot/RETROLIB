@@ -20,6 +20,9 @@
 #include "../BIOS/bios_video_services_types.h"
 #include "../FIXED/fixed.h"
 
+
+*** TODO: BIOS read ticks
+
 void demo_hga() {
 	uint16_t colour, mono, buffer = HGA_BUFFER_0;
 	bios_video_mode_t mode;
@@ -31,11 +34,6 @@ void demo_hga() {
 	if (mono) {
 		fprintf(stderr, "monochrome display = %s\n", hw_video_adapter_names[mono]);
 	}
-
-	LOG(fixed_prng_xorshift(), %i);
-	LOG(fixed_unfix(fixed_prng_xorshift()), % f);
-	LOG(fixed_prng_xorshift(), % i);
-	LOG(fixed_unfix(fixed_prng_xorshift()), % f);
 
 	INFO("***** DEMO HERCULES GRAPHICS FUNCTIONS *****");
 	if (!hga_detect_adapter()) {
@@ -59,7 +57,10 @@ void demo_hga() {
 			hga_fill_vram_buffer(buffer, 0xFF);
 		}
 		if (YESNO("* plot pixels ? ")) {
-			hga_plot_pixel_calculate(buffer, 300, 100, hga_black);
+			int i;
+			for (i = 0; i < 100; ++i) {
+				hga_plot_pixel_calculate(buffer, fixed_prng_xorshift() / 720, fixed_prng_xorshift() / 348, hga_black);
+			}
 		}
 		YESNO("* switch back to MDA Text Mode... ");
 		mda_text_mode();
