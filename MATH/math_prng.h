@@ -7,8 +7,6 @@
 
 #include <stdint.h> 
 
-static uint16_t seed = 112;         // seed must not be 0
-
 /**
 * Xorshift is a fast pseudorandom generator algorithm originally developed by George Marsaglia. 
 * John Metcalf found a 16-bit version of the algorithm that is fast on 8/16-bit platforms with 
@@ -25,41 +23,8 @@ static uint16_t seed = 112;         // seed must not be 0
 *    return x;
 *	}
 */
+uint16_t math_prng_xorshift16();
 
-
-
-/**
-* There are some performance gains, 8086 at least, by replacing shifts with rotates and byte manipulations
-* 8086 reg,CL shifts use 8+4n cycles as opposed to 2 cycles for reg,1 shifts 
-*/
-uint16_t fixed_prng_xorshift() {
-    __asm {
-        .8086
-        mov     bx, seed 
-
-        mov     al, bh
-        ror     al, 1               ; hi byte LSB into CF
-        mov     al, bl
-        ror     al, 1               ; lo byte rotate right with CF 
-        xor     al, bh              ; xor hi byte seed
-        mov     bh, al              ; save hi byte
-
-        mov     al, bl          
-        ror     al, 1
-        mov     al, bh
-        ror     al, 1
-        xor     al, bl
-        mov     bl, al
-        xor     al, bh
-        mov     bh, al
-
-        mov     seed, bx
-    }
-    return seed;
-}
-
-void fixed_prng_seed(uint16_t s) {
-    seed = s;
-}
+void math_set_prng_seed16(uint16_t seed);
 
 #endif
