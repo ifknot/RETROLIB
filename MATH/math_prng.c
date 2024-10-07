@@ -4,40 +4,53 @@
 #include <stdint.h>
 
 /**
-* @note the seeding value must not be zero
+* @note the initial seeding value must not be zero
 */
-static uint16_t __prng_seed_16_bit = 1;
+static uint32_t _seed = 0xDECAFBAD;
 
-/**
-* There are some performance gains, 8086 at least, to be had by replacing shifts with rotates and byte manipulations
-* 8086 reg,CL shifts use 8+4n cycles as opposed to 2 cycles for reg,1 shifts 
-*/
 uint16_t math_prng_xorshift16() {
     __asm {
         .8086
-        mov     bx, __prng_seed_16_bit
+        push    ds 
 
-        mov     al, bh
-        ror     al, 1               ; hi byte LSB into CF
-        mov     al, bl
-        ror     al, 1               ; lo byte rotate right with CF 
-        xor     al, bh              ; xor hi byte seed
-        mov     bh, al              ; save hi byte
+        les     ax, _seed
 
-        mov     al, bl              ; rotate bl and bh
-        ror     al, 1
-        mov     al, bh
-        ror     al, 1
-        xor     al, bl              ; xor rotated results
-        mov     bl, al
-        xor     al, bh
-        mov     bh, al
+        mov     bx, ax 
+        mov     cl, 7
+        shl     bx, cl 
+        xor     ax, bx 
 
-        mov     __prng_seed_16_bit, bx  
+        mov     bx, ax
+        mov     cl, 9
+        shr     bx, cl
+        xor     ax, bx
+
+        mov     bx, ax
+        mov     cl, 8
+        shl     bx, cl
+        xor     ax, bx
+
+        lea     bx, _seed
+        mov     [bx], ax
+
+        pop     ds
     }
-    return __prng_seed_16_bit;
+   
+    return _seed;
 }
 
-void math_prng_set_seed16(uint16_t seed) {
-    __prng_seed_16_bit = seed;
+uint16_t math_prng_range_xorshift16(uint16_t min, uint16_t max) {
+    /*
+    Another note is that there is more easy way to get the number in the needed interval :
+
+    mov     ax, dx
+    xor     dx, dx
+    mov     bx, max - min
+    div     bx              ; DX remainder(modulus)
+    return 0;
+    */
+}
+
+void math_prng_set_seed(uint32_t s) {
+    _seed = s;
 }

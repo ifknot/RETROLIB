@@ -32,10 +32,6 @@ void demo_hga() {
         if (mono) {
                 fprintf(stderr, "monochrome display = %s\n", hw_video_adapter_names[mono]);
         }
-
-        bios_set_system_clock(0xDEADF00D);
-        LOG(bios_read_system_clock(), %lX);
-
         INFO("***** DEMO HERCULES GRAPHICS FUNCTIONS *****");
         if (!hga_detect_adapter()) {
                 INFO("ERROR! No Hercules Family Graphics Adapter Installed.");
@@ -59,8 +55,9 @@ void demo_hga() {
                 }
                 if (YESNO("* plot pixels ? ")) {
                         int i;
-                        for (i = 0; i < 100; ++i) {
-                                hga_plot_pixel_calculate(buffer, math_prng_xorshift16() / 720, math_prng_xorshift16() / 348, hga_black);
+                        math_prng_set_seed(bios_read_system_clock());
+                        for (i = 0; i < 10000; ++i) {
+                            hga_plot_pixel_calculate(buffer, math_prng_xorshift16() % 720, math_prng_xorshift16() % 348, hga_black);
                         }
                 }
                 YESNO("* switch back to MDA Text Mode... ");
