@@ -237,7 +237,6 @@ uint8_t bios_video_subsystem_configuration(uint8_t request, uint8_t setting, bio
 	switch (request) {
 	case RETURN_VIDEO_CONFIGURATION_INFORMATION:	// the odd one out of the sub-functions
 		return bios_return_video_configuration_information(config);
-		break;
 	case SELECT_ALTERNATE_PRINT_SCREEN_ROUTINE:
 	case SELECT_SCAN_LINES_FOR_ALPHANUMERIC_MODES:
 	case SELECT_DEFAULT_PALETTE_LOADING:
@@ -247,10 +246,8 @@ uint8_t bios_video_subsystem_configuration(uint8_t request, uint8_t setting, bio
 	case PS2_VIDEO_DISPLAY_SWITCHING:
 	case VIDEO_REFRESH_CONTROL:
 		return bios_helper_video_subsytem_configuration(request, setting);
-		break;
 	default:
 		return 0;
 		break;
 	}
-	return 0;
 }
