@@ -6,8 +6,8 @@
  *  @copyright © Jeremy Thornton, 2023. All right reserved.
  *  @url http://www.techhelpmanual.com/27-dos__bios___extensions_service_index.html
  */
-#ifndef BIOS_TIMER_SERVICES_H
-#define	BIOS_TIMER_SERVICES_H
+#ifndef BIOS_TIMER_IO_SERVICES_H
+#define	BIOS_TIMER_IO_SERVICES_H
 
 #include <stdint.h>
 
@@ -15,7 +15,7 @@
 uint32_t bios_read_system_clock();
 
 // INT 1a,01 - Set System Clock (Ticks) [PC] [XT] [AT]
-void bios_set_system_clock(uint32 ticks); 
+void bios_set_system_clock(uint32_t ticks); 
 
 // INT 1a,02 - Read Time from Real-Time Clock [AT]
 // INT 1a,03 - Set Time on Real-Time Clock [AT]

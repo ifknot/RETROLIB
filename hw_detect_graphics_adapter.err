@@ -1,1 +1,1 @@
-HARDWARE\..\HGA\..\HARDWARE\hw_constants_graphics.h(38): Warning! W202: Symbol 'hw_video_adapter_names' has been defined, but not referenced
+HW\..\HGA\..\HW\hw_constants_graphics.h(38): Warning! W202: Symbol 'hw_video_adapter_names' has been defined, but not referenced

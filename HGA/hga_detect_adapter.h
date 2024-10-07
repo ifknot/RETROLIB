@@ -1,6 +1,6 @@
 /**
  *
- *  @brief     
+ *  @brief
  *  @details   ~
  *  @author    Jeremy Thornton
  *  @date      21.09.2024
@@ -12,8 +12,8 @@
 
 #include <stdint.h>
 
-#include "../HARDWARE/hw_constants_graphics.h"
-#include "../HARDWARE/hw_detect_crtc.h"
+#include "../HW/hw_constants_graphics.h"
+#include "../HW/hw_detect_crtc.h"
 
 #include "hga_constants.h"
 

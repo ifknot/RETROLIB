@@ -28,7 +28,7 @@ uint16_t math_prng_xorshift16();
 /**
 * Ranged version
 */
-uint16_t math_prng_xorshift16(uint16_t min, uint16_t max);
+uint16_t math_prng_range_xorshift16(uint16_t min, uint16_t max);
 
 void math_prng_set_seed16(uint16_t seed);
 

@@ -1,7 +1,7 @@
 /**
  *
  *  @file      hga_detect_adapter.c
- *  @brief     
+ *  @brief
  *  @details   ~
  *  @author    Jeremy Thornton
  *  @date      21.09.2024
@@ -10,11 +10,11 @@
  */
 #include "hga_detect_adapter.h"
 
-#include "../HARDWARE/hw_detect_crtc.h"
-#include "../HARDWARE/hw_constants_graphics.h"
+#include "../HW/hw_detect_crtc.h"
+#include "../HW/hw_constants_graphics.h"
 
 uint8_t hga_detect_adapter() {
-	uint8_t adapter = HW_VIDEO_ADAPTER_UKNOWN;
+        uint8_t adapter = HW_VIDEO_ADAPTER_UKNOWN;
         if (hw_detect_CRTC_at_port(crtc_port_HGA)) {
             __asm {
                 .8086
@@ -41,22 +41,22 @@ uint8_t hga_detect_adapter() {
 
                 cmp     al, 70h                             ; Hercules unknown clone bit pattern 111
                 jne     L2
-                mov     adapter, HW_VIDEO_ADAPTER_HGA_CLONE    
+                mov     adapter, HW_VIDEO_ADAPTER_HGA_CLONE
                 jmp     EXIT
 
         L2:     cmp     al, 50h                             ; Hercules InColor bit pattern 101
                 jne     L3
-                mov     adapter, HW_VIDEO_ADAPTER_HGA_INCOLOR  
+                mov     adapter, HW_VIDEO_ADAPTER_HGA_INCOLOR
                 jmp     EXIT
 
         L3:     cmp     al, 10h                             ; Hercules Plus bit pattern 100
                 jne     L4
-                mov     adapter, HW_VIDEO_ADAPTER_HGA_PLUS     
+                mov     adapter, HW_VIDEO_ADAPTER_HGA_PLUS
                 jmp     EXIT
 
         L4:     mov     adapter, HW_VIDEO_ADAPTER_HGA          ; Original Hercules only bit pattern left ie 000
 
-        EXIT:   popf 
+        EXIT:   popf
                 pop     bp
 
             }
