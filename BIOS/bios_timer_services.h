@@ -11,17 +11,17 @@
 
 #include <stdint.h>
 
-// INT 1a,00 - Read System Clock (Ticks)
+// INT 1a,00 - Read System Clock (Ticks) [PC] [XT] [AT]
 uint32_t bios_read_system_clock();
 
-// INT 1a,01 - Set System Clock (Ticks)
+// INT 1a,01 - Set System Clock (Ticks) [PC] [XT] [AT]
 void bios_set_system_clock(uint32 ticks); 
 
-// INT 1a,02 - Read Time from Real-Time Clock
-// INT 1a,03 - Set Time on Real-Time Clock
-// INT 1a,04 - Read Date from Real-Time Clock
-// INT 1a,05 - Set Date on Real-Time Clock
-// INT 1a,06 - Set Real-Time Clock Alarm
-// INT 1a,07 - Cancel Real-Time Clock Alarm
+// INT 1a,02 - Read Time from Real-Time Clock [AT]
+// INT 1a,03 - Set Time on Real-Time Clock [AT]
+// INT 1a,04 - Read Date from Real-Time Clock [AT]
+// INT 1a,05 - Set Date on Real-Time Clock [AT]
+// INT 1a,06 - Set Real-Time Clock Alarm [AT]
+// INT 1a,07 - Cancel Real-Time Clock Alarm [AT]
 
 #endif
