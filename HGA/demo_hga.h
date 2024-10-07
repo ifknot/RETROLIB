@@ -4,7 +4,7 @@
  *  @details   ~
  *  @author    Jeremy Thornton
  *  @date      29.09.2024
- *  @copyright © Jeremy Thornton, 2024. All right reserved.
+ *  @copyright Â© Jeremy Thornton, 2024. All right reserved.
  *
  */
 #ifndef DEMO_HGA_H
@@ -18,7 +18,7 @@
 #include "../HARDWARE/hw_detect_graphics_adapter.h"
 #include "../BIOS/bios_video_services.h"
 #include "../BIOS/bios_video_services_types.h"
-#include "../FIXED/fixed.h"
+#include "../MATH/math_prng.h
 
 
 *** TODO: BIOS read ticks
@@ -59,7 +59,7 @@ void demo_hga() {
 		if (YESNO("* plot pixels ? ")) {
 			int i;
 			for (i = 0; i < 100; ++i) {
-				hga_plot_pixel_calculate(buffer, fixed_prng_xorshift() / 720, fixed_prng_xorshift() / 348, hga_black);
+				hga_plot_pixel_calculate(buffer, math_prng_xorshift16() / 720, math_prng_xorshift16() / 348, hga_black);
 			}
 		}
 		YESNO("* switch back to MDA Text Mode... ");
