@@ -38,6 +38,6 @@ uint16_t math_prng_xorshift16() {
     return __prng_seed_16_bit;
 }
 
-void math_set_prng_seed16(uint16_t seed) {
+void math_prng_set_seed16(uint16_t seed) {
     __prng_seed_16_bit = seed;
 }
