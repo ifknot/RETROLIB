@@ -6,15 +6,22 @@
 /**
 * @note the initial seeding value must not be zero
 */
- x ^= x << 7;
-*    x ^= x >> 9;
-*    x ^= x << 8;
 static uint32_t _seed = 0xDECAFBAD;
 
+/**
+* @brief Xorshift-798 is an efficient 16-bit linear feedback shift registers (LFSR) pseudorandom number generator (PRNG).
+* @details As shown by George Marsaglia and further analysed by Richard P. Brent:
+* There are 60 shift triplets with the maximum period 216-1. 
+* Four triplets pass a series of lightweight randomness tests, these are: 
+*    6, 7, 13 
+*    7, 9, 8
+*    7, 9, 13
+*    9, 7, 13
+* @url https://en.wikipedia.org/wiki/Linear-feedback_shift_register#Xorshift_LFSRs
+*/
 uint16_t math_prng_xorshift16() {
     __asm {
         .8086
-        push    ds 
 
         les     ax, _seed          ; ES:AX = 32 bit seed 
 
@@ -36,7 +43,6 @@ uint16_t math_prng_xorshift16() {
         lea     di, _seed
         mov     [di], ax          ; update seed value
 
-        pop     ds
     }
    
     return _seed;
@@ -46,7 +52,6 @@ uint16_t math_prng_range_xorshift16(uint16_t min, uint16_t max) {
     uint16_t rand = 0;
     __asm {
         .8086
-        push    ds
     
         les     ax, _seed          ; ES:AX = 32 bit seed 
 
@@ -78,7 +83,6 @@ uint16_t math_prng_range_xorshift16(uint16_t min, uint16_t max) {
         lea     di, rand
         mov     [di], dx          
         
-        pop     ds
     }
     return  rand;
 }
