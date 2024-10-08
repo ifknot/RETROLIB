@@ -3,7 +3,7 @@
  *  @file               hga_pixel.c
  *  @brief              Plot or read a pixel in Hercules Graphics Mode
  *  @details    HGA Hi-res pixel-addressable graphics mode
- *  Resolution  720?×?348 graphics mode (pixel-addressable graphics)
+ *  Resolution  720?Ã—?348 graphics mode (pixel-addressable graphics)
  *  Colours             2-color (off black and on 'white')
  *  Palette     none
  *  VRAM                32KB (nearly) from a total of 64K (HGA is page switchable)
@@ -30,12 +30,12 @@
  *          Each 1-bit field selects black (0) or 'white'(1).
  *  @author    Jeremy Thornton
  *  @date      21.06.2024
- *  @copyright © Jeremy Thornton, 2024. All right reserved.
+ *  @copyright Â© Jeremy Thornton, 2024. All right reserved.
  *
  */
 #include "hga_pixel.h"
 
-const uint16_t ROW_TABLE[384] = {
+static const uint16_t ROW_TABLE[348] = {
     0x0000, 0x2000, 0x4000, 0x6000, 0x005A, 0x205A, 0x405A, 0x605A, 0x00B4, 0x20B4, 0x40B4, 0x60B4, 0x010E, 0x210E, 0x410E, 0x610E, 0x0168, 0x2168, 0x4168, 0x6168, 0x01C2, 0x21C2, 0x41C2, 0x61C2, 0x021C, 0x221C, 0x421C, 0x621C, 0x0276, 0x2276, 0x4276, 0x6276, 0x02D0,
     0x22D0, 0x42D0, 0x62D0, 0x032A, 0x232A, 0x432A, 0x632A, 0x0384, 0x2384, 0x4384, 0x6384, 0x03DE, 0x23DE, 0x43DE, 0x63DE, 0x0438, 0x2438, 0x4438, 0x6438, 0x0492, 0x2492, 0x4492, 0x6492, 0x04EC, 0x24EC, 0x44EC, 0x64EC, 0x0546, 0x2546, 0x4546, 0x6546, 0x05A0, 0x25A0, 
     0x45A0, 0x65A0, 0x05FA, 0x25FA, 0x45FA, 0x65FA, 0x0654, 0x2654, 0x4654, 0x6654, 0x06AE, 0x26AE, 0x46AE, 0x66AE, 0x0708, 0x2708, 0x4708, 0x6708, 0x0762, 0x2762, 0x4762, 0x6762, 0x07BC, 0x27BC, 0x47BC, 0x67BC, 0x0816, 0x2816, 0x4816, 0x6816, 0x0870, 0x2870, 0x4870, 
@@ -48,6 +48,34 @@ const uint16_t ROW_TABLE[384] = {
     0x3A04, 0x5A04, 0x7A04, 0x1A5E, 0x3A5E, 0x5A5E, 0x7A5E, 0x1AB8, 0x3AB8, 0x5AB8, 0x7AB8, 0x1B12, 0x3B12, 0x5B12, 0x7B12, 0x1B6C, 0x3B6C, 0x5B6C, 0x7B6C, 0x1BC6, 0x3BC6, 0x5BC6, 0x7BC6, 0x1C20, 0x3C20, 0x5C20, 0x7C20, 0x1C7A, 0x3C7A, 0x5C7A, 0x7C7A, 0x1CD4, 0x3CD4, 
     0x5CD4, 0x7CD4, 0x1D2E, 0x3D2E, 0x5D2E, 0x7D2E, 0x1D88, 0x3D88, 0x5D88, 0x7D88, 0x1DE2, 0x3DE2, 0x5DE2, 0x7DE2, 0x1E3C, 0x3E3C, 0x5E3C, 0x7E3C 
 };
+
+void hga_plot_pixel_lookup_table(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t c) {
+    __asm {
+        // 1. set up registers
+        mov     bx, x
+        mov     cl, bl                                  ; copy of x low order byte
+        mov     di, y
+        // 2. look up row offset
+        mov     di, ROW_TABLE[di]
+        // 3. setup ES:[DI] to point to the VRAM byte containing pixel location
+        mov     ax, vram_segment
+        mov     es, ax
+        shr     bx, 1                                    ; x / 8
+        shr     bx, 1 
+        shr     bx, 1
+        add     di, bx
+        // 4. setup AL = pixel bit mask, AH = pixel 'colour'
+        and     cx, 7                                   ; mask off 0111 lower bits ie x mod 8 (thanks powers of 2)
+        xor     cl, 7                                   ; CL = number of bits to shift left (thanks bit flip XOR)
+        mov     al, 11111110b                           ; AL = pixel mask
+        rol     al, cl                                  ; roll mask around by x mod 8
+        mov     ah, c                                   ; load ah with a single pixel at lsb (e.g. white 00000001)
+        shl     ah, cl                                  ; shift single bit along by x mod 8
+        // 5. display pixel
+        and     es:[bx], al                             ; mask out the pixel bits
+        or      es:[bx], ah                             ; plot point
+    }
+}
 
 void hga_plot_pixel_calculate(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t c) {
     __asm {
