@@ -56,7 +56,9 @@ void hga_plot_pixel_lookup_table(uint16_t vram_segment, uint16_t x, uint16_t y, 
         mov     cl, bl                                  ; copy of x low order byte
         mov     di, y
         // 2. look up row offset
-        mov     di, ROW_TABLE[di]
+    // lea     di, ROW_TABLE
+    // add     y
+        mov     di, [ROW_TABLE + di]
         // 3. setup ES:[DI] to point to the VRAM byte containing pixel location
         mov     ax, vram_segment
         mov     es, ax
