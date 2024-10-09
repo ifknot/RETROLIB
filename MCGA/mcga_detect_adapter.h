@@ -1,10 +1,14 @@
 /**
  *
  *  @brief     
- *  @details   ~
+ *  @details   The Multi-Color Graphics Array or MCGA is a video subsystem built into the motherboard of the IBM PS/2
+ *  Model 30, introduced in April 1987, and Model 25, introduced later in August 1987.
+ *  @note No standalone MCGA cards were ever made.
+ *  Therefore, MCGA detection depends on identifying PS/2 model 30 or model 25 using INT 15,C0 and examining the BIOS
+ *  ROM configuration table for model number FA submodel 00 or 01 
  *  @author    Jeremy Thornton
  *  @date      4.11.2023
- *  @copyright © Jeremy Thornton, 2023. All right reserved.
+ *  @copyright Â© Jeremy Thornton, 2023. All right reserved.
  *
  */
 #ifndef 
