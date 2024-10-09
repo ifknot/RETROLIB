@@ -28,3 +28,27 @@
  *  @date 2024-07-27
  *  @copyright © Jeremy Thornton. All right reserved.
  */
+#ifndef Q10_6_TYPES_H
+#define Q10_6_TYPES_H
+
+#include <stdint.h>
+	
+typedef int16_t Q10_6_t;
+
+typedef struct {
+  Q10_6_t x;
+  Q10_6_t y;
+} Q10_6_point_t;
+
+/**
+* A 1D tensor rank two Q10_6_t components <part[0], part[1]> occupying 32 bits of memory
+*/
+typedef union {
+
+  int32_t			  both;
+  Q10_6__t	    part[2];
+
+} Q10_6_pair_t;
+
+#endif
+
