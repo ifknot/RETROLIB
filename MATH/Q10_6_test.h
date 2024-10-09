@@ -15,7 +15,7 @@
 
 #include "../DBG/debug_macros.h"
 
-#include "Q10_6_.h"
+#include "Q10_6.h"
 
 void Q10_6_test() {
 
