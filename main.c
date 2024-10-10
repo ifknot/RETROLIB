@@ -15,7 +15,7 @@
 // [ ] circle 
 // [ ] demo circle
 // [ ] byte aligned block transfer
-// [ ] demo bytes_aligned_blt
+// [ ] demo byte_aligned_blt
 
 int main() {
 
