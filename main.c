@@ -4,6 +4,7 @@
 #include "HGA/demo_hga.h"
 
 // TODO:
+// [ ] mem_arena
 // [ ] finish buffer demo 
 // [ ] demo buffer png anim to git readme 
 // [ ] pixel perf compare algos 
