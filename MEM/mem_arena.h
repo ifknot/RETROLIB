@@ -23,7 +23,8 @@ typedef enum {
   MEM_POLICY_C
 } mem_policy_t;
 
-struct mem_arena_t;
+struct mem_arena;
+typedef struct mem_arean mem_arena_t;
 
 mem_arena_t* mem_arena_new(mem_policy_t policy, uint32_t size);
 
