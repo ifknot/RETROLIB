@@ -19,14 +19,14 @@
 #define MEM_ARENA_H
 
 typedef enum {
-  MEM_POLICY_DOS 
-  MEM_POLICY_C
-} mem_policy_t;
+  MEM_ARENA_POLICY_DOS 
+  MEM_ARENA_POLICY_C
+} mem_arena_policy_t;
 
 struct mem_arena;
 typedef struct mem_arean mem_arena_t;
 
-mem_arena_t* mem_arena_new(mem_policy_t policy, uint32_t size);
+mem_arena_t* mem_arena_new(mem_arena_policy_t policy, uint32_t size);
 
 uint32_t mem_arena_delete(mem_arena_t* arena);
 
