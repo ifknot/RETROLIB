@@ -6,12 +6,12 @@
 
 typedef struct {  
 
-  char           type;      // e.g. MEM_POLICY_DOS or MEM_POLICY_C
-  char           version;   // BCD 0.1
-  char*          pfree;     // pointer to the start of free memory pool
-  uint32_t       size;		  // current amount of free memory (bytes) pool 	
-  mem_address_t  pool;			// base address of the DOS memory block used by the arena pool
-  uint32_t       capacity;  // starting size of the memory (bytes) pool
+  uint8_t             type;      // e.g. MEM_POLICY_DOS or MEM_POLICY_C
+  uint8_t             version;   // BCD 0.1
+  void*               pfree;     // pointer to the start of free memory pool
+  mem_size_t          size;		   // current amount of free memory (bytes) pool 	
+  mem_address_t       pool;			 // base address of the DOS memory block used by the arena pool
+  mem_size_t          capacity;  // starting size of the memory (bytes) pool
 
 } mem_arena_t;
 
