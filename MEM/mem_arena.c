@@ -4,6 +4,9 @@
 
 #include "mem_arena.h"
 
+#include "../DOS/dos_services.h"
+
+// private
 typedef struct {  
 
   uint8_t             type;      // e.g. MEM_POLICY_DOS or MEM_POLICY_C
@@ -38,16 +41,20 @@ mem_arena_t* private_mem_arena_dos_new(mem_size_t byte_count) {
     arena->pfree = (char*)arena->pool.memloc;			// initialize values...
     arena->size = arena->capacity = paragraphs * PARAGRAPH_SIZE;
   }
-
 #ifndef NDEBUG
-
   else {
     //fprintf std::cout << "ERROR memory request too large for DOS to provide!";
   }
-
 #endif
   return arena;
 }
+
+mem_size_t private_mem_arena_dos_delete(arena_t* arena) {
+			mem_size_t sz = arena->capacity;						// capture the capacity of the arena
+			dos::free_allocated_memory_blocks(arena->pool.segoff.segment);	// ask DOS to free the memory block
+			delete arena;											// free up arena_t memory
+			return sz;												// return amount freed up
+		}
 
 mem_arena_t* mem_arena_new(mem_policy_t policy, uint32_t size) {
 
