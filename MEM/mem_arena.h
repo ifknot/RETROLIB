@@ -28,7 +28,7 @@ typedef struct mem_arean mem_arena_t;
 
 mem_arena_t* mem_arena_new(mem_policy_t policy, uint32_t size);
 
-uint32_t mem_arena_delete(mem_policy_t policy, mem_arena_t* arena);
+uint32_t mem_arena_delete(mem_arena_t* arena);
 
 uint32_t mem_arena_size(mem_arena_t* arena);
 
