@@ -31,14 +31,14 @@ typedef struct mem_arean mem_arena_t;
 
 mem_arena_t* mem_arena_new(mem_arena_policy_t policy, uint32_t size);
 
-uint32_t mem_arena_delete(mem_arena_t* arena);
+mem_size_t mem_arena_delete(mem_arena_t* arena);
 
-uint32_t mem_arena_size(mem_arena_t* arena);
+mem_size_t mem_arena_size(mem_arena_t* arena);
 
-uint32_t mem_arena_capacity(mem_arena_t* arena);
+mem_size_t mem_arena_capacity(mem_arena_t* arena);
 
-void* mem_arena_alloc(mem_arena_t* arena, uint32_t size);
+void* mem_arena_alloc(mem_arena_t* arena, mem_size_t size);
 
-void* mem_arena_dealloc(mem_arena_t* arena, uint32_t size);
+void* mem_arena_dealloc(mem_arena_t* arena, mem_size_t size);
 
 #endif
