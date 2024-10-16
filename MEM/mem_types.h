@@ -4,6 +4,10 @@
 
 #include <stdint.h>
 
+typedef uint32_t	mem_size_t;
+
+typedef int32_t		mem_diff_t;
+
 /**
  * Intel 16 bit segment:offset memory type
  */
