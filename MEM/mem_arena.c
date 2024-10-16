@@ -12,9 +12,9 @@ typedef struct {
   uint8_t             type;      // e.g. MEM_POLICY_DOS or MEM_POLICY_C
   uint8_t             version;   // BCD 0.1
   void*               pfree;     // pointer to the start of free memory pool
-  mem_size_t          size;		   // current amount of free memory (bytes) pool 	
-  mem_address_t       pool;			 // base address of the DOS memory block used by the arena pool
-  mem_size_t          capacity;  // starting size of the memory (bytes) pool
+  mem_size_t          size;	 // current size available free memory (bytes) pool 	
+  mem_address_t       pool;	 // base address of the DOS memory block used by the arena pool
+  mem_size_t          capacity;  // total allotted memory (bytes) pool
 
 } mem_arena_t;
 
@@ -43,33 +43,45 @@ mem_arena_t* private_mem_arena_dos_new(mem_size_t byte_count) {
   }
 #ifndef NDEBUG
   else {
-    //fprintf std::cout << "ERROR memory request too large for DOS to provide!";
+	fprintf(stderr, "ERROR memory request %li too large for DOS to provide!", byte_count);
   }
 #endif
   return arena;
 }
 
 mem_size_t private_mem_arena_dos_delete(arena_t* arena) {
-			mem_size_t sz = arena->capacity;						// capture the capacity of the arena
-			dos::free_allocated_memory_blocks(arena->pool.segoff.segment);	// ask DOS to free the memory block
-			delete arena;											// free up arena_t memory
-			return sz;												// return amount freed up
-		}
+	mem_size_t sz = arena->capacity;						// capture the capacity of the arena
+	dos::free_allocated_memory_blocks(arena->pool.segoff.segment);	// ask DOS to free the memory block
+	delete arena;											// free up arena_t memory
+	return sz;												// return amount freed up
+}
 
 mem_arena_t* mem_arena_new(mem_policy_t policy, uint32_t size) {
-
+	switch(policy) {
+		case MEM_POLICY_DOS:
+			return private_mem_arena_dos_new(size);
+		default:
+			fprintf(stderr, "Invalid memory policy type %i", policy);
+			return 0;
+	}
 }
 
 mem_size_t mem_arena_delete(mem_arena_t* arena) {
-
+	switch(arena->policy) {
+		case MEM_POLICY_DOS:
+			return private_mem_arena_dos_delete(arena);
+		default:
+			fprintf(stderr, "Invalid memory policy type %i", policy);
+			return 0;
+	}
 }
 
 mem_size_t mem_arena_size(mem_arena_t* arena) {
-
+	return arena->size;
 }
 
 mem_size_t mem_arena_capacity(mem_arena_t* arena) {
-
+	return arena->capacity;
 }
 
 void* mem_arena_alloc(mem_arena_t* arena, mem_size_t size) {
