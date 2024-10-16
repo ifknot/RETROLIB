@@ -56,13 +56,14 @@ mem_size_t private_mem_arena_dos_delete(arena_t* arena) {
 	return sz;												// return amount freed up
 }
 
-mem_arena_t* mem_arena_new(mem_policy_t policy, uint32_t size) {
+mem_arena_t* mem_arena_new(mem_policy_t policy, mem_size_t byte_request) {
 	switch(policy) {
 		case MEM_POLICY_DOS:
 			return private_mem_arena_dos_new(size);
+		case MEM_POLICY_C:	// to do
 		default:
 			fprintf(stderr, "Invalid memory policy type %i", policy);
-			return 0;
+			return NULL_PTR;
 	}
 }
 
@@ -70,9 +71,10 @@ mem_size_t mem_arena_delete(mem_arena_t* arena) {
 	switch(arena->policy) {
 		case MEM_POLICY_DOS:
 			return private_mem_arena_dos_delete(arena);
+		case MEM_POLICY_C:	// to do
 		default:
 			fprintf(stderr, "Invalid memory policy type %i", policy);
-			return 0;
+			return NULL_PTR;
 	}
 }
 
@@ -84,10 +86,32 @@ mem_size_t mem_arena_capacity(mem_arena_t* arena) {
 	return arena->capacity;
 }
 
-void* mem_arena_alloc(mem_arena_t* arena, mem_size_t size) {
-
+void* mem_arena_alloc(mem_arena_t* arena, mem_size_t byte_request) {
+	char* p = NULL_PTR;						// default return to null
+	if (byte_request <= arena->size) {		// can fulfill request 
+		arena->size -= byte_request;		// shrink pool size
+		p = arena->pfree;					// initialize return value points to requested block
+		arena->pfree += byte_request;		// now point to the start of remaining free memory 
+	}
+#ifndef NDEBUG
+	else {
+		fprintf(stderr, "ERROR memory request %li bytes too large for ARENA to ALLOC!\nLargest block of memory available %li bytes.", byte_request, arena->size);
+	}
+#endif			
+	return p;
 }
 
-void* mem_arena_dealloc(mem_arena_t* arena, mem_size_t size) {
-
+void* mem_arena_dealloc(mem_arena_t* arena, mem_size_t byte_request) {
+	char* p = NULL_PTR;						// default return to null
+	if (byte_request <= arena->capacity) {	// can fulfill request 
+		arena->size += byte_request;		// grow pool size
+		arena->pfree -= byte_request;		// now point to the start of enlarged free memory
+		p = arena->pfree;					// initialize return value points to resized pool 
+	}
+#ifndef NDEBUG
+	else {
+		fprintf(stderr, "ERROR memory request %li bytes too large for ARENA to DEALLOC!\nLargest block of memory available %li bytes.",byte_request , arena->capacity);
+	}
+#endif			
+	return p;
 }
