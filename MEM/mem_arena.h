@@ -18,6 +18,9 @@
 #ifndef MEM_ARENA_H
 #define MEM_ARENA_H
 
+#include "mem_constants.h" 
+#include "mem_types.h"
+
 typedef enum {
   MEM_ARENA_POLICY_DOS 
   MEM_ARENA_POLICY_C
