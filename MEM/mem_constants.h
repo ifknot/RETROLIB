@@ -10,8 +10,6 @@
 #ifndef MEM_CONSTANTS_H
 #define MEM_CONSTANTS_H
 
-#include <stdint.h>
-
 #define NULL_PTR 0
 
 /**
