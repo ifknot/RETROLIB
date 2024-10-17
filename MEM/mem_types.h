@@ -33,11 +33,11 @@ const mem_segoff_t default_mem_segoff_t = { 0, 0 };
 */
 typedef union {
 
-  uint32_t memloc;
-  mem_segoff_t segoff;
-  uint16_t words[2];
-  uint8_t bytes[4];
-  void* ptr;
+    char* ptr;
+    uint32_t memloc;
+    mem_segoff_t segoff;
+    uint16_t words[2];
+    uint8_t bytes[4];
 
 } mem_address_t;
 

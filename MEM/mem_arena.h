@@ -15,7 +15,7 @@
  *  @copyright © Jeremy Thornton, 2023. All right reserved.
  *
  */
-#ifndef MEM_ARENA_H //const mem_arena_t default_ = { MEM_ARENA_POLICY_DOS, NULL, 0, 0 };
+#ifndef MEM_ARENA_H 
 #define MEM_ARENA_H
 
 #include "mem_constants.h" 
