@@ -10,8 +10,6 @@
 #ifndef MEM_CONSTANTS_H
 #define MEM_CONSTANTS_H
 
-#define NULL_PTR 0
-
 /**
 * A paragraph is 16 bytes. Intel made the paragraph size of the x86 16 bytes, or four bits of the physical address.
 * (Whether this decision was architectural based on programming paradigms of the time or a simple engineering expediency is debated)

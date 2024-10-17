@@ -1,6 +1,14 @@
-
+/**
+ *
+ *  @brief     
+ *  @details   ~
+ *  @author    Jeremy Thornton
+ *  @date      17.10.2024
+ *  @copyright © Jeremy Thornton, 2024. All right reserved.
+ *
+ */
 #ifndef MEM_TYPES_H
-#define MEM_TYPES_
+#define MEM_TYPES_H
 
 #include <stdint.h>
 
@@ -18,13 +26,15 @@ typedef struct {
 
 } mem_segoff_t;
 
+const mem_segoff_t default_mem_segoff_t = { 0, 0 };
+
 /**
 * Intel 32 bit address breakdown as a union
 */
 typedef union {
 
   uint32_t memloc;
-  segoff_t segoff;
+  mem_segoff_t segoff;
   uint16_t words[2];
   uint8_t bytes[4];
   void* ptr;

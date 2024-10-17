@@ -9,13 +9,13 @@
 #ifndef BIOS_TIMER_IO_SERVICES_H
 #define	BIOS_TIMER_IO_SERVICES_H
 
-#include <stdint.h>
+#include "bios_timer_io_types.h"
 
 // INT 1a,00 - Read System Clock (Ticks) [PC] [XT] [AT]
-uint32_t bios_read_system_clock();
+ticks_since_midnight bios_read_system_clock();
 
 // INT 1a,01 - Set System Clock (Ticks) [PC] [XT] [AT]
-void bios_set_system_clock(uint32_t ticks); 
+void bios_set_system_clock(ticks_since_midnight ticks);
 
 // INT 1a,02 - Read Time from Real-Time Clock [AT]
 // INT 1a,03 - Set Time on Real-Time Clock [AT]

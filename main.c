@@ -1,7 +1,9 @@
 #include <stdio.h>
 
-// #include "DEMOS/TEXT2PIX.h"
-#include "HGA/demo_hga.h"
+//#include "DEMOS/TEXT2PIX.h"
+//#include "HGA/demo_hga.h"
+#include "MEM/demo_mem_arena.h"
+
 
 // TODO:
 // [ ] mem_arena
@@ -20,7 +22,7 @@
 
 int main() {
 
-	demo_hga();
+	demo_mem_arena();
 
 	return 0;
 

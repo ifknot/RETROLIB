@@ -2,7 +2,12 @@
  *
  *  @file      bios_timer_io_services.c
  *  @brief     
- *  @details   ~
+ *  @details   8254 channel 0 runs at 1.19318 mhz or ~ 838.0965 nsecs / cycle
+ *  System timer interrupts every 65536 cycles ~= 54.9255 ms or ~ 18.20648 ticks per second
+ *  1 ms   = 1193.18 cycles
+ *  1 hour ~= 65543 ticks ~= 3599.9816 secs
+ *  24 hour ~= 1573040 (hex 1800B0) ticks ~= 86399.998 secs
+ * 
  *  @author    Jeremy Thornton
  *  @date      7.10.2024
  *  @copyright © Jeremy Thornton, 2024. All right reserved.
@@ -39,8 +44,8 @@
 * incremented approximately 18.206 times per second
 * at midnight CX:DX is zero
 */
-uint32_t bios_read_system_clock() {
-	uint32_t ticks;
+ticks_since_midnight bios_read_system_clock() {
+	ticks_since_midnight ticks;
 	__asm{
 		.8086
 		push	ds
@@ -69,7 +74,7 @@ uint32_t bios_read_system_clock() {
 * AH    0
 * CF    (0) if no error		(1) on invalid setting
 */
-void bios_set_system_clock(uint32_t ticks) {
+void bios_set_system_clock(ticks_since_midnight ticks) {
 	uint8_t error = 0;
 	__asm {
 		.8086

@@ -1,22 +1,28 @@
-
-
-
+/**
+ *
+ *  @file      mem_arena.c
+ *  @brief     
+ *  @details   ~
+ *  @author    Jeremy Thornton
+ *  @date      17.10.2024
+ *  @copyright © Jeremy Thornton, 2024. All right reserved.
+ *
+ */
+#include <stdlib.h>
+#include <stdio.h>
 
 #include "mem_arena.h"
 
 #include "../DOS/dos_services.h"
 
-// private
-typedef struct {  
+typedef struct private_mem_arena {  
 
-  uint8_t             type;      // e.g. MEM_POLICY_DOS or MEM_POLICY_C
-  uint8_t             version;   // BCD 0.1
+  uint8_t             policy;      // e.g. MEM_POLICY_DOS or MEM_POLICY_C
   void*               pfree;     // pointer to the start of free memory pool
   mem_size_t          size;	 // current size available free memory (bytes) pool 	
-  mem_address_t       pool;	 // base address of the DOS memory block used by the arena pool
   mem_size_t          capacity;  // total allotted memory (bytes) pool
 
-} mem_arena_t;
+};
 
 /**
 * The DOS INT 21,48 - Allocate Memory function takes a 16 bit word size request in paragraphs (16 bytes)
@@ -28,53 +34,55 @@ typedef struct {
 * However, the actual amount of allocatable RAM is restricted 640K or less (+ possible upper memory area)
 * and will depend on installed RAM.
 */
-mem_arena_t* private_mem_arena_dos_new(mem_size_t byte_count) {
-  mem_arena_t* arena = new(arena_t);
-  arena->pfree = NULL_PTR;								// setup default values...
-  arena->pool.memloc = arena->size = arena->capacity = 0;
-  mem_size_t paragraphs = byte_count / PARAGRAPH_SIZE;	// calculate the number of paragraphs to request fron DOS
-  if (byte_count % PARAGRAPH_SIZE) {		// if mod 16 then need another paragraph for the remainder
-    paragraphs++;
-  }
-  arena->pool.segoff.segment = dos::allocate_memory_blocks(paragraphs);	// ask DOS for the memory 
-  if (arena->pool.segoff.segment) {						// success DOS could fulfill the memory request				
-    arena->pfree = (char*)arena->pool.memloc;			// initialize values...
-    arena->size = arena->capacity = paragraphs * PARAGRAPH_SIZE;
-  }
+mem_arena_t* private_mem_arena_dos_new(mem_size_t byte_count) { 
+	mem_address_t addr;
+	mem_arena_t* arena = (mem_arena_t*)malloc(sizeof(mem_arena_t));
+	mem_size_t paragraphs = byte_count / PARAGRAPH_SIZE;	// calculate the number of paragraphs to request fron DOS
+	arena->policy = MEM_ARENA_POLICY_DOS;					// setup default values...
+	arena->pfree = NULL;									
+	arena->size = arena->capacity = 0;  
+	if (byte_count % PARAGRAPH_SIZE) {						// if mod 16 then need another paragraph for the remainder
+		paragraphs++;
+	}
+	addr.segoff.segment = dos_allocate_memory_blocks(paragraphs);	// ask DOS for the memory 
+	if (addr.segoff.segment) {								// success DOS could fulfill the memory request				
+		arena->pfree = (void*);							// initialize values...
+		arena->size = arena->capacity = paragraphs * PARAGRAPH_SIZE;
+	}
 #ifndef NDEBUG
-  else {
-	fprintf(stderr, "ERROR memory request %li too large for DOS to provide!", byte_count);
-  }
+	else {
+		fprintf(stderr, "ERROR memory request %li too large for DOS to provide!", byte_count);
+	}
 #endif
-  return arena;
+	return arena;
 }
 
-mem_size_t private_mem_arena_dos_delete(arena_t* arena) {
+mem_size_t private_mem_arena_dos_delete(mem_arena_t* arena) {
 	mem_size_t sz = arena->capacity;						// capture the capacity of the arena
-	dos::free_allocated_memory_blocks(arena->pool.segoff.segment);	// ask DOS to free the memory block
-	delete arena;											// free up arena_t memory
+	dos_free_allocated_memory_blocks(arena->pool.segoff.segment);	// ask DOS to free the memory block
+	free(arena);												// free up heap memory
 	return sz;												// return amount freed up
 }
 
-mem_arena_t* mem_arena_new(mem_policy_t policy, mem_size_t byte_request) {
+mem_arena_t* mem_arena_new(mem_arena_policy_t policy, mem_size_t byte_request) {
 	switch(policy) {
-		case MEM_POLICY_DOS:
-			return private_mem_arena_dos_new(size);
-		case MEM_POLICY_C:	// to do
+		case MEM_ARENA_POLICY_DOS:
+			return private_mem_arena_dos_new(byte_request);
+		case MEM_ARENA_POLICY_C:	// to do
 		default:
 			fprintf(stderr, "Invalid memory policy type %i", policy);
-			return NULL_PTR;
+			return NULL;
 	}
 }
 
 mem_size_t mem_arena_delete(mem_arena_t* arena) {
 	switch(arena->policy) {
-		case MEM_POLICY_DOS:
+		case MEM_ARENA_POLICY_DOS:
 			return private_mem_arena_dos_delete(arena);
-		case MEM_POLICY_C:	// to do
+		case MEM_ARENA_POLICY_C:	// to do
 		default:
 			fprintf(stderr, "Invalid memory policy type %i", policy);
-			return NULL_PTR;
+			return NULL;
 	}
 }
 
@@ -87,7 +95,7 @@ mem_size_t mem_arena_capacity(mem_arena_t* arena) {
 }
 
 void* mem_arena_alloc(mem_arena_t* arena, mem_size_t byte_request) {
-	char* p = NULL_PTR;						// default return to null
+	char* p = NULL;							// default return to null
 	if (byte_request <= arena->size) {		// can fulfill request 
 		arena->size -= byte_request;		// shrink pool size
 		p = arena->pfree;					// initialize return value points to requested block

@@ -15,19 +15,18 @@
  *  @copyright © Jeremy Thornton, 2023. All right reserved.
  *
  */
-#ifndef MEM_ARENA_H
+#ifndef MEM_ARENA_H //const mem_arena_t default_ = { MEM_ARENA_POLICY_DOS, NULL, 0, 0 };
 #define MEM_ARENA_H
 
 #include "mem_constants.h" 
 #include "mem_types.h"
 
 typedef enum {
-  MEM_ARENA_POLICY_DOS 
+  MEM_ARENA_POLICY_DOS,
   MEM_ARENA_POLICY_C
 } mem_arena_policy_t;
 
-struct mem_arena;
-typedef struct mem_arean mem_arena_t;
+typedef struct private_mem_arena mem_arena_t;
 
 mem_arena_t* mem_arena_new(mem_arena_policy_t policy, mem_size_t byte_request);
 
