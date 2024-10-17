@@ -17,14 +17,14 @@
 
 typedef struct private_mem_arena {  
 
-  uint8_t	policy;		// e.g. MEM_POLICY_DOS or MEM_POLICY_C
-  mem_address_t		start;		// base address of the arena
-  char*		free;		// pointer to start of free memory within arena, initially free = start
-  char*		end;		// end address limit of useable arena memory 
+  uint8_t		policy;		// e.g. MEM_POLICY_DOS or MEM_POLICY_C
+  mem_address_t	start;		// base address of the arena
+  char*			free;		// pointer to start of free memory within arena, initially free = start
+  char*			end;		// end address limit of useable arena memory 
 
 };
 
-const mem_arena_t default_dos_mem_arena_t = { MEM_ARENA_POLICY_DOS, NULL, NULL, NULL};
+const mem_arena_t default_dos_mem_arena_t = { MEM_ARENA_POLICY_DOS, NULL, NULL, NULL };
 
 /**
 * The DOS INT 21,48 - Allocate Memory function takes a 16 bit word size request in paragraphs (16 bytes)
@@ -46,8 +46,7 @@ mem_arena_t* private_mem_arena_dos_new(mem_size_t byte_count) {
 	arena->start.segoff.segment = dos_allocate_memory_blocks(paragraphs);	// ask DOS for the memory 
 	if (arena->start.segoff.segment) {								// success DOS could fulfill the memory request				
 		arena->free = arena->start.ptr;
-		arena->end = arena->start.ptr;
-		arena->end += paragraphs * PARAGRAPH_SIZE;
+		arena->end = arena->start.ptr + paragraphs * PARAGRAPH_SIZE;
 	}
 #ifndef NDEBUG
 	else {
