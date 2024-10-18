@@ -116,8 +116,8 @@ OK: mov     mem_seg, ax
 #ifndef NDEBUG
     if (err_code) {
         fprintf(stderr, "%s\n", dos_error_messages[err_code];
-        if (err_code == dos::error::INSUFFICIENT_MEMORY) {
-            fprintf(stderr, " largest block of memory available = %i paragraphs(16 bytes)\n", available;
+        if (err_code == INSUFFICIENT_MEMORY) {
+            fprintf(stderr, " largest block of memory available = %li bytes\n", available * 16;    // paragraph = 16 bytes
         }
     }
 #endif
