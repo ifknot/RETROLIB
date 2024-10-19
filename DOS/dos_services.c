@@ -96,7 +96,8 @@ void* dos_get_interrupt_vector(uint8_t vec_num) {
 * @return      the segment address of the reserved memory or 0 if request failed
 */
 uint16_t dos_allocate_memory_blocks(uint16_t paragraphs) {
-    uint16_t available, mem_seg, err_code;
+    uint16_t available, mem_seg;
+    dos_error_code_t err_code;
     available = mem_seg = err_code = 0;
     __asm {
     .8086
@@ -146,7 +147,7 @@ OK: mov     mem_seg, ax
 * @see  INT 21,4A
 */
 uint16_t dos_free_allocated_memory_blocks(uint16_t segment) {
-    uint16_t err_code = 0;
+    dos_error_code_t err_code = 0;
     __asm {
         .8086
         pushf

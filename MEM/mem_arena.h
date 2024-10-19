@@ -26,6 +26,11 @@ typedef enum {
   MEM_ARENA_POLICY_C
 } mem_arena_policy_t;
 
+const char mem_policy_info[2][64] = {
+	 "MEM_POLICY_DOS",
+	 "MEM_POLICY_C"
+};
+
 typedef struct private_mem_arena mem_arena_t;
 
 mem_arena_t* mem_arena_new(mem_arena_policy_t policy, mem_size_t byte_request);
@@ -36,8 +41,12 @@ mem_size_t mem_arena_size(mem_arena_t* arena);
 
 mem_size_t mem_arena_capacity(mem_arena_t* arena);
 
+mem_size_t mem_arena_used(mem_arena_t* arena);
+
 void* mem_arena_alloc(mem_arena_t* arena, mem_size_t byte_request);
 
 void* mem_arena_dealloc(mem_arena_t* arena, mem_size_t byte_request);
+
+void mem_arena_dump(mem_arena_t* arena);
 
 #endif

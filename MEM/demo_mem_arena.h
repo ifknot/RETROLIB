@@ -17,6 +17,7 @@
 #include "mem_constants.h"
 #include "mem_types.h"
 #include "mem_arena.h"
+#include "mem_tools.h"
 
 void demo_mem_arena() {
 
@@ -43,7 +44,25 @@ void demo_mem_arena() {
 	if (YESNO("* create arena 1K? ")) {
 		mem_arena_t* m = mem_arena_new(MEM_ARENA_POLICY_DOS, 1024);
 
-		mem_arena_delete(m);
+		mem_arena_dump(m);
+
+		mem_arena_alloc(m, 64);
+
+		mem_arena_dump(m);
+
+		mem_arena_alloc(m, 1024);
+
+		mem_arena_dump(m);
+
+		mem_arena_dealloc(m, 65);
+
+		mem_arena_dump(m);
+
+		mem_arena_dealloc(m, 32);
+
+		mem_arena_dump(m);
+
+		LOG(mem_arena_delete(m),%li);
 	}
 }
 

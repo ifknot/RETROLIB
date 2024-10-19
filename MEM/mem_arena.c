@@ -10,6 +10,7 @@
  */
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 
 #include "mem_arena.h"
 
@@ -39,6 +40,7 @@ const mem_arena_t default_dos_mem_arena_t = { MEM_ARENA_POLICY_DOS, NULL, NULL, 
 mem_arena_t* private_mem_arena_dos_new(mem_size_t byte_count) { 
 	mem_arena_t* arena = (mem_arena_t*)malloc(sizeof(mem_arena_t));
 	mem_size_t paragraphs = byte_count / PARAGRAPH_SIZE;	// calculate the number of paragraphs to request fron DOS				
+	assert(arena != NULL);
 	if (byte_count % PARAGRAPH_SIZE) {						// if mod 16 then need another paragraph for the remainder
 		paragraphs++;
 	}
@@ -93,37 +95,38 @@ mem_size_t mem_arena_capacity(mem_arena_t* arena) {
 	return arena->end - arena->start.ptr;
 }
 
+mem_size_t mem_arena_used(mem_arena_t* arena) {
+	return mem_arena_capacity(arena) - mem_arena_size(arena);
+}
+
 void* mem_arena_alloc(mem_arena_t* arena, mem_size_t byte_request) {
-	/*
 	char* p = NULL;							// default return to null
-	if (byte_request <= arena->size) {		// can fulfill request 
-		arena->size -= byte_request;		// shrink pool size
-		p = arena->pfree;					// initialize return value points to requested block
-		arena->pfree += byte_request;		// now point to the start of remaining free memory 
+	if (byte_request <= mem_arena_size(arena)) {		// can fulfill request 
+		p = arena->free;					// initialize return value points to requested block
+		arena->free += byte_request;		// shrink pool size
 	}
 #ifndef NDEBUG
 	else {
-		fprintf(stderr, "ERROR memory request %li bytes too large for ARENA to ALLOC!\nLargest block of memory available %li bytes.", byte_request, arena->size);
+		fprintf(stderr, "\nERROR memory request %li bytes too large for ARENA to ALLOC!\nLargest block of memory available %li bytes.", byte_request, mem_arena_size(arena));
 	}
 #endif			
 	return p;
-	*/
-	return 0;
 }
 
 void* mem_arena_dealloc(mem_arena_t* arena, mem_size_t byte_request) {
-	/*
-	char* p = NULL_PTR;						// default return to null
-	if (byte_request <= arena->capacity) {	// can fulfill request 
-		arena->size += byte_request;		// grow pool size
-		arena->pfree -= byte_request;		// now point to the start of enlarged free memory
-		p = arena->pfree;					// initialize return value points to resized pool 
+	if (byte_request <= mem_arena_used(arena)) {	// can fulfill request 
+		arena->free -= byte_request;		// point to the start of enlarged free memory
 	}
 #ifndef NDEBUG
 	else {
-		fprintf(stderr, "ERROR memory request %li bytes too large for ARENA to DEALLOC!\nLargest block of memory available %li bytes.",byte_request , arena->capacity);
+		fprintf(stderr, "\nERROR memory request %li bytes too large for ARENA to DEALLOC!\nLargest block of memory available %li bytes.",byte_request , mem_arena_used(arena));
 	}
 #endif			
-	return p;*/
-	return 0;
+	return arena->free;
+}
+
+void mem_arena_dump(mem_arena_t* arena) {
+	fprintf(stderr, "\nmem_arena_t @%P\npolicy\t%i %s\nstart\t%P\nfree\t%P\nend\t%P\ncapacity\t%li\nsize\t\t%li\nused\t\t%li", 
+		arena, arena->policy, mem_policy_info[arena->policy],arena->start.ptr,arena->free,arena->end,
+		mem_arena_capacity(arena),mem_arena_size(arena),mem_arena_used(arena));
 }
