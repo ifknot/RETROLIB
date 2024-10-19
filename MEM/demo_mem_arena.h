@@ -41,7 +41,9 @@ void demo_mem_arena() {
 
 	INFO("***** DEMO MEMORY ARENA *****");
 	if (YESNO("* create arena 1K? ")) {
-		
+		mem_arena_t* m = mem_arena_new(MEM_ARENA_POLICY_DOS, 1024);
+
+		mem_arena_delete(m);
 	}
 }
 
