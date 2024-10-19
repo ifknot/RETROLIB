@@ -18,6 +18,8 @@
 #ifndef MEM_ARENA_H 
 #define MEM_ARENA_H
 
+#include "../DOS/dos_services_types.h"
+
 #include "mem_constants.h" 
 #include "mem_types.h"
 
@@ -36,6 +38,8 @@ typedef struct private_mem_arena mem_arena_t;
 mem_arena_t* mem_arena_new(mem_arena_policy_t policy, mem_size_t byte_request);
 
 mem_size_t mem_arena_delete(mem_arena_t* arena);
+
+dos_mcb_t* mem_arena_dos_mcb(mem_arena_t* arena);
 
 mem_size_t mem_arena_size(mem_arena_t* arena);
 

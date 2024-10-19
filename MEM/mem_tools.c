@@ -12,6 +12,9 @@
 
 #include <stdio.h>
 
-void mem_tools_dump_mcb(dos_mcb_t* mcb) {
+#include "mem_constants.h"
 
+void mem_tools_dump_mcb(dos_mcb_t* mcb) {
+	fprintf(stderr, "\nDOS MCB @%p\ntype\t%c\nowner\t@%X\nsize\t%i\nname\t%s", 
+		mcb, mcb->signature, mcb->owner_id,mcb->size_paras,mcb->owner_name);
 }

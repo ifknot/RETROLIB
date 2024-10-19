@@ -27,7 +27,7 @@ void demo_mem_arena() {
 	mem_address_t addr;
 
 	assert(PARAGRAPH_SIZE == 16);
-	assert(MAX_DOS_MEM_ALLOCATE == 1048560);
+	assert(MEM_MAX_DOS_ALLOCATE == 1048560);
 	assert(size == diff);
 
 	m.segment = 0xDEAD;
@@ -61,6 +61,8 @@ void demo_mem_arena() {
 		mem_arena_dealloc(m, 32);
 
 		mem_arena_dump(m);
+
+		mem_tools_dump_mcb(mem_arena_dos_mcb(m));
 
 		LOG(mem_arena_delete(m),%li);
 	}

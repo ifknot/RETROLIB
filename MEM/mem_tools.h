@@ -16,4 +16,6 @@
 
 void mem_tools_dump_mcb(dos_mcb_t* mcb);
 
+//void mem_tools_dump_psp(dos_psp_t* psp);
+
 #endif

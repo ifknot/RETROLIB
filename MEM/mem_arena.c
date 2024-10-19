@@ -87,6 +87,13 @@ mem_size_t mem_arena_delete(mem_arena_t* arena) {
 	}
 }
 
+dos_mcb_t* mem_arena_dos_mcb(mem_arena_t* arena) {
+	mem_address_t m = arena->start;
+	assert(arena->policy == MEM_ARENA_POLICY_DOS);
+	m.segoff.segment -= 1;
+	return (dos_mcb_t*)m.ptr;
+}
+
 mem_size_t mem_arena_size(mem_arena_t* arena) {
 	return arena->end - arena->free;
 }

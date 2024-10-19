@@ -33,10 +33,10 @@ typedef uint16_t dos_error_code_t;
 */
 typedef struct {
 
-	uint8_t		signature;		// 'M' (4dH)=valid; 'Z'(5aH)=last block in list
+	char		signature;		// 'M' (4dH)=valid; 'Z'(5aH)=last block in list
 	uint16_t	owner_id;		// segment address of PSP of owner (0=owns self)
 	uint16_t	size_paras;		// allocation size in 16-byte paragraphs
-	uint8_t		reserved[3];
+	uint8_t		reserved[2];
 	char		owner_name[8];	// 7 or fewer bytes, followed by 00H.  When DOS loads a program, this field is filled - Prior to DOS 4.0, this field contained garbage
 
 } dos_mcb_t;
