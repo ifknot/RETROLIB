@@ -10,10 +10,9 @@
  */
 #include <stdio.h>
 
+#include "dos_error_messages.h"
 #include "dos_services_files.h"
 #include "dos_services_constants.h"
-#include "dos_services_types.h"
-#include "dos_error_messages.h"
 
 /**
 * INT 21,36 - Get Disk Free Space
@@ -37,7 +36,7 @@ void dos_get_disk_free_space(uint8_t drive_number, dos_file_disk_space_info_t* i
 		pushf
 
 		mov		dl, drive_number
-		mov		ah, GET_DISK_FREE_SPACE
+		mov		ah, DOS_GET_DISK_FREE_SPACE
 		int		DOS_SERVICE
 		cmp		ax, DOS_ERROR				; FFFFh invalid drive
 		jne		OK
@@ -62,7 +61,7 @@ END:		popf
 	}
 #ifndef NDEBUG
 	if (info->sectors_per_cluster == 0xFFFF) {
-		//fprintf("%s drive_number=%i", dos_error_messages[INVALID_DRIVE_SPECIFIED], drive_number);
+		fprintf(stderr, "%s drive_number=%i", dos_error_messages[DOS_INVALID_DRIVE_SPECIFIED], drive_number);
 	}
 #endif
 }
@@ -91,7 +90,7 @@ dos_file_handle_t dos_create_file_using_handle(char* path_name, dos_file_attribu
 
 		lds		dx, path_name
 		mov		cx, create_attributes
-		mov		ah, CREATE_FILE_USING_HANDLE
+		mov		ah, DOS_CREATE_FILE_USING_HANDLE
 		int		DOS_SERVICE
 		jnc		OK
 		mov		err_code, ax
@@ -132,7 +131,7 @@ dos_file_handle_t dos_open_file_using_handle(char* path_name, uint8_t access_att
 
 		lds		dx, path_name
 		mov		al, access_attributes
-		mov		ah, OPEN_FILE_USING_HANDLE
+		mov		ah, DOS_OPEN_FILE_USING_HANDLE
 		int		DOS_SERVICE
 		jnc		OK
 		mov		err_code, ax
@@ -170,7 +169,7 @@ dos_error_code_t dos_close_file_using_handle(dos_file_handle_t fhandle) {
 		pushf
 
 		mov		bx, fhandle
-		mov		ah, CLOSE_FILE_USING_HANDLE
+		mov		ah, DOS_CLOSE_FILE_USING_HANDLE
 		int		DOS_SERVICE
 		jnc		END
 		mov		err_code, ax
@@ -212,7 +211,7 @@ uint16_t dos_read_file_using_handle(dos_file_handle_t fhandle, char* buffer, uin
 		lds		dx, buffer
 		mov		cx,	nbytes
 		mov		bx, fhandle
-		mov		ah, READ_FILE_OR_DEVICE_USING_HANDLE
+		mov		ah, DOS_READ_FILE_OR_DEVICE_USING_HANDLE
 		int		DOS_SERVICE
 		jnc		OK
 		mov		err_code, ax
@@ -256,7 +255,7 @@ uint16_t dos_write_file_using_handle(dos_file_handle_t fhandle, char* buffer, ui
 		lds		dx, buffer
 		mov		cx, nbytes
 		mov		bx, fhandle
-		mov		ah, WRITE_FILE_OR_DEVICE_USING_HANDLE
+		mov		ah, DOS_WRITE_FILE_OR_DEVICE_USING_HANDLE
 		int		DOS_SERVICE
 		jnc		OK
 		mov		err_code, ax
@@ -296,7 +295,7 @@ dos_error_code_t dos_delete_file(char* path_name) {
 		pushf
 
 		lds		dx, path_name
-		mov		ah, DELETE_FILE
+		mov		ah, DOS_DELETE_FILE
 		int		DOS_SERVICE
 		jnc		END
 		mov		err_code, ax
@@ -355,7 +354,7 @@ dos_file_position_t dos_move_file_pointer_using_handle(dos_file_handle_t fhandle
 		mov		cx, [si + 2]						; CX hi order word of fposition
 		mov		bx, fhandle
 		mov		al, forigin							; SEEK_SET, SEEK_CUR, SEEK_END
-		mov		ah, MOVE_FILE_POINTER_USING_HANDLE
+		mov		ah, DOS_MOVE_FILE_POINTER_USING_HANDLE
 		int		DOS_SERVICE
 		jnc		OK
 		mov		err_code, ax
@@ -396,7 +395,7 @@ END:	popf
 * CX = the attribute if AL was 00
 */
 dos_file_attributes_t dos_get_file_attributes(char* path_name) {
-	dos_file_attributes_t attributes;
+	dos_file_attributes_t attributes = 0;
 	dos_error_code_t err_code = 0;
 	__asm {
 		.8086
@@ -406,7 +405,7 @@ dos_file_attributes_t dos_get_file_attributes(char* path_name) {
 		lds		dx, path_name
 		xor		cx, cx
 		xor		al, al						; AL = 00 to get attribute
-		mov		ah, CHANGE_FILE_MODE
+		mov		ah, DOS_CHANGE_FILE_MODE
 		int		DOS_SERVICE
 		jnc		OK
 		mov		err_code, ax
@@ -438,7 +437,7 @@ dos_error_code_t dos_set_file_attributes(char* path_name, dos_file_attributes_t 
 		lds		dx, path_name
 		mov		cx, attributes
 		mov		al, 1					; AL = 01 to set attribute
-		mov		ah, CHANGE_FILE_MODE
+		mov		ah, DOS_CHANGE_FILE_MODE
 		int		DOS_SERVICE
 		jnc		END
 		mov		err_code, ax

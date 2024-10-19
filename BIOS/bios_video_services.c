@@ -27,7 +27,7 @@ void bios_set_video_mode(uint8_t mode) {
         push    ds                           ; due to unreliable behaviour
 	
 		mov		al, mode
-		mov		ah, SET_VIDEO_MODE
+		mov		ah, BIOS_SET_VIDEO_MODE
 		int		BIOS_VIDEO_SERVICES
 
 		pop 	ds
@@ -58,7 +58,7 @@ void bios_get_video_state(bios_video_state_t* state) {
 		pushf
 		push 	ds
 	
-		mov	ah, GET_CURRENT_VIDEO_STATE
+		mov	ah, BIOS_GET_CURRENT_VIDEO_STATE
 		int	BIOS_VIDEO_SERVICES
 		les	di, state
 		mov	es:[di], ah				; number of screen columns
@@ -104,7 +104,7 @@ uint8_t bios_return_video_configuration_information(bios_video_subsystem_config_
 		pushf
 		push 	ds
 	
-		mov		ah, VIDEO_SUBSYSTEM_CONFIGURATION
+		mov		ah, BIOS_VIDEO_SUBSYSTEM_CONFIGURATION
 		mov		bl, 10h						; return video configuration information
 		int		BIOS_VIDEO_SERVICES
 		mov		e, al
@@ -218,7 +218,7 @@ uint8_t bios_helper_video_subsytem_configuration(uint8_t request, uint8_t settin
 		pushf
 		push 	ds
 	
-		mov		ah, VIDEO_SUBSYSTEM_CONFIGURATION
+		mov		ah, BIOS_VIDEO_SUBSYSTEM_CONFIGURATION
 		mov		bl, request
 		mov		al, setting
 		int		BIOS_VIDEO_SERVICES
@@ -235,16 +235,16 @@ uint8_t bios_helper_video_subsytem_configuration(uint8_t request, uint8_t settin
 */
 uint8_t bios_video_subsystem_configuration(uint8_t request, uint8_t setting, bios_video_subsystem_config_t* config) {	
 	switch (request) {
-	case RETURN_VIDEO_CONFIGURATION_INFORMATION:	// the odd one out of the sub-functions
+	case BIOS_RETURN_VIDEO_CONFIGURATION_INFORMATION:	// the odd one out of the sub-functions
 		return bios_return_video_configuration_information(config);
-	case SELECT_ALTERNATE_PRINT_SCREEN_ROUTINE:
-	case SELECT_SCAN_LINES_FOR_ALPHANUMERIC_MODES:
-	case SELECT_DEFAULT_PALETTE_LOADING:
-	case CPU_ACCESS_TO_VIDEO_RAM:
-	case GRAY_SCALE_SUMMING:
-	case CURSOR_EMULATION:
-	case PS2_VIDEO_DISPLAY_SWITCHING:
-	case VIDEO_REFRESH_CONTROL:
+	case BIOS_SELECT_ALTERNATE_PRINT_SCREEN_ROUTINE:
+	case BIOS_SELECT_SCAN_LINES_FOR_ALPHANUMERIC_MODES:
+	case BIOS_SELECT_DEFAULT_PALETTE_LOADING:
+	case BIOS_CPU_ACCESS_TO_VIDEO_RAM:
+	case BIOS_GRAY_SCALE_SUMMING:
+	case BIOS_CURSOR_EMULATION:
+	case BIOS_PS2_VIDEO_DISPLAY_SWITCHING:
+	case BIOS_VIDEO_REFRESH_CONTROL:
 		return bios_helper_video_subsytem_configuration(request, setting);
 	default:
 		return 0;

@@ -16,31 +16,29 @@
 
 #define MAX_ERR_STRING_LEN  64
 
-
-
 /**
 * Useful for user code to raise first classic 12h codes
 */
 typedef enum {
-        SUCCESS = 0,
-        INVALID_FUNCTION_NUMBER,
-        FILE_NOT_FOUND,
-        PATH_NOT_FOUND,
-        TOO_MANY_OPEN_FILES,
-        ACCESS_DENIED,
-        INVALID_HANDLE,
-        MCB_DESTROYED,
-        INSUFFICIENT_MEMORY,
-        INVALID_MEMORY_BLOCK_ADDRESS,
-        INVALID_ENVIRONMENT,
-        INVALID_FORMAT,
-        INVALID_ACCESS_MODE,
-        INVALID_DATA,
-        RESERVED,
-        INVALID_DRIVE_SPECIFIED,
-        ATTEMPT_TO_REMOVE_CURRENT_DIRECTORY,
-        NOT_SAME_DEVICE,
-        NO_MORE_FILES
+    DOS_SUCCESS = 0,
+    DOS_INVALID_FUNCTION_NUMBER,
+    DOS_FILE_NOT_FOUND,
+    DOS_PATH_NOT_FOUND,
+    DOS_TOO_MANY_OPEN_FILES,
+    DOS_ACCESS_DENIED,
+    DOS_INVALID_HANDLE,
+    DOS_MCB_DESTROYED,
+    DOS_INSUFFICIENT_MEMORY,
+    DOS_INVALID_MEMORY_BLOCK_ADDRESS,
+    DOS_INVALID_ENVIRONMENT,
+    DOS_INVALID_FORMAT,
+    DOS_INVALID_ACCESS_MODE,
+    DOS_INVALID_DATA,
+    DOS_RESERVED,
+    DOS_INVALID_DRIVE_SPECIFIED,
+    DOS_ATTEMPT_TO_REMOVE_CURRENT_DIRECTORY,
+    DOS_NOT_SAME_DEVICE,
+    DOS_NO_MORE_FILES
 } dos_error_codes;
 
 /**
@@ -50,7 +48,7 @@ typedef enum {
 * The rest are obtained by issuing the "get extended error" function call
 * \see INT 21, 59
 */
-char dos_error_messages[85][MAX_ERR_STRING_LEN] = {
+const char dos_error_messages[85][MAX_ERR_STRING_LEN] = {
         "00  Success ",
         // DOS 2.0+
         "01  Invalid function number ",

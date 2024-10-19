@@ -11,7 +11,7 @@
 #include "bios_memory_size.h"
 
 uint16_t bios_memory_size_KiB() {
-	uint16_t size_kib;
+	uint16_t size_kib = 0;
 	__asm {
 		.8086
 		pushf                                ; preserve what int BIOS functions may not

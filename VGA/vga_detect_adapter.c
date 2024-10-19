@@ -25,7 +25,7 @@
         *
         */
         uint8_t vga_detect_adapter() {
-                return (bios_video_subsystem_configuration(CPU_ACCESS_TO_VIDEO_RAM, 0, 0) == 0x12)
+                return (bios_video_subsystem_configuration(BIOS_CPU_ACCESS_TO_VIDEO_RAM, 0, 0) == 0x12)
                         ? HW_VIDEO_ADAPTER_VGA
                         : HW_VIDEO_ADAPTER_UKNOWN;
         }
