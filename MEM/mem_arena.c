@@ -39,11 +39,8 @@ const mem_arena_t default_dos_mem_arena_t = { MEM_ARENA_POLICY_DOS, NULL, NULL, 
 */
 mem_arena_t* private_mem_arena_dos_new(mem_size_t byte_count) { 
 	mem_arena_t* arena = (mem_arena_t*)malloc(sizeof(mem_arena_t));
-	mem_size_t paragraphs = byte_count / PARAGRAPH_SIZE;	// calculate the number of paragraphs to request fron DOS				
+	mem_size_t paragraphs = ((byte_count / PARAGRAPH_SIZE) + ((byte_count & 0xF) ? 1 : 0));  // ? need extra paragraph for any remainder
 	assert(arena != NULL);
-	if (byte_count % PARAGRAPH_SIZE) {						// if mod 16 then need another paragraph for the remainder
-		paragraphs++;
-	}
 	*arena = default_dos_mem_arena_t;
 	arena->start.segoff.segment = dos_allocate_memory_blocks(paragraphs);	// ask DOS for the memory 
 	if (arena->start.segoff.segment) {								// success DOS could fulfill the memory request				
@@ -87,11 +84,11 @@ mem_size_t mem_arena_delete(mem_arena_t* arena) {
 	}
 }
 
-dos_mcb_t* mem_arena_dos_mcb(mem_arena_t* arena) {
+char* mem_arena_dos_mcb(mem_arena_t* arena) {
 	mem_address_t m = arena->start;
 	assert(arena->policy == MEM_ARENA_POLICY_DOS);
-	m.segoff.segment -= 1;
-	return (dos_mcb_t*)m.ptr;
+	m.segoff.segment --;
+	return m.ptr;
 }
 
 mem_size_t mem_arena_size(mem_arena_t* arena) {
