@@ -3,6 +3,7 @@
  *  @brief    Visualize the patterns in text layout of a document by condensing characters into pixels. 
  *  @details  Code as a Creative Medium 001 
  *  Converts a text file's characters to white pixels, punctuation to black pixels and newlines to blank rows of pixels.
+ *  Demonstrates using retrolib libraries and the coding idioms for them
  *  @author    Jeremy Thornton
  *  @date      5.10.2024
  *  @copyright © Jeremy Thornton, 2024. All right reserved.
