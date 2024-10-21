@@ -41,7 +41,7 @@ int text2pix(int argc, char** argv) {
     }
     printf("Card detected: %s\n", hw_video_adapter_names[card_detected]);
     sscanf(argv[1], "%s", file_path);
-// 3. try an open the file name given by user 
+// 3. try open the file name given by user 
     fhandle = dos_open_file_using_handle(file_path, ACCESS_READ_ONLY);
     if (!fhandle) {
         return 0;
