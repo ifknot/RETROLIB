@@ -6,7 +6,7 @@
 
 
 // TODO:
-// [ ] mem_arena
+// [x] mem_arena
 // [ ] finish buffer demo 
 // [ ] demo buffer png anim to git readme 
 // [ ] pixel perf compare algos 
