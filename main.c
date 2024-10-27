@@ -1,8 +1,8 @@
 #include <stdio.h>
 
-//#include "DEMOS/TEXT2PIX.h"
+#include "DEMOS/TEXT2PIX.h"
 //#include "HGA/demo_hga.h"
-#include "MEM/demo_mem_arena.h"
+//#include "MEM/demo_mem_arena.h"
 
 
 // TODO:
@@ -20,10 +20,8 @@
 // [ ] byte aligned block transfer
 // [ ] demo byte_aligned_blt
 
-int main() {
+int main(int argc, char** argv) {
 
-	demo_mem_arena();
-
-	return 0;
+	return demo_text2pix(argc, argv);
 
 }

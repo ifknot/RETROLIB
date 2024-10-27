@@ -65,6 +65,8 @@ void demo_mem_arena() {
 		mem_tools_dump_mcb(mem_arena_dos_mcb(m));
 
 		LOG(mem_arena_delete(m),%li);
+
+		mem_arena_dump(m);
 	}
 }
 

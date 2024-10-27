@@ -58,6 +58,7 @@ mem_arena_t* private_mem_arena_dos_new(mem_size_t byte_count) {
 mem_size_t private_mem_arena_dos_delete(mem_arena_t* arena) {
 	mem_size_t freed = mem_arena_capacity(arena);					// capture the capacity of the arena
 	dos_free_allocated_memory_blocks(arena->start.segoff.segment);	// ask DOS to free the memory block
+	*arena = default_dos_mem_arena_t;								// default arena
 	free(arena);													// free up heap memory
 	return freed;													// return amount freed up
 }
