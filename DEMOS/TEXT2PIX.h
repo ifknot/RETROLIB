@@ -28,14 +28,14 @@ int demo_text2pix(int argc, char** argv) {
     char help_string[] = { "Usage:TEXT2PIX [path][filename]\nConverts a text file's characters to white pixels, punctuation to black pixels  and newlines to blank rows of pixels." };
     char error_string[] = { "ERROR: This version of TEXT2PIX requires a Hercules Graphics Adapter." };
     char file_path[255];
-    uint8_t card_detected;
-    dos_file_handle_t fhandle = 0;
-    mem_arena_t* arena; 
-    const uint16_t FILE_BLOCK_SIZE = 720;    
-    uint16_t file_bytes_read;
     char* text_buffer;
-    uint16_t pixel_word;
-    const uint16_t PIXEL_BITMASK = 0x8000;
+    dos_file_handle_t fhandle = 0;
+    mem_arena_t* arena;
+    uint8_t card_detected, pixel_byte, pixel_bitmask;
+    const uint16_t FILE_BLOCK_SIZE = 720;   
+    uint16_t file_bytes_read, byte_count, bit_count, i, j, k;
+    uint32_t char_count = 0;
+   
 // 1. minimal user input checking
     if (argc != 2) {
         printf("%s", help_string);
@@ -61,26 +61,57 @@ int demo_text2pix(int argc, char** argv) {
     if (!arena) {
         return EXIT_FAILURE;
     }
-    mem_arena_dump(arena);
 // 4.1 allocate all of the arena as a char buffer
     text_buffer = (char*)mem_arena_alloc(arena, FILE_BLOCK_SIZE);
-    mem_arena_dump(arena);
 // 5. switch to graphics mode
     if (YESNO("Switch to Hercules Graphics Mode and display file as pixels?")) {
-        hga_graphics_mode();
+        //hga_graphics_mode();
         hga_select_display_buffer((char)HGA_BUFFER_1);
         hga_cls(HGA_BUFFER_1);
 // 6.0 action loop
         do {
 // 6.1 load (up to) 360 bytes ie 4 screen lines of file data  
             file_bytes_read = dos_read_file_using_handle(fhandle, text_buffer, FILE_BLOCK_SIZE);
-            LOG(file_bytes_read, % i);      
-// 6.2 convert file data into word data 16 characters at a time per the given filter
-            pixel_word = 0;
-
-// 6.7 more file data to process?
+            k = 0;
+            //LOG(file_bytes_read, % i);      
+// 6.2 convert file data into screen byte data 8 characters at a time per the given filter            
+            byte_count = file_bytes_read >> 3;                          // div 8
+            //LOG(byte_count, % i);
+// 6.3 convert the text 8 characters at time into a screen data byte
+            for (i = 0; i < byte_count;++i) {
+                pixel_byte = 0;
+                pixel_bitmask = 0x80;
+                for (j = 0; j < 8; ++j) {
+                    //printf("%c",text_buffer[k]);
+                    if (text_buffer[k] > 32 && text_buffer[k] < 127) {  // alphanumeric characters
+                        pixel_byte |= pixel_bitmask;                    // set matching bit to 1
+                    }
+                    pixel_bitmask >>= 1;                                // next bit
+                    k++;                                                // next character
+                    char_count++;                                       // running total           
+                }   
+                //printf("[%i]", pixel_byte);
+            }
+// 6.4 process any remaining characters mod 8 into a final byte
+            bit_count = file_bytes_read & 7;                            // mod 8
+            pixel_byte = 0;
+            pixel_bitmask = 0x80;
+            //LOG(bit_count, % i);
+            for (j = 0; j < bit_count; ++j) {
+                //printf("%c", text_buffer[k]);
+                if (text_buffer[k] > 32 && text_buffer[k] < 127) {      // alphanumeric characters
+                    pixel_byte |= pixel_bitmask;
+                }
+                pixel_bitmask >>= 1;
+                k++;
+                char_count++;
+            }
+            //printf("[%i]",pixel_byte);
+// 6.5 write to HGA screen buffer 
+// 6.6 more file data to process?
         } while (file_bytes_read);
     }
+    fprintf(stderr, "%s file %lu characters as pixels.", file_path, char_count);
 // 7. switch back to text mode
     mda_text_mode();
 // 8. tidy up resources
