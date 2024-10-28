@@ -61,8 +61,8 @@ void hga_plot_pixel_lookup_table(uint16_t vram_segment, uint16_t x, uint16_t y, 
         mov     ah, c                                   ; load ah with a single pixel at lsb (e.g. white 00000001)
         shl     ah, cl                                  ; shift single bit along by x mod 8
         // 5. display pixel
-        and     es:[bx], al                             ; mask out the pixel bits
-        or      es:[bx], ah                             ; plot point
+        and     es:[di], al                             ; mask out the pixel bits
+        or      es:[di], ah                             ; plot point
     }
 }
 
