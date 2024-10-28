@@ -10,7 +10,6 @@
  */
 #include "hga_display_buffer.h"
 #include "hga_constants.h"
-#include "hga_table_y_lookup.h"
 
 void hga_select_display_buffer(uint8_t select) {
     __asm {
@@ -28,11 +27,11 @@ J1:   out     dx, al
     }
 }
 
-void hga_write_vram_buffer(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t byte_pattern, const uint8_t* y_lookup) {
+void hga_write_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t byte_pattern, const uint8_t* y_lookup) {
 
 }
 
-uint8_t hga_read_vram_buffer(uint16_t vram_segment, uint16_t x, uint16_t y, const uint8_t* y_lookup) {
+uint8_t hga_read_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y, const uint8_t* y_lookup) {
 	return 0;
 }
 
