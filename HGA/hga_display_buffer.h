@@ -4,7 +4,7 @@
  *  @details   ~
  *  @author    Jeremy Thornton
  *  @date      29.09.2024
- *  @copyright © Jeremy Thornton, 2024. All right reserved.
+ *  @copyright Â© Jeremy Thornton, 2024. All right reserved.
  *
  */
 #ifndef HGA_DISPLAY_BUFFER_H
@@ -28,7 +28,7 @@ void hga_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern);
 /**
 * @brief clear the specified HGA VRAM buffer to black
 */
-void hga_cls(uint16_t vram_segment) {
+inline void hga_cls(uint16_t vram_segment) {
     hga_fill_vram_buffer(vram_segment, 0);
 }
 
