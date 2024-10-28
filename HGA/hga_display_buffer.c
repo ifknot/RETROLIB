@@ -28,11 +28,11 @@ J1:   out     dx, al
     }
 }
 
-void hga_write_vram_buffer(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t byte_pattern) {
+void hga_write_vram_buffer(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t byte_pattern, const uint8_t* y_lookup) {
 
 }
 
-uint8_t hga_read_vram_buffer(uint16_t vram_segment, uint16_t x, uint16_t y) {
+uint8_t hga_read_vram_buffer(uint16_t vram_segment, uint16_t x, uint16_t y, const uint8_t* y_lookup) {
 	return 0;
 }
 
