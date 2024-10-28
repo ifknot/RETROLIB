@@ -17,12 +17,12 @@ void hga_select_display_buffer(uint8_t select) {
       .8086
   
       mov     dx, HGA_CONTROL_REGISTER
-      mov		al, select 
-      and		al, 00000001b				; only bit 0 selects buffer 
+      mov 	  al, select 
+      and 	  al, 00000001b				; only bit 0 selects buffer 
       //jz      J0                         
-      mov     al, 10001010b     ; screen on buffer 1 second display page buffer B000 : 800
+      mov     al, 10001010b     		; screen on buffer 1 second display page buffer B000 : 800
       jmp     J1
-J0:   mov     al, 00001010b     ; screen on buffer 0 default display page buffer B000 : 000
+J0:   mov     al, 00001010b     		; screen on buffer 0 default display page buffer B000 : 000
 J1:   out     dx, al
   
     }
@@ -46,14 +46,14 @@ void hga_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern) {
 			mov		ax, vram_segment
 			mov		es, ax						; ES:DI point to VRAM destination
 			// 2. set up the registers
-			cld									    ; increment ES:DI
+			cld									; increment ES:DI
 			mov		al, byte_pattern
 			mov		ah, al						; duplicate byte pattern into AX word
 			mov		cx, HGA_WORDS_PER_SCREEN	; set counter to full screen
 			// 3. move the byte:byte pattern to VRAM
-			rep		stosw						  ; chain store byte pattern word to VRAM
+			rep		stosw						; chain store byte pattern word to VRAM
 
-			popf								    ; restore flags on exit
+			popf								; restore flags on exit
 		}
 	}
 
