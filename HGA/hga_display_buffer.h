@@ -26,6 +26,13 @@ void hga_select_display_buffer(uint8_t select);
 void hga_write_vram_buffer((uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t byte_pattern);
 
 /**
+* @brief Read an 8 bit byte pattern at (byte, line) coordinates x(0..89), y(0..347) from the specified HGA VRAM buffer
+* @details
+* @note No sanity checking!
+*/
+uint8_t hga_read_vram_buffer((uint16_t vram_segment, uint16_t x, uint16_t y);
+
+/**
 * @brief Fast fill the specified HGA VRAM buffer with an 8 bit byte pattern
 * @details
 * @note No sanity checking! Expects vram_segment to be valid.
