@@ -7,7 +7,9 @@
 
 // TODO:
 // [x] mem_arena
+// [ ] read write vram
 // [ ] finish buffer demo 
+// [ ] convert video mode preset names and table
 // [ ] demo buffer png anim to git readme 
 // [ ] pixel perf compare algos 
 // [ ] demo Mendelbrot fixed point
