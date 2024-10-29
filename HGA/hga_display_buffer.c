@@ -32,28 +32,39 @@ void hga_write_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y,
 }
 
 uint8_t hga_read_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y, const uint8_t* y_lookup) {
-	return 0;
+	uint8_t byte_pattern;
+	__asm {
+		.8086
+		
+		lds 	si, y_lookup
+		add 	si, y
+		mov 	si, [si]
+		add 	si, x
+	// just test the y lookup works
+		mov	 	byte_pattern, si
+	}
+	return byte_pattern;
 }
 
 void hga_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern) {
-		__asm {
-			.8086
-			pushf								    ; preserve flags on entry(direction flag used)
+	__asm {
+		.8086
+		pushf								    ; preserve flags on entry(direction flag used)
 
-			// 1. setup HGA quad bank VRAM destination pointer ES:DI
-			xor		di, di						; top left screen(0, 0)
-			mov		ax, vram_segment
-			mov		es, ax						; ES:DI point to VRAM destination
-			// 2. set up the registers
-			cld									; increment ES:DI
-			mov		al, byte_pattern
-			mov		ah, al						; duplicate byte pattern into AX word
-			mov		cx, HGA_WORDS_PER_SCREEN	; set counter to full screen
-			// 3. move the byte:byte pattern to VRAM
-			rep		stosw						; chain store byte pattern word to VRAM
+		// 1. setup HGA quad bank VRAM destination pointer ES:DI
+		xor 	di, di						; top left screen(0, 0)
+		mov		ax, vram_segment
+		mov		es, ax						; ES:DI point to VRAM destination
+		// 2. set up the registers
+		cld									; increment ES:DI
+		mov		al, byte_pattern
+		mov		ah, al						; duplicate byte pattern into AX word
+		mov		cx, HGA_WORDS_PER_SCREEN	; set counter to full screen
+		// 3. move the byte:byte pattern to VRAM
+		rep		stosw						; chain store byte pattern word to VRAM
 
-			popf								; restore flags on exit
-		}
+		popf								; restore flags on exit
 	}
+}
 
 
