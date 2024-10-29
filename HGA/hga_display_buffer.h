@@ -25,20 +25,20 @@ void hga_select_display_buffer(uint8_t select);
 * @details
 * @note No sanity checking!
 */
-void hga_write_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t byte_pattern, const uint8_t* y_lookup);
+void hga_write_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t byte_pattern, const uint16_t* y_lookup);
 
 /**
 * @brief Read an 8 bit byte pattern at (byte, line) coordinates x(0..89), y(0..347) from the specified HGA VRAM buffer
 * @details
 * @note No sanity checking!
 */
-uint8_t hga_read_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y, const uint8_t* y_lookup);
+uint8_t hga_read_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y, const uint16_t* y_lookup);
 
-inline void hga_write_vram_buffer(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t byte_pattern) {
+void hga_write_vram_buffer(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t byte_pattern) {
     hga_write_vram_buffer_lookup(vram_segment, x, y, byte_pattern, HGA_TABLE_Y_LOOKUP);
 }
 
-inline uint8_t hga_read_vram_buffer(uint16_t vram_segment, uint16_t x, uint16_t y) {
+uint8_t hga_read_vram_buffer(uint16_t vram_segment, uint16_t x, uint16_t y) {
     return hga_read_vram_buffer_lookup(vram_segment, x, y, HGA_TABLE_Y_LOOKUP);
 }
 
@@ -52,7 +52,7 @@ void hga_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern);
 /**
 * @brief clear the specified HGA VRAM buffer to black
 */
-inline void hga_cls(uint16_t vram_segment) {
+void hga_cls(uint16_t vram_segment) {
     hga_fill_vram_buffer(vram_segment, 0);
 }
 
