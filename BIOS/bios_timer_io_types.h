@@ -12,6 +12,6 @@
 
 #include <stdint.h>
 
-typedef uint32_t ticks_since_midnight_t;
+typedef uint32_t bios_ticks_since_midnight_t;
 
 #endif
