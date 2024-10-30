@@ -74,7 +74,6 @@ void bios_set_system_clock(bios_ticks_since_midnight_t ticks) {
 	uint8_t error = 0;
 	__asm {
 		.8086
-		push	ds 
 
 		les		dx, ticks
 		mov		cx, es
@@ -82,8 +81,7 @@ void bios_set_system_clock(bios_ticks_since_midnight_t ticks) {
 		int     BIOS_CLOCK_SERVICES
 		jnc		OK
 		mov		error, 0FFh;
-
-OK:		pop		ds
+OK:	
 
 	}
 #ifndef NDEBUG	
