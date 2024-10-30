@@ -70,7 +70,7 @@ int demo_text2pix(int argc, char** argv) {
         //hga_graphics_mode();
         hga_select_display_buffer((char)HGA_BUFFER_1);
         hga_cls(HGA_BUFFER_1);
-// 6.0 action loop
+// 6.0 reset the bios system clock to zero and take an initial reading
         bios_set_system_clock(0);
         duration = bios_read_system_clock();
         do {
@@ -115,6 +115,7 @@ int demo_text2pix(int argc, char** argv) {
 // 6.6 more file data to process?
         } while (file_bytes_read);
     }
+// 6.7 measure duration of conversion loop and display info
     duration = bios_read_system_clock() - duration;
     fprintf(stderr, "%s file %lu characters as pixels. Clock ticks = %lu", file_path, char_count, duration);
 // 7. switch back to text mode
