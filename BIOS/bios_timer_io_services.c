@@ -10,7 +10,7 @@
  * 
  *  @author    Jeremy Thornton
  *  @date      7.10.2024
- *  @copyright © Jeremy Thornton, 2024. All right reserved.
+ *  @copyright Â© Jeremy Thornton, 2024. All right reserved.
  *
  */
 #include <stdint.h>
@@ -32,7 +32,7 @@
 * Intel on the 8086/8088 reserved the first 32 interrurpt vectors.
 * The problem is that IBM ignored Intel and actually used reserved vectors for the 8259.
 * This caused the problems when the 80286 and 80386 came out (Coprocessor vector clashed and the 8259A clashed).
-* Had IBM not designed a flawed system from the start and conformed to Intel this clash wouldn't have happened – as per the iAPX 86 and 88 Intel manual from 1981, page 4-17
+* Had IBM not designed a flawed system from the start and conformed to Intel this clash wouldn't have happened â€“ as per the iAPX 86 and 88 Intel manual from 1981, page 4-17
 * "...the first five interrupt vectors are associated with the software-initiated interrupts and the hardware non-maskable interrupt (NMI).
 * The next 27 interrupt vectors are reserved by Intel and should not be used if compatibility with future Intel products is to be maintained..."
 *
@@ -44,8 +44,8 @@
 * incremented approximately 18.206 times per second
 * at midnight CX:DX is zero
 */
-ticks_since_midnight bios_read_system_clock() {
-	ticks_since_midnight ticks;
+ticks_since_midnight_t bios_read_system_clock() {
+	ticks_since_midnight_t ticks;
 	__asm{
 		.8086
 		push	ds
@@ -74,7 +74,7 @@ ticks_since_midnight bios_read_system_clock() {
 * AH    0
 * CF    (0) if no error		(1) on invalid setting
 */
-void bios_set_system_clock(ticks_since_midnight ticks) {
+void bios_set_system_clock(ticks_since_midnight_t ticks) {
 	uint8_t error = 0;
 	__asm {
 		.8086
