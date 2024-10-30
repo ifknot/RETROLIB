@@ -1,4 +1,10 @@
-
+/*****************************************************************
+ * @file   time_conversions.h
+ * @brief  
+ * 
+ * @author Jeremy Thornton
+ * @date   October 2024
+ *********************************************************************/
 
 #ifndef TIME_CONVERSION_H
 #define TIME_CONVERSION_H
