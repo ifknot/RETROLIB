@@ -44,8 +44,8 @@
 * incremented approximately 18.206 times per second
 * at midnight CX:DX is zero
 */
-ticks_since_midnight_t bios_read_system_clock() {
-	ticks_since_midnight_t ticks;
+bios_ticks_since_midnight_t bios_read_system_clock() {
+	bios_ticks_since_midnight_t ticks;
 	__asm{
 		.8086
 		push	ds
@@ -74,7 +74,7 @@ ticks_since_midnight_t bios_read_system_clock() {
 * AH    0
 * CF    (0) if no error		(1) on invalid setting
 */
-void bios_set_system_clock(ticks_since_midnight_t ticks) {
+void bios_set_system_clock(bios_ticks_since_midnight_t ticks) {
 	uint8_t error = 0;
 	__asm {
 		.8086
