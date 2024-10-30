@@ -12,10 +12,10 @@
 #include "bios_timer_io_types.h"
 
 // INT 1a,00 - Read System Clock (Ticks) [PC] [XT] [AT]
-bios_ticks_since_midnight_t bios_read_system_clock();
+void bios_read_system_clock(bios_ticks_since_midnight_t* ticks);
 
 // INT 1a,01 - Set System Clock (Ticks) [PC] [XT] [AT]
-void bios_set_system_clock(bios_ticks_since_midnight ticks_t);
+void bios_set_system_clock(bios_ticks_since_midnight_t ticks);
 
 // INT 1a,02 - Read Time from Real-Time Clock [AT]
 // INT 1a,03 - Set Time on Real-Time Clock [AT]

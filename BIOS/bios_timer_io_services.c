@@ -44,23 +44,19 @@
 * incremented approximately 18.206 times per second
 * at midnight CX:DX is zero
 */
-bios_ticks_since_midnight_t bios_read_system_clock() {
-	bios_ticks_since_midnight_t ticks;
+void bios_read_system_clock(bios_ticks_since_midnight_t* ticks) {
 	__asm{
 		.8086
-		push	ds
 
 		mov		ah, BIOS_READ_SYSTEM_CLOCK_COUNTER
-		cli											; disable hardware interrupts
 		int		BIOS_CLOCK_SERVICES
-		sti											; enable hardware interrupts
-		lea 	bx, ticks
+		lds		bx, ticks
+		// lea 	bx, ticks
 		mov		[bx], dx							; Intel is little endian
 		mov		[bx + 2],cx
-
-		pop		ds
+		//mov		hi, cx
+		//mov		lo, dx
 	}
-	return ticks;
 }
 
 /**

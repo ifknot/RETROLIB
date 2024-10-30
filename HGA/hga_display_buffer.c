@@ -31,17 +31,17 @@ void hga_write_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y,
 
 }
 
-uint8_t hga_read_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y, const uint8_t* y_lookup) {
+uint8_t hga_read_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y, const uint16_t* y_lookup) {
 	uint8_t byte_pattern;
 	__asm {
 		.8086
 		
-		lds 	si, y_lookup
-		add 	si, y
-		mov 	si, [si]
-		add 	si, x
+		//lds 	si, y_lookup
+		//add 	si, y
+		//mov 	si, [si]
+		//add 	si, x
 	// just test the y lookup works
-		mov	 	byte_pattern, si
+		//mov	 	byte_pattern, si
 	}
 	return byte_pattern;
 }

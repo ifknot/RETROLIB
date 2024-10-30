@@ -36,7 +36,7 @@ int demo_text2pix(int argc, char** argv) {
     const uint16_t FILE_BLOCK_SIZE = 720;   
     uint16_t file_bytes_read, byte_count, bit_count, i, j, k;
     uint32_t char_count = 0;
-    bios_ticks_since_midnight_t duration;
+    bios_ticks_since_midnight_t t1, t2;
    
 // 1. minimal user input checking
     if (argc != 2) {
@@ -72,7 +72,7 @@ int demo_text2pix(int argc, char** argv) {
         hga_cls(HGA_BUFFER_1);
 // 6.0 reset the bios system clock to zero and take an initial reading
         bios_set_system_clock(0);
-        duration = bios_read_system_clock();
+        bios_read_system_clock(&t1);
         do {
 // 6.1 load (up to) 360 bytes ie 4 screen lines of file data  
             file_bytes_read = dos_read_file_using_handle(fhandle, text_buffer, FILE_BLOCK_SIZE);
@@ -116,8 +116,8 @@ int demo_text2pix(int argc, char** argv) {
         } while (file_bytes_read);
     }
 // 6.7 measure duration of conversion loop and display info
-    duration = bios_read_system_clock() - duration;
-    fprintf(stderr, "%s file %lu characters as pixels. Clock ticks = %lu", file_path, char_count, duration);
+    bios_read_system_clock(&t2);  
+    fprintf(stderr, "%s file %lu characters as pixels. Clock ticks = %li", file_path, char_count, t2 - t1);
 // 7. switch back to text mode
     mda_text_mode();
 // 8. tidy up resources
