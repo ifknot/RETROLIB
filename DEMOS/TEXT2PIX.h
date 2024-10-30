@@ -18,6 +18,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "../BIOS/bios_timer_io_services.h"
 #include "../DBG/debug_macros.h"
 #include "../DOS/dos_services_files.h"
 #include "../DOS/dos_tools_files.h"
@@ -35,6 +36,7 @@ int demo_text2pix(int argc, char** argv) {
     const uint16_t FILE_BLOCK_SIZE = 720;   
     uint16_t file_bytes_read, byte_count, bit_count, i, j, k;
     uint32_t char_count = 0;
+    bios_ticks_since_midnight_t duration;
    
 // 1. minimal user input checking
     if (argc != 2) {
@@ -69,6 +71,8 @@ int demo_text2pix(int argc, char** argv) {
         hga_select_display_buffer((char)HGA_BUFFER_1);
         hga_cls(HGA_BUFFER_1);
 // 6.0 action loop
+        bios_set_system_clock(0);
+        duration = bios_read_system_clock();
         do {
 // 6.1 load (up to) 360 bytes ie 4 screen lines of file data  
             file_bytes_read = dos_read_file_using_handle(fhandle, text_buffer, FILE_BLOCK_SIZE);
@@ -111,7 +115,8 @@ int demo_text2pix(int argc, char** argv) {
 // 6.6 more file data to process?
         } while (file_bytes_read);
     }
-    fprintf(stderr, "%s file %lu characters as pixels.", file_path, char_count);
+    duration = bios_read_system_clock() - duration;
+    fprintf(stderr, "%s file %lu characters as pixels. Clock ticks = %lu", file_path, char_count, duration);
 // 7. switch back to text mode
     mda_text_mode();
 // 8. tidy up resources
