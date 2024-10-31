@@ -7,9 +7,10 @@
 
 // TODO:
 // [x] mem_arena
+// [ ] TIME into bios_tools_timer.h
+// [ ] test file size/file pos works properly 
 // [ ] read write vram
 // [ ] finish buffer demo 
-// [ ] test file size/file pos works properly 
 // [ ] convert video mode preset names and table
 // [ ] demo buffer png anim to git readme 
 // [ ] pixel perf compare algos 
