@@ -342,6 +342,35 @@ END:		popf
 * can corrupt the FAT in some versions of DOS; the file should first
 * be grown from zero to one byte and then to the desired large size
 */
+void  dos_move_file_pointer_using_handle(dos_file_handle_t fhandle, uint8_t forigin, dos_file_position_t* fposition) {
+	dos_error_code_t err_code = 0;
+	__asm {
+		.8086
+		
+		lds 	si, fposition						; CX:DX = (signed) offset from origin of new file position
+		mov		dx, [si]							; DX low order word of fposition
+		mov		cx, [si + 2]						; CX hi order word of fposition
+		mov		bx, fhandle
+		mov		al, forigin							; SEEK_SET, SEEK_CUR, SEEK_END
+		mov		ah, DOS_MOVE_FILE_POINTER_USING_HANDLE
+		int		DOS_SERVICE
+		jnc		OK
+		mov		err_code, ax
+		jmp		END
+
+OK:		lds 	di, fposition						; DX:AX = new file position in bytes from start of file
+		mov		[di], ax							; low order word of fposition = AX
+		mov		[di + 2], dx						; hi order word of fposition = DX
+
+END:
+	}
+#ifndef NDEBUG
+	if (err_code) {
+		fprintf(stderr, "%s file_handle=%i\n", dos_error_messages[err_code], fhandle);
+	}
+#endif
+}
+
 dos_file_position_t dos_move_file_pointer_using_handle(dos_file_handle_t fhandle, uint8_t forigin, dos_file_position_t fposition) {
 	dos_error_code_t err_code = 0;
 	__asm {
