@@ -4,7 +4,7 @@
  *  @details   ~
  *  @author    Jeremy Thornton
  *  @date      29.10.2023
- *  @copyright © Jeremy Thornton, 2023. All right reserved.
+ *  @copyright Â© Jeremy Thornton, 2023. All right reserved.
  *
  */
 #ifndef DOS_SERVICES_FILES_H
@@ -41,6 +41,8 @@ uint16_t dos_write_file_using_handle(dos_file_handle_t fhandle, char* buffer, ui
 dos_error_code_t dos_delete_file(char* path_name);
     
 // 42  Move file pointer using handle
+void  dos_move_file_pointer_using_handle(dos_file_handle_t fhandle, uint8_t forigin, dos_file_position_t* fposition);
+
 dos_file_position_t dos_move_file_pointer_using_handle(dos_file_handle_t fhandle, uint8_t forigin, dos_file_position_t fposition);
     
 // 43  Change file mode
