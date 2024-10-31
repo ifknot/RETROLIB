@@ -87,15 +87,20 @@ int demo_text2pix(int argc, char** argv) {
                 pixel_bitmask = 0x80;
                 for (j = 0; j < 8; ++j) {
                     //printf("%c",text_buffer[k]);
+                    // if CR then buffer byte so far, reset byte and bitmask and graphics new line
+                    // ?asm XLATB w a lookup table more selective and variable approach
                     if (text_buffer[k] > 32 && text_buffer[k] < 127) {  // alphanumeric characters
                         pixel_byte |= pixel_bitmask;                    // set matching bit to 1
                     }
+                   
                     pixel_bitmask >>= 1;                                // next bit
                     k++;                                                // next character
                     char_count++;                                       // running total           
                 }   
+                // buffer byte
                 //printf("[%i]", pixel_byte);
             }
+            
 // 6.4 process any remaining characters mod 8 into a final byte
             bit_count = file_bytes_read & 7;                            // mod 8
             pixel_byte = 0;
@@ -103,6 +108,8 @@ int demo_text2pix(int argc, char** argv) {
             //LOG(bit_count, % i);
             for (j = 0; j < bit_count; ++j) {
                 //printf("%c", text_buffer[k]);
+                 // if CR then buffer byte so far, reset byte and bitmask and graphics new line
+                //? XLATB function 
                 if (text_buffer[k] > 32 && text_buffer[k] < 127) {      // alphanumeric characters
                     pixel_byte |= pixel_bitmask;
                 }
@@ -110,6 +117,7 @@ int demo_text2pix(int argc, char** argv) {
                 k++;
                 char_count++;
             }
+            // buffer byte
             //printf("[%i]",pixel_byte);
 // 6.5 write to HGA screen buffer 
 // 6.6 more file data to process?
