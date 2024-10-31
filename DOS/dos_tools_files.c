@@ -5,7 +5,7 @@
  *  @details   ~
  *  @author    Jeremy Thornton
  *  @date      2.10.2024
- *  @copyright © Jeremy Thornton, 2024. All right reserved.
+ *  @copyright Â© Jeremy Thornton, 2024. All right reserved.
  *
  */
 #include "dos_tools_files.h"
@@ -24,8 +24,9 @@ char* dos_tools_file_extension_ptr(char* file_path) {
 }
 
 dos_file_size_t dos_tools_file_size(dos_file_handle_t fhandle) {
-	dos_file_position_t fpos;
-	fpos = dos_move_file_pointer_using_handle(fhandle, FSEEK_END, 0);
-	dos_move_file_pointer_using_handle(fhandle, FSEEK_SET, 0);
-	return fpos;
+	dos_file_position_t fpos, fsize;
+	fpos = dos_move_file_pointer_using_handle(fhandle, FSEEK_CUR, 0);	// get current position
+	fsize = dos_move_file_pointer_using_handle(fhandle, FSEEK_END, 0);	// get size ie end position
+	dos_move_file_pointer_using_handle(fhandle, FSEEK_SET, fpos);		// restore file pointer
+	return fsize;
 }
