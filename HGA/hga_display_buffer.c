@@ -37,7 +37,6 @@ uint8_t hga_read_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t 
 		.8086
 		
 		//lds 	si, y_lookup
-		//add 	si, y
 		//mov 	si, [si]
 		//add 	si, x
 	// just test the y lookup works
