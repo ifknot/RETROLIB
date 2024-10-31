@@ -14,6 +14,7 @@
 // [ ] convert video mode preset names and table
 // [ ] demo buffer png anim to git readme 
 // [ ] pixel perf compare algos 
+// [ ] fix MDA naming
 // [ ] demo Mendelbrot fixed point
 // [ ] bresenham line 
 // [ ] demo lines
