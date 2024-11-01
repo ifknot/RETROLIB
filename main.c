@@ -20,7 +20,7 @@
 // [ ] demo lines
 // [ ] rectangle 
 // [ ] demo rectangle
-// [ ] circle 
+// [ ] circle (unroll loop)
 // [ ] demo circle
 // [ ] byte aligned block transfer
 // [ ] demo byte_aligned_blt
