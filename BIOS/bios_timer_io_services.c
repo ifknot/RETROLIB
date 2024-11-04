@@ -51,11 +51,9 @@ void bios_read_system_clock(bios_ticks_since_midnight_t* ticks) {
 		mov		ah, BIOS_READ_SYSTEM_CLOCK_COUNTER
 		int		BIOS_CLOCK_SERVICES
 		lds		bx, ticks
-		// lea 	bx, ticks
 		mov		[bx], dx							; Intel is little endian
 		mov		[bx + 2],cx
-		//mov		hi, cx
-		//mov		lo, dx
+	
 	}
 }
 
