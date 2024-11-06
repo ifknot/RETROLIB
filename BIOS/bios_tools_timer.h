@@ -1,5 +1,5 @@
 /*****************************************************************
- * @file   time_conversions.h
+ * @file   bios_tools_timer.h
  * @brief  
  * 
  * @author Jeremy Thornton
@@ -13,7 +13,7 @@
 
 #include "../BIOS/bios_timer_io_types.h"
 
-float time_convert_ticks_to_seconds(bios_ticks_since_midnight_t ticks);
+float bios_tools_timer_ticks_to_seconds(bios_ticks_since_midnight_t ticks);
 
 
 #endif 

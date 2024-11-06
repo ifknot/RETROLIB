@@ -19,6 +19,7 @@
 #include <stdlib.h>
 
 #include "../BIOS/bios_timer_io_services.h"
+#include "../BIOS/bios_tools_timer.h"
 #include "../DBG/debug_macros.h"
 #include "../DOS/dos_services_files.h"
 #include "../DOS/dos_tools_files.h"
@@ -125,7 +126,7 @@ int demo_text2pix(int argc, char** argv) {
     }
 // 6.7 measure duration of conversion loop and display info
     bios_read_system_clock(&t2);  
-    fprintf(stderr, "%s file %lu characters as pixels. Clock ticks = %li", file_path, char_count, t2 - t1);
+    fprintf(stderr, "%s file %lu characters as pixels. Duration = %f secs", file_path, char_count, bios_tools_timer_ticks_to_seconds(t2 - t1));
 // 7. switch back to text mode
     mda_text_mode();
 // 8. tidy up resources

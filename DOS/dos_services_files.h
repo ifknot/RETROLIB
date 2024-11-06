@@ -43,8 +43,6 @@ dos_error_code_t dos_delete_file(char* path_name);
 // 42  Move file pointer using handle
 void  dos_move_file_pointer_using_handle(dos_file_handle_t fhandle, uint8_t forigin, dos_file_position_t* fposition);
 
-dos_file_position_t dos_move_file_pointer_using_handle(dos_file_handle_t fhandle, uint8_t forigin, dos_file_position_t fposition);
-    
 // 43  Change file mode
 dos_file_attributes_t dos_get_file_attributes(char* path_name);
 
