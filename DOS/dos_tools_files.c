@@ -31,3 +31,7 @@ dos_file_size_t dos_tools_file_size(dos_file_handle_t fhandle) {
 	dos_move_file_pointer_using_handle(fhandle, FSEEK_SET, &fpos);		// restore file pointer
 	return fsize;
 }
+
+dos_file_size_t dos_tools_file_dump(FILE* out_stream, dos_file_handle_t fhandle) {
+	//TODO
+}
