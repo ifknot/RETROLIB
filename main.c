@@ -6,6 +6,11 @@
 
 
 // TODO:
+// [ ] switch to Linux
+// [ ] use DOSBOX
+// [ ] use Zed
+// [ ] compile open watcom 2 
+// [ ] use CMake 
 // [x] mem_arena
 // [ ] get bbd-for-c to compile
 // [ ] use bdd-for-c
