@@ -7,9 +7,9 @@
 
 // TODO:
 // [ ] switch to Linux
+// [ ] compile open watcom 2 
 // [ ] use DOSBOX
 // [ ] use Zed
-// [ ] compile open watcom 2 
 // [ ] use CMake 
 //
 // [ ] get bbd-for-c to compile
