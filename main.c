@@ -7,6 +7,7 @@
 
 // TODO:
 // [x] mem_arena
+// [ ] dos_tools_file_dump
 // [ ] draw some 1 bit playing cards for a nice change 
 // [x] TIME into bios_tools_timer.h
 // [ ] test file size/file pos works properly 
