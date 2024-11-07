@@ -35,7 +35,7 @@ int demo_text2pix(int argc, char** argv) {
     mem_arena_t* arena;
     uint8_t card_detected, pixel_byte, pixel_bitmask;
     const uint16_t FILE_BLOCK_SIZE = 720;   
-    uint16_t file_bytes_read, byte_count, bit_count, i, j, k;
+    uint16_t file_bytes_read, byte_count, bit_count, k;
     uint32_t char_count = 0;
     bios_ticks_since_midnight_t t1, t2;
    
@@ -83,10 +83,10 @@ int demo_text2pix(int argc, char** argv) {
             byte_count = file_bytes_read >> 3;                          // div 8
             //LOG(byte_count, % i);
 // 6.3 convert the text 8 characters at time into a screen data byte
-            for (i = 0; i < byte_count;++i) {
+            for (int i = 0; i < byte_count;++i) {
                 pixel_byte = 0;
                 pixel_bitmask = 0x80;
-                for (j = 0; j < 8; ++j) {
+                for (int j = 0; j < 8; ++j) {
                     //printf("%c",text_buffer[k]);
                     // if CR then buffer byte so far, reset byte and bitmask and graphics new line
                     // ?asm XLATB w a lookup table more selective and variable approach
@@ -107,7 +107,7 @@ int demo_text2pix(int argc, char** argv) {
             pixel_byte = 0;
             pixel_bitmask = 0x80;
             //LOG(bit_count, % i);
-            for (j = 0; j < bit_count; ++j) {
+            for (int j = 0; j < bit_count; ++j) {
                 //printf("%c", text_buffer[k]);
                  // if CR then buffer byte so far, reset byte and bitmask and graphics new line
                 //? XLATB function 

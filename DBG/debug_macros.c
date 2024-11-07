@@ -13,10 +13,9 @@
 void __fprintf_as_binary(size_t const size, void const* const ptr) {
     unsigned char* b = (unsigned char*)ptr;
     unsigned char byte;
-    int i, j;
     fprintf(stderr, "\n");
-    for (i = size - 1; i >= 0; i--) {
-        for (j = 7; j >= 0; j--) {
+    for (int i = size - 1; i >= 0; i--) {
+        for (int j = 7; j >= 0; j--) {
             byte = (b[i] >> j) & 1;
             fprintf(stderr, "%u", byte);
         }

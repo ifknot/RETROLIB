@@ -54,9 +54,8 @@ void demo_hga() {
                         hga_fill_vram_buffer(buffer, 0xFF);
                 }
                 if (YESNO("* plot pixels ? ")) {
-                        int i;
                         math_prng_set_seed(bios_read_system_clock());
-                        for (i = 0; i < 10000; ++i) {
+                        for (int i = 0; i < 10000; ++i) {
                             hga_plot_pixel_calculate(buffer, math_prng_xorshift16() % 720, math_prng_xorshift16() % 348, hga_black);
                         }
                 }
