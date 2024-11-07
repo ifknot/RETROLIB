@@ -7,6 +7,8 @@
 
 // TODO:
 // [x] mem_arena
+// [ ] get bbd-for-c to compile
+// [ ] use bdd-for-c
 // [ ] dos_tools_file_dump
 // [ ] draw some 1 bit playing cards for a nice change 
 // [x] TIME into bios_tools_timer.h
