@@ -33,7 +33,9 @@ dos_file_size_t dos_tools_file_size(dos_file_handle_t fhandle) {
 }
 
 dos_file_size_t dos_tools_file_dump(FILE* out_stream, dos_file_handle_t fhandle) {
-	return 0;
+	dos_file_size_t fbytes_read, fsize_bytes = dos_tools_file_size(fhandle);
+	fprintf(out_stream, "file size = %li bytes", fsize_bytes);
+	return fsize_bytes;
 }
 
 

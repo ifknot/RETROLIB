@@ -59,6 +59,7 @@ int demo_text2pix(int argc, char** argv) {
         return 0;
     }
     fprintf(stderr, "%s file size=%lu bytes", file_path, dos_tools_file_size(fhandle));
+    dos_tools_file_dump(stdout, fhandle);
 // 4.0 create 360 bytes of memory space as an arena
     arena = mem_arena_new(MEM_ARENA_POLICY_DOS, FILE_BLOCK_SIZE);
     if (!arena) {
