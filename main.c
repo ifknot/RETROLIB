@@ -11,12 +11,15 @@
 // [ ] use Zed
 // [ ] compile open watcom 2 
 // [ ] use CMake 
-// [x] mem_arena
+//
 // [ ] get bbd-for-c to compile
 // [ ] use bdd-for-c
-// [ ] dos_tools_file_dump
+//
 // [ ] draw some 1 bit playing cards for a nice change 
+//
+// [x] mem_arena
 // [x] TIME into bios_tools_timer.h
+// [ ] dos_tools_file_dump
 // [ ] test file size/file pos works properly 
 // [ ] read write vram
 // [ ] finish buffer demo 
