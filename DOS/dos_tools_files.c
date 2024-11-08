@@ -9,9 +9,12 @@
  *
  */
 #include "dos_tools_files.h"
-#include "dos_services_files.h"
 
 #include <string.h>
+
+#include "dos_services_files.h"
+
+#include "../MEM/
 
 char* dos_tools_file_extension_ptr(char* file_path) {
 	char* p = strrchr(file_path, '.');
