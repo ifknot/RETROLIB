@@ -7,30 +7,32 @@
 
 // TODO:
 // [ ] switch to Linux
-// [ ] compile open watcom 2 
+// [ ] compile open watcom 2
 // [ ] use DOSBOX
 // [ ] use Zed
-// [ ] use CMake 
+// [ ] use CMake
+//
+// [ ] use NASA's IKOS https://github.com/NASA-SW-VnV/ikos'
 //
 // [ ] get bbd-for-c to compile
 // [ ] use bdd-for-c
 //
-// [ ] draw some 1 bit playing cards for a nice change 
+// [ ] draw some 1 bit playing cards for a nice change
 //
 // [x] mem_arena
 // [x] TIME into bios_tools_timer.h
 // [ ] dos_tools_file_dump
-// [ ] test file size/file pos works properly 
+// [ ] test file size/file pos works properly
 // [ ] read write vram
-// [ ] finish buffer demo 
+// [ ] finish buffer demo
 // [ ] convert video mode preset names and table
-// [ ] demo buffer png anim to git readme 
-// [ ] pixel perf compare algos 
+// [ ] demo buffer png anim to git readme
+// [ ] pixel perf compare algos
 // [ ] fix MDA naming
 // [ ] demo Mendelbrot fixed point
-// [ ] bresenham line 
+// [ ] bresenham line
 // [ ] demo lines
-// [ ] rectangle 
+// [ ] rectangle
 // [ ] demo rectangle
 // [ ] circle (unroll loop)
 // [ ] demo circle
