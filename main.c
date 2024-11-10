@@ -6,7 +6,7 @@
 
 
 // TODO:
-// [ ] switch to Linux
+// [x] switch to Linux on T480
 // [ ] compile open watcom 2
 // [ ] use DOSBOX
 // [ ] use Zed
@@ -23,7 +23,7 @@
 // [x] TIME into bios_tools_timer.h
 // [ ] dos_tools_file_dump
 // [ ] test file size/file pos works properly
-// [ ] read write vram
+// [ ] read write vram using y lookup
 // [ ] finish buffer demo
 // [ ] convert video mode preset names and table
 // [ ] demo buffer png anim to git readme
