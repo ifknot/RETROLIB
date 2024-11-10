@@ -7,6 +7,7 @@
 
 // TODO:
 // [x] switch to Linux on T480
+// [x] use git gui
 // [ ] compile open watcom 2
 // [ ] use DOSBOX
 // [ ] use Zed
