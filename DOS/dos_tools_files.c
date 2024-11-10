@@ -14,7 +14,7 @@
 
 #include "dos_services_files.h"
 
-#include "../MEM/
+#include "../MEM/mem_arena.h"
 
 char* dos_tools_file_extension_ptr(char* file_path) {
 	char* p = strrchr(file_path, '.');
@@ -36,13 +36,11 @@ dos_file_size_t dos_tools_file_size(dos_file_handle_t fhandle) {
 }
 
 /**
-* Most of the IBM PC text modes occupy 4K bytes per screen page 
+* Most of the IBM PC text modes occupy 4K bytes per screen page
 */
 dos_file_size_t dos_tools_file_dump(FILE* out_stream, dos_file_handle_t fhandle) {
-	// 1. ascertain how many bytes in file 
+	// 1. ascertain how many bytes in file
 	dos_file_size_t fsize_bytes = dos_tools_file_size(fhandle);
 	// 2. private arena of default block size 4K bytes, or less if files size dictates
 	return fsize_bytes;
 }
-
-
