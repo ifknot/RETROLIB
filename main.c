@@ -8,9 +8,9 @@
 // TODO:
 // [x] switch to Linux on T480
 // [x] use git gui
-// [ ] compile open watcom 2
-// [ ] use DOSBOX
-// [ ] use Zed
+// [x] compile open watcom 2
+// [x] use Zed
+// [ ] wcl HELLO.EXE use DOSBOX
 // [ ] use CMake
 //
 // [ ] use NASA's IKOS https://github.com/NASA-SW-VnV/ikos'
