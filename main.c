@@ -4,17 +4,16 @@
 //#include "HGA/demo_hga.h"
 //#include "MEM/demo_mem_arena.h"
 
-
 // TODO:
 // [x] switch to Linux on T480
 // [x] use git gui
 // [x] compile open watcom 2
 // [x] use Zed
 // [x] wcl HELLO.EXE test use DOSBOX
-// [ ] convert to source and build directorys within RETROLIB base directory
+// [ ] convert to source and build directories within RETROLIB base directory
 // [x] use CMake
 // [x] cmake -G "Watcom WMake" -D CMAKE_SYSTEM_NAME=DOS -D CMAKE_SYSTEM_PROCESSOR=I86 -S. -B /path_to/build_dir
-// [x] cmake --build /path_to/build_dir
+// [x] cmake --build /path_to/build_dir --config DEBUG --target HELLOW
 //
 // [ ] use NASA's IKOS https://github.com/NASA-SW-VnV/ikos'
 //
