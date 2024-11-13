@@ -11,6 +11,7 @@
 // [x] compile open watcom 2
 // [x] use Zed
 // [ ] wcl HELLO.EXE use DOSBOX
+// [ ] convert to source and build directorys within RETROLIB base directory
 // [ ] use CMake
 //
 // [ ] use NASA's IKOS https://github.com/NASA-SW-VnV/ikos'
