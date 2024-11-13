@@ -10,7 +10,7 @@
 // [x] use git gui
 // [x] compile open watcom 2
 // [x] use Zed
-// [ ] wcl HELLO.EXE use DOSBOX
+// [x] wcl HELLO.EXE test use DOSBOX
 // [ ] convert to source and build directorys within RETROLIB base directory
 // [ ] use CMake
 //
