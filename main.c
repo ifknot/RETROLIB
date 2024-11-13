@@ -14,6 +14,8 @@
 // [x] use CMake
 // [x] cmake -G "Watcom WMake" -D CMAKE_SYSTEM_NAME=DOS -D CMAKE_SYSTEM_PROCESSOR=I86 -S. -B /path_to/build_dir
 // [x] cmake --build /path_to/build_dir --config DEBUG --target HELLOW
+// [ ] cmake outisde src
+// [ ] cmake OW2 C90 extensions
 //
 // [ ] use NASA's IKOS https://github.com/NASA-SW-VnV/ikos'
 //
