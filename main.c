@@ -14,10 +14,11 @@
 // [x] use CMake
 // [x] cmake -G "Watcom WMake" -D CMAKE_SYSTEM_NAME=DOS -D CMAKE_SYSTEM_PROCESSOR=I86 -S. -B /path_to/build_dir
 // [x] cmake --build /path_to/build_dir --config DEBUG --target HELLOW
-// [ ] bld.sh
-// [ ] cmake outisde src -B ../
-// [ ] cmake OW2 C90 extensions cmake --build /path_to/build_dir -- (Pass remaining options to the native tool.)
-// [ ] configure versioning in .h files - does it work with comments?
+// [x] bld.sh
+// [x] cmake outisde src -B ../
+// [x] cmake OW2 C90 extensions -za99 (Pass remaining options to the native tool.)
+// [x] configure versioning in .h files - does it work with comments?
+// [ ] try a BIOS library
 // [ ] --graphviz
 //
 // [ ] use NASA's IKOS https://github.com/NASA-SW-VnV/ikos'
