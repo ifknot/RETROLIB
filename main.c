@@ -21,7 +21,7 @@
 //
 // [ ] use NASA's IKOS https://github.com/NASA-SW-VnV/ikos'
 //
-// [ ] get bbd-for-c to compile
+// [ ] get bbd-for-c to compile https://github.com/grassator/bdd-for-c
 // [ ] use bdd-for-c
 //
 // [ ] draw some 1 bit playing cards for a nice change
