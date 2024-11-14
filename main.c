@@ -16,7 +16,7 @@
 // [x] cmake --build /path_to/build_dir --config DEBUG --target HELLOW
 // [ ] bld.sh
 // [ ] cmake outisde src -B ../
-// [ ] cmake OW2 C90 extensions
+// [ ] cmake OW2 C90 extensions cmake --build /path_to/build_dir -- (Pass remaining options to the native tool.)
 //
 // [ ] use NASA's IKOS https://github.com/NASA-SW-VnV/ikos'
 //
