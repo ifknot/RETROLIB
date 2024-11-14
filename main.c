@@ -17,6 +17,7 @@
 // [ ] bld.sh
 // [ ] cmake outisde src -B ../
 // [ ] cmake OW2 C90 extensions cmake --build /path_to/build_dir -- (Pass remaining options to the native tool.)
+// [ ] configure versioning in .h files - does it work with comments?
 // [ ] --graphviz
 //
 // [ ] use NASA's IKOS https://github.com/NASA-SW-VnV/ikos'
