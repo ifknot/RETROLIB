@@ -17,7 +17,9 @@
 // [x] bld.sh
 // [x] cmake outisde src -B ../
 // [x] cmake OW2 C90 extensions -za99 (Pass remaining options to the native tool.)
-// [x] configure versioning in .h files - does it work with comments?
+// [x] configure versioning in .h files
+// [x] does it work with comments? - yes
+// [x] install and try cmake-gui
 // [ ] try a BIOS library
 // [ ] --graphviz
 //
