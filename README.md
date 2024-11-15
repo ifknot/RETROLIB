@@ -1,9 +1,9 @@
 # RETROLIB
 ![logo](https://cldup.com/DL5x924VJS.jpg)
 
-I use [Linux Mint](https://linuxmint.com/) with [Zed](https://zed.dev/) and [CMake](https://cmake.org/) to compile [DOS](https://en.wikipedia.org/wiki/DOS) programs with [Open Watcom v2](https://github.com/open-watcom/open-watcom-v2) 
+I use [Linux Mint](https://linuxmint.com/) with [Zed](https://zed.dev/) and [CMake](https://cmake.org/) to compile [DOS](https://en.wikipedia.org/wiki/DOS) programs with [Open Watcom v2](https://github.com/open-watcom/open-watcom-v2).
 
-I also use [Windows 10](https://www.microsoft.com/en-us/software-download/windows10) with [Visual Studio Community](https://visualstudio.microsoft.com/vs/community/) and [Open Watcom IDE](https://open-watcom.github.io/open-watcom-v2-wikidocs/c_readme.html) to compile [DOS](https://en.wikipedia.org/wiki/DOS)
+I also use [Windows 10](https://www.microsoft.com/en-us/software-download/windows10) with [Visual Studio Community](https://visualstudio.microsoft.com/vs/community/) and [Open Watcom IDE](https://open-watcom.github.io/open-watcom-v2-wikidocs/c_readme.html) to compile [DOS](https://en.wikipedia.org/wiki/DOS) programs.
 
 ![OW2 IDE](https://open-watcom.github.io/open-watcom-v2-wikidocs/ide1c.bmp)
 
