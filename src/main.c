@@ -10,7 +10,7 @@
 // [x] compile open watcom 2
 // [x] use Zed
 // [x] wcl HELLO.EXE test use DOSBOX
-// [ ] convert to source and build directories within RETROLIB base directory
+// [x] convert to source and build directories within RETROLIB base directory
 // [x] use CMake
 // [x] cmake -G "Watcom WMake" -D CMAKE_SYSTEM_NAME=DOS -D CMAKE_SYSTEM_PROCESSOR=I86 -S. -B /path_to/build_dir
 // [x] cmake --build /path_to/build_dir --config DEBUG --target HELLOW
