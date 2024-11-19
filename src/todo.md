@@ -35,20 +35,6 @@
  [ ] try a BIOS library
 
 ---
- 
- [ ] --graphviz
- 
----
-
- [ ] use NASA's IKOS https:github.com/NASA-SW-VnV/ikos'
-
----
- [ ] get bbd-for-c to compile https:github.com/grassator/bdd-for-c
- 
- [ ] use bdd-for-c
-
- [ ] draw some 1 bit playing cards for a nice change
-
  [x] mem_arena
  
  [x] TIME into bios_tools_timer.h
@@ -78,7 +64,28 @@
  [ ] rectangle
  
  [ ] demo rectangle
+ 
  [ ] circle (unroll loop)
+ 
  [ ] demo circle
+ 
  [ ] byte aligned block transfer
+ 
  [ ] demo byte_aligned_blt
+
+[ ] --graphviz
+ 
+---
+
+ [ ] use NASA's IKOS https:github.com/NASA-SW-VnV/ikos'
+
+---
+ [ ] get bbd-for-c to compile https:github.com/grassator/bdd-for-c
+
+---
+ [ ] use bdd-for-c
+ 
+---
+ [ ] draw some 1 bit playing cards for a nice change
+ 
+--- 
