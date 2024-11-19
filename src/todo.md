@@ -1,8 +1,7 @@
 ### TODO:
 ---
-- [ ] build from DBG and BIOS
-- [ ] try a BIOS library
 
+- [ ] TEXT2PIX demo
 ---
 - [x] mem_arena
 - [x] TIME into bios_tools_timer.h
@@ -26,7 +25,7 @@
 
 ---
 - [ ] --graphviz
- 
+
 ---
 - [ ] use NASA's IKOS https:github.com/NASA-SW-VnV/ikos'
 
@@ -35,11 +34,11 @@
 
 ---
 - [ ] use bdd-for-c
- 
+
 ---
 - [ ] draw some 1 bit playing cards for a nice change
- 
---- 
+
+---
 ### DONE
 ---
 - [x] switch to Linux on T480
@@ -57,3 +56,8 @@
 - [x] configure versioning in .h files
 - [x] does it work with comments? - yes
 - [x] install and try cmake-gui
+- [x] build from DBG and BIOS
+
+### MAYBE
+
+- [?] try a BIOS library (not useful for BIOS)
