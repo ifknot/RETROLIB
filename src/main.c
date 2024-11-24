@@ -6,7 +6,7 @@
 int main(int argc, char** argv) {
     bios_memory_size_t mem_size = bios_memory_size_KiB();
 
-    INFO("Hello World!");
+    INFO("Hello iMAC World!");
     LOG(%i, mem_size);
 
 	return 0;
