@@ -11,9 +11,10 @@ add_compile_options(
 )
 
 file(GLOB SOURCES
-*.c
-DBG/*.c
-BIOS/*.c
+    *.c
+    DBG/*.c
+    BIOS/*.c
+    DEMOS/*.c
 )
 
 add_executable(test ${SOURCES})

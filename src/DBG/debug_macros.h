@@ -1,12 +1,3 @@
-/**
- *
- *  @brief
- *  @details   ~
- *  @author    Jeremy Thornton
- *  @date      17.09.2024
- *  @copyright © Jeremy Thornton, 2024. All right reserved.
- *
- */
 #ifndef DEBUG_MACROS_H
 #define DEBUG_MACROS_H
 

@@ -1,10 +1,3 @@
-/*****************************************************************
- * @file   bios_tools_timer.c
- * @brief  
- * 
- * @author Jeremy Thornton
- * @date   October 2024
- *********************************************************************/
 #include "bios_tools_timer.h"
 #include "bios_timer_io_constants.h"
 

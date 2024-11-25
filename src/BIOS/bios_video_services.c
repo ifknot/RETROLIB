@@ -1,11 +1,6 @@
 /**
- *
- *  @file      bios_video_services.cpp
- *  @brief     
+ *  @brief
  *  @details   ~
- *  @author    Jeremy Thornton
- *  @date      4.11.2023
- *  @copyright © Jeremy Thornton, 2023. All right reserved.
  *  @url http://www.techhelpmanual.com/27-dos__bios___extensions_service_index.html
  */
 #include <assert.h>
@@ -25,7 +20,7 @@ void bios_set_video_mode(uint8_t mode) {
 		.8086
 		pushf                                ; preserve what int BIOS functions may not
         push    ds                           ; due to unreliable behaviour
-	
+
 		mov		al, mode
 		mov		ah, BIOS_SET_VIDEO_MODE
 		int		BIOS_VIDEO_SERVICES
@@ -57,14 +52,14 @@ void bios_get_video_state(bios_video_state_t* state) {
 		.8086
 		pushf
 		push 	ds
-	
+
 		mov	ah, BIOS_GET_CURRENT_VIDEO_STATE
 		int	BIOS_VIDEO_SERVICES
 		les	di, state
 		mov	es:[di], ah				; number of screen columns
 		mov	es:[di + 1], al			; video mode
 		mov	es:[di + 2], bh			; display page
-	
+
 		pop 	ds
 		popf
 	}
@@ -77,10 +72,10 @@ void bios_get_video_state(bios_video_state_t* state) {
 * -----------------------------------------------------------------------------------------------------
 *			Sub-function: Return Video Configuration Information
 * -----------------------------------------------------------------------------------------------------
-* @details 
+* @details
 * AH = 12h
 * BL = 10  return video configuration information
-* 
+*
 * on return:
 * BH = 0 if color mode in effect
 *    = 1 if mono mode in effect
@@ -94,7 +89,7 @@ void bios_get_video_state(bios_video_state_t* state) {
 * Info: This obtains miscellaneous information about the EGA switch
 *       settings and the current values of the "feature bits" as read
 *       through those rarely-used RCA connectors on some EGA cards.
-* 
+*
 *  @note If upon return from this call, BL>4, then must be running on a CGA or MDA (not an EGA or VGA).
 */
 uint8_t bios_return_video_configuration_information(bios_video_subsystem_config_t* config) {
@@ -103,7 +98,7 @@ uint8_t bios_return_video_configuration_information(bios_video_subsystem_config_
 		.8086
 		pushf
 		push 	ds
-	
+
 		mov		ah, BIOS_VIDEO_SUBSYSTEM_CONFIGURATION
 		mov		bl, 10h						; return video configuration information
 		int		BIOS_VIDEO_SERVICES
@@ -124,7 +119,7 @@ uint8_t bios_return_video_configuration_information(bios_video_subsystem_config_
 * @brief INT 10,12 - Video Subsystem Configuration (EGA/VGA)
 * -----------------------------------------------------------------------------------------------------
 * @note Other than Sub-function: Return Video Configuration Information the other subfunctions have a
-* uniform interface 
+* uniform interface
 * -----------------------------------------------------------------------------------------------------
 * BL = 20  select alternate print screen routine
 *
@@ -217,13 +212,13 @@ uint8_t bios_helper_video_subsytem_configuration(uint8_t request, uint8_t settin
 		.8086
 		pushf
 		push 	ds
-	
+
 		mov		ah, BIOS_VIDEO_SUBSYSTEM_CONFIGURATION
 		mov		bl, request
 		mov		al, setting
 		int		BIOS_VIDEO_SERVICES
 		mov		e, al
-		
+
 		pop 	ds
 		popf
 	}
@@ -233,7 +228,7 @@ uint8_t bios_helper_video_subsytem_configuration(uint8_t request, uint8_t settin
 /**
 * @brief INT 10,12 - Video Subsystem Configuration (EGA/VGA)
 */
-uint8_t bios_video_subsystem_configuration(uint8_t request, uint8_t setting, bios_video_subsystem_config_t* config) {	
+uint8_t bios_video_subsystem_configuration(uint8_t request, uint8_t setting, bios_video_subsystem_config_t* config) {
 	switch (request) {
 	case BIOS_RETURN_VIDEO_CONFIGURATION_INFORMATION:	// the odd one out of the sub-functions
 		return bios_return_video_configuration_information(config);

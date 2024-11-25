@@ -1,17 +1,10 @@
 /**
- *
- *  @file      bios_timer_io_services.c
- *  @brief     
+ *  @brief
  *  @details   8254 channel 0 runs at 1.19318 mhz or ~ 838.0965 nsecs / cycle
  *  System timer interrupts every 65536 cycles ~= 54.9255 ms or ~ 18.20648 ticks per second
  *  1 ms   = 1193.18 cycles
  *  1 hour ~= 65543 ticks ~= 3599.9816 secs
  *  24 hour ~= 1573040 (hex 1800B0) ticks ~= 86399.998 secs
- * 
- *  @author    Jeremy Thornton
- *  @date      7.10.2024
- *  @copyright © Jeremy Thornton, 2024. All right reserved.
- *
  */
 #include <stdint.h>
 #include <stdio.h>
@@ -26,7 +19,7 @@
 * @details Reads the BIOS Data Area address 40:6C Timer Counter DWord as updated by the INT 08 routine.
 * INT 08 Timer (IRQ 0)  This interrupt is issued 18.2 times per second and is responsible for updating the
 * system timer at 40:6C BDA, resetting diskette drive motors, and issuing INT 1C.
-* 
+*
 * @note The reality is that vector 08h wasn't "unused".
 * In fact it was listed as reserved all the way back to Intel's design specification documents.
 * Intel on the 8086/8088 reserved the first 32 interrurpt vectors.
@@ -53,7 +46,7 @@ void bios_read_system_clock(bios_ticks_since_midnight_t* ticks) {
 		lds		bx, ticks
 		mov		[bx], dx							; Intel is little endian
 		mov		[bx + 2],cx
-	
+
 	}
 }
 
@@ -64,7 +57,7 @@ void bios_read_system_clock(bios_ticks_since_midnight_t* ticks) {
 *
 * AH = 01H
 * CX:DX desired tick-count setting
-* on return: 
+* on return:
 * AH    0
 * CF    (0) if no error		(1) on invalid setting
 */
@@ -79,10 +72,10 @@ void bios_set_system_clock(bios_ticks_since_midnight_t ticks) {
 		int     BIOS_CLOCK_SERVICES
 		jnc		OK
 		mov		error, 0FFh;
-OK:	
+OK:
 
 	}
-#ifndef NDEBUG	
+#ifndef NDEBUG
 	if (error) {
 		fprintf(stderr, "ERROR set system clock - invalid setting tick count = %s\n", ticks);
 	}

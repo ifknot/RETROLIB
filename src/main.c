@@ -2,13 +2,10 @@
 
 #include "DBG/debug_macros.h"
 #include "BIOS/bios_memory_size.h"
+#include "DEMOS/text2pix.h"
 
 int main(int argc, char** argv) {
-    bios_memory_size_t mem_size = bios_memory_size_KiB();
 
-    INFO("Hello iMAC World!");
-    LOG(%i, mem_size);
-
-	return 0;
+	return demo_text2pix(argc, argv);
 
 }

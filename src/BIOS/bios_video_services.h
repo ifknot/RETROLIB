@@ -1,20 +1,15 @@
 /**
- *
  *  @brief     INT 10 - Video BIOS Services
  *  @note	   Warning: Some BIOS implementations have a bug that causes register
  *			   BP to be destroyed.   It is advisable to save BP before a call to
  *		       Video BIOS routines on these systems.
- *  @author    Jeremy Thornton
- *  @date      3.11.2023
- *  @copyright Jeremy Thornton, 2023. All right reserved.
- *
  */
 #ifndef BIOS_VIDEO_SERVICES_H
 #define	BIOS_VIDEO_SERVICES_H
 
 #include "bios_video_services_constants.h"
 #include "bios_video_services_types.h"
-	
+
 // INT 10,0 - Set video mode
 void bios_set_video_mode(uint8_t mode);
 
@@ -32,16 +27,16 @@ void bios_set_video_mode(uint8_t mode);
 // INT 10,C - Write graphics pixel at coordinate
 // INT 10,D - Read graphics pixel at coordinate
 // INT 10,E - Write text in teletype mode
-	
+
 // INT 10,F - Get current video state
 void bios_get_video_state(bios_video_state_t* state);
 
 // INT 10,10 - Set/get palette registers (EGA/VGA)
 // INT 10,11 - Character generator routine (EGA/VGA)
-	
+
 // INT 10,12 - Video subsystem configuration (EGA/VGA)
 uint8_t bios_video_subsystem_configuration(uint8_t request, uint8_t setting, bios_video_subsystem_config_t* config);
-	
+
 	//INT 10,12 - broken down into its sub-functions
 	uint8_t bios_return_video_configuration_information(bios_video_subsystem_config_t* config);
 	//bios_select_alternate_print_screen_routine

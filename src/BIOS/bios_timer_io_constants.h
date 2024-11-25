@@ -1,16 +1,12 @@
 /**
  * @brief
  * @details
- * 
+ *
  * clock updates at 1193180/65536 (about 18.2) ticks per second.
  * counts per second ? 18
  * counts per minute ? 1092
  * counts per hour   ? 65543
  * counts per day    ? 1573040
- * 
- *  @author    Jeremy Thornton
- *  @date      1.05.2022
- *  @copyright Jeremy Thornton, 2022. All right reserved.
  */
 #ifndef BIOS_TIMER_IO_CONSTANTS_H
 #define BIOS_TIMER_IO_CONSTANTS_H
