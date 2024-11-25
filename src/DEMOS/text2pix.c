@@ -8,8 +8,8 @@
 #include "../BIOS/bios_tools_timer.h"
 #include "../DBG/debug_macros.h"
 #include "../HGA/hga.h"
-//#include "../DOS/dos_services_files.h"
-//#include "../DOS/dos_tools_files.h"
+#include "../DOS/dos_services_files.h"
+#include "../DOS/dos_tools_files.h"
 //#include "../MEM/mem_arena.h"
 
 int demo_text2pix(int argc, char** argv) {
@@ -18,7 +18,7 @@ int demo_text2pix(int argc, char** argv) {
     char file_path[255];
     char* text_buffer;
 
-    //dos_file_handle_t fhandle = 0;
+    dos_file_handle_t fhandle = 0;
     //mem_arena_t* arena;
     uint8_t card_detected, pixel_byte, pixel_bitmask;
     //const uint16_t FILE_BLOCK_SIZE = 720;
@@ -38,7 +38,6 @@ int demo_text2pix(int argc, char** argv) {
         return EXIT_FAILURE;
     }
     printf("Card detected: %s\n", hw_video_adapter_names[card_detected]);
-/*
 // 3.0 extract the file name given by user from the arguement list
     sscanf(argv[1], "%s", file_path);
 // 3.1 try open the file
@@ -48,6 +47,7 @@ int demo_text2pix(int argc, char** argv) {
     }
     fprintf(stderr, "%s file size=%lu bytes", file_path, dos_tools_file_size(fhandle));
     dos_tools_file_dump(stdout, fhandle);
+    /*
 // 4.0 create 360 bytes of memory space as an arena
     arena = mem_arena_new(MEM_ARENA_POLICY_DOS, FILE_BLOCK_SIZE);
     if (!arena) {

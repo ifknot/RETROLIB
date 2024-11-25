@@ -1,6 +1,6 @@
 ### TODO:
 ---
-- [ ] clean up headers
+- [...] clean up headers
 - [...] TEXT2PIX demo
 ---
 - [x] mem_arena
