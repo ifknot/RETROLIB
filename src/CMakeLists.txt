@@ -20,6 +20,7 @@ file(GLOB SOURCES
     EGA/*.c
     VGA/*.c
     DOS/*.c
+    MEM/*c
     DEMOS/*.c
 )
 

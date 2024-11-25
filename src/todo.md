@@ -1,6 +1,7 @@
 ### TODO:
 ---
-- [...] clean up headers
+- [ ] ow2 model large fix errors?
+- [x] clean up headers
 - [...] TEXT2PIX demo
 ---
 - [x] mem_arena

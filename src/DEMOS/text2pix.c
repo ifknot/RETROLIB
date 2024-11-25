@@ -10,7 +10,7 @@
 #include "../HGA/hga.h"
 #include "../DOS/dos_services_files.h"
 #include "../DOS/dos_tools_files.h"
-//#include "../MEM/mem_arena.h"
+#include "../MEM/mem_arena.h"
 
 int demo_text2pix(int argc, char** argv) {
     char help_string[] = { "Usage:TEXT2PIX [path][filename]\nConverts a text file's characters to white pixels, punctuation to black pixels  and newlines to blank rows of pixels." };
@@ -19,11 +19,11 @@ int demo_text2pix(int argc, char** argv) {
     char* text_buffer;
 
     dos_file_handle_t fhandle = 0;
-    //mem_arena_t* arena;
+    mem_arena_t* arena;
     uint8_t card_detected, pixel_byte, pixel_bitmask;
-    //const uint16_t FILE_BLOCK_SIZE = 720;
-    //uint16_t file_bytes_read, byte_count, bit_count, k;
-    //uint32_t char_count = 0;
+    const uint16_t FILE_BLOCK_SIZE = 720;
+    uint16_t file_bytes_read, byte_count, bit_count, k;
+    uint32_t char_count = 0;
     bios_ticks_since_midnight_t t1, t2;
 
 // 1. minimal user input checking
@@ -43,16 +43,17 @@ int demo_text2pix(int argc, char** argv) {
 // 3.1 try open the file
     fhandle = dos_open_file_using_handle(file_path, ACCESS_READ_ONLY);
     if (!fhandle) {
-        return 0;
+        INFO("fail to find");
+        return EXIT_FAILURE;
     }
-    fprintf(stderr, "%s file size=%lu bytes", file_path, dos_tools_file_size(fhandle));
+    fprintf(stderr, "%s file size=%lu bytes", file_path, (unsigned long)dos_tools_file_size(fhandle));
     dos_tools_file_dump(stdout, fhandle);
-    /*
 // 4.0 create 360 bytes of memory space as an arena
     arena = mem_arena_new(MEM_ARENA_POLICY_DOS, FILE_BLOCK_SIZE);
     if (!arena) {
         return EXIT_FAILURE;
     }
+    /*
 // 4.1 allocate all of the arena as a char buffer
     text_buffer = (char*)mem_arena_alloc(arena, FILE_BLOCK_SIZE);
 // 5. switch to graphics mode

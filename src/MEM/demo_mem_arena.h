@@ -3,7 +3,7 @@
 
 #include <assert.h>
 
-#include "..\DBG\debug_macros.h"
+#include "../DBG/debug_macros.h"
 
 #include "mem_constants.h"
 #include "mem_types.h"

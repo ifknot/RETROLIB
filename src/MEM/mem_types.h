@@ -17,7 +17,7 @@ typedef struct {
 
 } mem_segoff_t;
 
-const mem_segoff_t default_mem_segoff_t = { 0, 0 };
+static const mem_segoff_t default_mem_segoff_t = { 0, 0 };
 
 /**
 * Intel 32 bit address breakdown as a union
