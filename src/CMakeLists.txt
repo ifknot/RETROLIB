@@ -14,6 +14,11 @@ file(GLOB SOURCES
     *.c
     DBG/*.c
     BIOS/*.c
+    HW/*.c
+    HGA/*.c
+    CGA/*.c
+    EGA/*.c
+    VGA/*.c
     DEMOS/*.c
 )
 

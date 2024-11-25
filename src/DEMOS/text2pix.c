@@ -7,9 +7,9 @@
 #include "../BIOS/bios_timer_io_services.h"
 #include "../BIOS/bios_tools_timer.h"
 #include "../DBG/debug_macros.h"
+#include "../HGA/hga.h"
 //#include "../DOS/dos_services_files.h"
 //#include "../DOS/dos_tools_files.h"
-//#include "../HGA/hga.h"
 //#include "../MEM/mem_arena.h"
 
 int demo_text2pix(int argc, char** argv) {
@@ -20,7 +20,7 @@ int demo_text2pix(int argc, char** argv) {
 
     //dos_file_handle_t fhandle = 0;
     //mem_arena_t* arena;
-    //uint8_t card_detected, pixel_byte, pixel_bitmask;
+    uint8_t card_detected, pixel_byte, pixel_bitmask;
     //const uint16_t FILE_BLOCK_SIZE = 720;
     //uint16_t file_bytes_read, byte_count, bit_count, k;
     //uint32_t char_count = 0;

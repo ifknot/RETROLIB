@@ -87,7 +87,7 @@ typedef enum {
     */
 } bios_video_mode_t;
 
-const char bios_video_mode_names[20][64] = {
+static const char bios_video_mode_names[20][64] = {
     "00  40x25 B/W text (CGA)",
     "01  40x25 16 color text (CGA)",
     "02  80x25 16 shades of gray text (CGA)",

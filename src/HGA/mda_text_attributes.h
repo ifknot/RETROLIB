@@ -1,0 +1,16 @@
+#ifndef MDA_ATTRIBUTES_H
+#define MDA_ATTRIBUTES_H
+
+typedef enum {
+        MDA_BLACK_SPACE = 0,
+        MDA_GREEN_ON_BLACK_UNDERSCORE,
+        MDA_GREEN_ON_BLACK,
+        MDA_BRIGHT_GREEN_ON_BLACK_UNDERSCORE = 9,
+        MDA_BRIGHT_GREEN_ON_BLACK,
+        MDA_BLACK_ON_GREEN = 112,
+        MDA_DARK_GREEN_ON_GREEN,
+        MDA_BLINK_BLACK_ON_GREEN = 240,
+        MDA_BLINK_DARK_GREEN_ON_GREEN = 248
+} mda_text_attributes_t;
+
+#endif

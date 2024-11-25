@@ -1,7 +1,7 @@
 ### TODO:
 ---
-
-- [ ] TEXT2PIX demo
+- [ ] clean up headers
+- [...] TEXT2PIX demo
 ---
 - [x] mem_arena
 - [x] TIME into bios_tools_timer.h
