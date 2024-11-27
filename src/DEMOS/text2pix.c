@@ -53,7 +53,6 @@ int demo_text2pix(int argc, char** argv) {
     if (!arena) {
         return EXIT_FAILURE;
     }
-    /*
 // 4.1 allocate all of the arena as a char buffer
     text_buffer = (char*)mem_arena_alloc(arena, FILE_BLOCK_SIZE);
 // 5. switch to graphics mode
@@ -89,7 +88,7 @@ int demo_text2pix(int argc, char** argv) {
                     char_count++;                                       // running total
                 }
                 // buffer byte
-                //printf("[%i]", pixel_byte);
+                printf("[%i]", pixel_byte);
             }
 
 // 6.4 process any remaining characters mod 8 into a final byte
@@ -122,6 +121,6 @@ int demo_text2pix(int argc, char** argv) {
 // 8. tidy up resources
     dos_close_file_using_handle(fhandle);
     mem_arena_delete(arena);
-    */
+
     return EXIT_SUCCESS;
 }
