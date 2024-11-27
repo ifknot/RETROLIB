@@ -1,7 +1,8 @@
-### TODO:
+### DOING:
 ---
-
 - [...] TEXT2PIX demo
+
+### TODO:
 ---
 - [ ] dos_tools_file_dump
 - [ ] test file size/file pos works properly
