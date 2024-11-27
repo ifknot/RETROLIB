@@ -1,11 +1,8 @@
 ### TODO:
 ---
-- [ ] ow2 model large fix errors?
-- [x] clean up headers
+
 - [...] TEXT2PIX demo
 ---
-- [x] mem_arena
-- [x] TIME into bios_tools_timer.h
 - [ ] dos_tools_file_dump
 - [ ] test file size/file pos works properly
 - [ ] read write vram using y lookup
@@ -58,6 +55,12 @@
 - [x] does it work with comments? - yes
 - [x] install and try cmake-gui
 - [x] build from DBG and BIOS
+- [x] ow2 model large fix errors using compiler option -ml
+- [x] clean up headers
+
+---
+- [x] mem_arena
+- [x] TIME into bios_tools_timer.h
 
 ### MAYBE
 
