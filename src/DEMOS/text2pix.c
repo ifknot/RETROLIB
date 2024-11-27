@@ -115,7 +115,7 @@ int demo_text2pix(int argc, char** argv) {
     }
 // 6.7 measure duration of conversion loop and display info
     bios_read_system_clock(&t2);
-    fprintf(stderr, "%s file %lu characters as pixels. Duration = %f secs", file_path, char_count, bios_tools_timer_ticks_to_seconds(t2 - t1));
+    fprintf(stderr, "%s file %lu characters as pixels. Duration = %f secs", file_path, (unsigned long)char_count, bios_tools_timer_ticks_to_seconds(t2 - t1));
 // 7. switch back to text mode
     mda_text_mode();
 // 8. tidy up resources
