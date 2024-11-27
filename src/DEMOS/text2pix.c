@@ -57,7 +57,7 @@ int demo_text2pix(int argc, char** argv) {
     text_buffer = (char*)mem_arena_alloc(arena, FILE_BLOCK_SIZE);
 // 5. switch to graphics mode
     if (YESNO("Switch to Hercules Graphics Mode and display file as pixels?")) {
-        //hga_graphics_mode();
+        hga_graphics_mode();
         hga_select_display_buffer((char)HGA_BUFFER_1);
         hga_cls(HGA_BUFFER_1);
 // 6.0 reset the bios system clock to zero and take an initial reading
