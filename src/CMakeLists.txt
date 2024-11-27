@@ -6,8 +6,11 @@ project(
     LANGUAGES C
 )
 
+# watcom compiler options
+# https://users.pja.edu.pl/~jms/qnx/help/watcom/compiler-tools/cpopts.html
 add_compile_options(
-    -za99
+    -za99               # undocumented switch enable partial C99 compatibility
+    -ml                 # memory model options - large model
 )
 
 file(GLOB SOURCES
