@@ -1,6 +1,7 @@
 #include <stdio.h>
 
-#include "DEMOS/text2pix.h"
+//#include "DEMOS/text2pix.h"
+#include "DEMOS/text2bit.h"
 
 int main(int argc, char** argv) {
 
@@ -10,6 +11,6 @@ int main(int argc, char** argv) {
     return 0;
 #endif
 
-	return demo_text2pix(argc, argv);
+	return demo_text2bit(argc, argv);
 
 }

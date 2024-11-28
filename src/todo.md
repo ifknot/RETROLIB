@@ -1,5 +1,7 @@
 ### DOING:
 ---
+- [...] TEXT2BIT demo
+- [...] BITS2PIX demo
 - [...] TEXT2PIX demo
 
 ### TODO:

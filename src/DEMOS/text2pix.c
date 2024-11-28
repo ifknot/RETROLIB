@@ -4,9 +4,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "../DBG/debug_macros.h"
 #include "../BIOS/bios_timer_io_services.h"
 #include "../BIOS/bios_tools_timer.h"
-#include "../DBG/debug_macros.h"
 #include "../HGA/hga_detect_adapter.h"
 #include "../HGA/hga_video_mode.h"
 #include "../HGA/hga_display_buffer.h"
