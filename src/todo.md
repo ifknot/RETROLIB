@@ -6,6 +6,8 @@
 
 ### TODO:
 ---
+- [ ] 86Box on Mac https://github.com/86Box/86Box
+- [ ] MacBox for 86Box https://github.com/Moonif/MacBox
 - [ ] dos_tools_file_dump
 - [ ] test file size/file pos works properly
 - [ ] read write vram using y lookup
