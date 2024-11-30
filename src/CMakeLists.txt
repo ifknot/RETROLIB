@@ -30,6 +30,6 @@ file(GLOB SOURCES
     DEMOS/*.c
 )
 
-add_executable(test ${SOURCES})
-
 message(Source list="${SOURCES}")
+
+add_executable(test ${SOURCES})

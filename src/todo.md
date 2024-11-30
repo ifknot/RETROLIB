@@ -42,6 +42,7 @@
 ---
 ### DONE
 ---
+- [x] get it all working as below on ARM OS X
 - [x] switch to Linux on T480
 - [x] use git gui
 - [x] compile open watcom 2
