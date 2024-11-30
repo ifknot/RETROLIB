@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 
+#suppress compiler checks for cross compilation using OW2 and C under ARM environments
+set(CMAKE_C_COMPILER_WORKS 1)
+
 project(
     retrolib
     VERSION 0.1.0
