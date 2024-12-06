@@ -21,14 +21,6 @@ void hga_write_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y,
 
 }
 
-void hga_write_vram_buffer(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t byte_pattern) {
-    hga_write_vram_buffer_lookup(vram_segment, x, y, byte_pattern, HGA_TABLE_Y_LOOKUP);
-}
-
-uint8_t hga_read_vram_buffer(uint16_t vram_segment, uint16_t x, uint16_t y) {
-    return hga_read_vram_buffer_lookup(vram_segment, x, y, HGA_TABLE_Y_LOOKUP);
-}
-
 uint8_t hga_read_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y, const uint16_t* y_lookup) {
 	uint8_t byte_pattern;
 	__asm {
