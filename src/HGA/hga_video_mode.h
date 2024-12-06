@@ -19,7 +19,7 @@ void hga_video_mode(const uint8_t* presets, uint8_t flags_config, uint8_t flags_
 /**
 *  @brief  enter text "half" mode single display frame (mimic MDA).
 */
-inline void mda_text_mode() {
+inline void hga_text_mode() {
     hga_video_mode(hga_crtc_presets_text_mode, hga_text_config_default, hga_text_ctrl_default); // HGA_TABLE_TEXT_MODE_DEFAULTS
 }
 
