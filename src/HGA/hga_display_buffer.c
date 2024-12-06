@@ -55,7 +55,3 @@ void hga_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern) {
 		popf								; restore flags on exit
 	}
 }
-
-void hga_cls(uint16_t vram_segment) {
-    hga_fill_vram_buffer(vram_segment, 0);
-}
