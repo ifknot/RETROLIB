@@ -1,17 +1,12 @@
 ### DOING:
 ---
-- [...] TEXT2BIT demo
-- [...] BITS2PIX demo
 - [...] TEXT2PIX demo
-
-### TODO:
----
-- [ ] 86Box on Mac https://github.com/86Box/86Box
-- [ ] MacBox for 86Box https://github.com/Moonif/MacBox
-- [ ] dos_tools_file_dump
-- [ ] test file size/file pos works properly
 - [ ] read write vram using y lookup
 - [ ] finish buffer demo
+### TODO:
+---
+- [ ] dos_tools_file_dump
+- [ ] test file size/file pos works properly
 - [ ] convert video mode preset names and table
 - [ ] demo buffer png anim to git readme
 - [ ] pixel perf compare algos
@@ -44,6 +39,10 @@
 ---
 ### DONE
 ---
+- [x] TEXT2BIT demo
+- [?] BITS2PIX demo
+- [x] 86Box on Mac https://github.com/86Box/86Box
+- [x] MacBox for 86Box https://github.com/Moonif/MacBox
 - [x] get it all working as below on ARM OS X
 - [x] switch to Linux on T480
 - [x] use git gui
