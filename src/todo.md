@@ -7,17 +7,21 @@
 ---
 - [ ] dos_tools_file_dump
 - [ ] test file size/file pos works properly
-- [ ] convert video mode preset names and table
 - [ ] demo buffer png anim to git readme
+---
+- [ ] plot pixel algos
 - [ ] pixel perf compare algos
-- [ ] fix MDA naming
 - [ ] demo Mendelbrot fixed point
+---
 - [ ] bresenham line
 - [ ] demo lines
+---
 - [ ] rectangle
 - [ ] demo rectangle
+---
 - [ ] circle (unroll loop)
 - [ ] demo circle
+---
 - [ ] byte aligned block transfer
 - [ ] demo byte_aligned_blt
 
@@ -39,6 +43,8 @@
 ---
 ### DONE
 ---
+- [x] fix MDA naming
+- [X] convert video mode preset names and table
 - [x] TEXT2BIT demo
 - [?] BITS2PIX demo
 - [x] 86Box on Mac https://github.com/86Box/86Box
