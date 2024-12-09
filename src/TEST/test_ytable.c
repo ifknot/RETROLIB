@@ -10,8 +10,8 @@ int test_ytable() {
         hga_select_display_buffer((char)HGA_BUFFER_1);
         hga_cls(HGA_BUFFER_1);
 
-        for(int i = 0; i < HGA_SCREEN_Y_MAX; ++i) {
-            hga_write_vram_buffer(HGA_BUFFER_1, HGA_BYTES_PER_LINE / 2, i, 0xFF);
+        for(int i = 0; i < 90; ++i) {
+            hga_write_vram_buffer(HGA_BUFFER_1, i, i, 0xFF);
         }
 
         PRESSENTER("To retrun to text mode");

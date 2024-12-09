@@ -28,9 +28,8 @@
  *          Each 1-bit field selects black (0) or 'white'(1).
  */
 #include "hga_pixel.h"
-#include "hga_table_y_lookup.h"
 
-void hga_plot_pixel_lookup_table(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t c, const uint8_t* y_lookup) {
+void hga_plot_pixel_lookup_table(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t c) {
     __asm {
         // 1. set up registers
         mov     ax, vram_segment
