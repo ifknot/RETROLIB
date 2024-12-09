@@ -13,9 +13,13 @@ int test_ytable() {
         for(int i = 0; i < 90; ++i) {
             hga_write_vram_buffer(HGA_BUFFER_1, i, i, 0xFF);
         }
-
+        LOG(%i, hga_read_vram_buffer(HGA_BUFFER_1, 0, 0));
+        LOG(%i, hga_read_vram_buffer(HGA_BUFFER_1, 45, 45));
+        LOG(%i, hga_read_vram_buffer(HGA_BUFFER_1, 46, 45));
+        LOG(%i, hga_read_vram_buffer(HGA_BUFFER_1, 45, 44));
         PRESSENTER("To retrun to text mode");
         hga_text_mode();
+
     }
     return 0;
 };

@@ -1,8 +1,6 @@
 ### DOING:
 ---
 - [...] TEXT2PIX demo
-- [ ] test ytable
-- [ ] read write vram using y lookup
 - [ ] finish buffer demo
 ### TODO:
 ---
@@ -44,6 +42,8 @@
 ---
 ### DONE
 ---
+- [x] read write vram using y lookup
+- [x] test ytable
 - [x] fix MDA naming
 - [X] convert video mode preset names and table
 - [x] TEXT2BIT demo
