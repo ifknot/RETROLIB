@@ -18,7 +18,22 @@ J1:   out     dx, al
 }
 
 void hga_write_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t byte_pattern, const uint16_t* y_lookup) {
-
+	__asm {
+		.8086
+		// 1. set up registers
+		lds   si, y_lookup                    ; DS:[SI] first entry y lookup table
+		mov   ax, vram_segment
+		mov   es, ax
+		// 3. DI = lookup y offset for Hercules
+		add   si, y
+		add   si, y
+		mov   di, [si]                        ; lookup y offset
+		// 3. ES:[DI] points to byte to set
+		add   di, x                           ; add in x
+        // 4. display byte
+        mov   al, byte_pattern
+        stosb
+	}
 }
 
 uint8_t hga_read_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y, const uint16_t* y_lookup) {

@@ -28,6 +28,7 @@ file(GLOB SOURCES
     DOS/*.c
     MEM/*c
     DEMOS/*.c
+    TEST/*.c
 )
 
 message(Source list="${SOURCES}")

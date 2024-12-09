@@ -8,9 +8,13 @@
 int demo_text2bit(int argc, char** argv) {
     FILE* fin;
     int c;
-    LOG(%i, argc);
-    if(argc == 1) {
+    switch(argc) {
+        case 1:
         fin = stdin;
+        break;
+        case 2:
+        default:
+        printf("Error! Argument count = %i", argc);
     }
 
     do {

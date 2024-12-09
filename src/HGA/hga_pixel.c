@@ -33,28 +33,24 @@
 void hga_plot_pixel_lookup_table(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t c, const uint8_t* y_lookup) {
     __asm {
         // 1. set up registers
+        mov     ax, vram_segment
+        mov     es, ax
         mov     bx, x
         mov     cl, bl                                  ; copy of x low order byte
         mov     di, y
-        // 2. look up row offset
-    // lea     di, ROW_TABLE
-    // add     y
-        //mov     di, [ROW_TABLE + di]
-        // 3. setup ES:[DI] to point to the VRAM byte containing pixel location
-        mov     ax, vram_segment
-        mov     es, ax
+        // 2. setup ES:[DI] to point to the VRAM byte containing pixel location
         shr     bx, 1                                    ; x / 8
         shr     bx, 1
         shr     bx, 1
         add     di, bx
-        // 4. setup AL = pixel bit mask, AH = pixel 'colour'
+        // 3. setup AL = pixel bit mask, AH = pixel 'colour'
         and     cx, 7                                   ; mask off 0111 lower bits ie x mod 8 (thanks powers of 2)
         xor     cl, 7                                   ; CL = number of bits to shift left (thanks bit flip XOR)
         mov     al, 11111110b                           ; AL = pixel mask
         rol     al, cl                                  ; roll mask around by x mod 8
         mov     ah, c                                   ; load ah with a single pixel at lsb (e.g. white 00000001)
         shl     ah, cl                                  ; shift single bit along by x mod 8
-        // 5. display pixel
+        // 4. display pixel
         and     es:[di], al                             ; mask out the pixel bits
         or      es:[di], ah                             ; plot point
     }
@@ -104,8 +100,3 @@ for(int i= 0; i < 87; ++i) {
 }
 
 */
-
-
-
-
-

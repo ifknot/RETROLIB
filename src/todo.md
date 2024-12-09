@@ -1,6 +1,7 @@
 ### DOING:
 ---
 - [...] TEXT2PIX demo
+- [ ] test ytable
 - [ ] read write vram using y lookup
 - [ ] finish buffer demo
 ### TODO:
