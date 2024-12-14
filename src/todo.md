@@ -1,7 +1,7 @@
 ### DOING:
 ---
 - [...] TEXT2PIX demo
-- [ ] finish buffer demo
+
 ### TODO:
 ---
 - [ ] dos_tools_file_dump
@@ -43,6 +43,7 @@
 ### DONE
 ---
 - [x] DOSAPPS\VIDEOINF.EXE
+- [x] finish buffer demo
 - [x] read write vram using y lookup
 - [x] test ytable
 - [x] fix MDA naming
