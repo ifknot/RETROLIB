@@ -1,6 +1,6 @@
 /**
  *
- *  @brief     
+ *  @brief
  *  @details   ~
  *  @author    Jeremy Thornton
  *  @date      21.09.2024
@@ -35,7 +35,7 @@ typedef enum {
     crtc_port_CGA = 0x03D4
 } hw_crtc_port_t;
 
-static char hw_video_adapter_names[12][32] = {
+static char hw_video_adapter_names[11][32] = {
     "Unknown",
     "MDA",
     "Hercules",
@@ -46,8 +46,7 @@ static char hw_video_adapter_names[12][32] = {
     "EGA",
     "MCGA",
     "VGA",
-    "SVGA",
-    "Dual Adapters"
+    "SVGA"
 };
 
 #endif

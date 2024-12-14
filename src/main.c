@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-#include "DEMOS/text2pix.h"
-
+//#include "DEMOS/text2pix.h"
+#include "TEST/test_video_info.h"
 int main(int argc, char** argv) {
 
 #ifndef __LARGE__
@@ -10,6 +10,7 @@ int main(int argc, char** argv) {
     return 0;
 #endif
 
-	return demo_text2pix(argc, argv);
+	//return demo_text2pix(argc, argv);
+	return test_video_info();
 
 }

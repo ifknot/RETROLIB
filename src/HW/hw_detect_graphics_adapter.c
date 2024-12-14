@@ -17,28 +17,19 @@
 #include "hw_constants_graphics.h"
 
 uint8_t hw_detect_monochrome_adapter() {
-    uint8_t mono_card = HW_VIDEO_ADAPTER_UKNOWN;
-
-    mono_card = hga_detect_adapter();
-	if(mono_card != HW_VIDEO_ADAPTER_HGA_INCOLOR) return mono_card;
-
-	return HW_VIDEO_ADAPTER_UKNOWN;
+	return hga_detect_adapter();
 }
 
 uint8_t hw_detect_colour_adapter() {
-	uint8_t colour_card = HW_VIDEO_ADAPTER_UKNOWN;
+	uint8_t card = HW_VIDEO_ADAPTER_UKNOWN;
 
-	colour_card = vga_detect_adapter();
-	if (colour_card) return colour_card;
+	card = vga_detect_adapter();
+	if (card) return card;
 
-	colour_card = ega_detect_adapter();
-	if (colour_card) return colour_card;
+	card = ega_detect_adapter();
+	if (card) return card;
 
-	colour_card = cga_detect_adapter();
-	if (colour_card) return colour_card;
+	card = cga_detect_adapter();
 
-	colour_card = hga_detect_adapter();
-	if(colour_card == HW_VIDEO_ADAPTER_HGA_INCOLOR) return colour_card;
-
-	return HW_VIDEO_ADAPTER_UKNOWN;
+	return card;
 }

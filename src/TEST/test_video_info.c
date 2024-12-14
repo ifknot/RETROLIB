@@ -6,17 +6,17 @@
 #include "../HW/hw_detect_graphics_adapter.h"
 
 int test_video_info() {
-    uint16_t mono, colour;
-    mono = colour = HW_VIDEO_ADAPTER_UKNOWN;
-    mono = hw_detect_monochrome_adapter();
-    colour = hw_detect_colour_adapter();
-    if (colour) {
-            printf("\ncolour display = %s\n", hw_video_adapter_names[colour]);
+    uint16_t card1, card2, display = 1;
+    card1 = card2 = HW_VIDEO_ADAPTER_UKNOWN;
+    card1 = hw_detect_monochrome_adapter();
+    card2 = hw_detect_colour_adapter();
+    if (card1) {
+            printf("\ndisplay adapter %i = %s\n", display++, hw_video_adapter_names[card1]);
     }
-    if (mono) {
-            printf("\nmonochrome display = %s\n", hw_video_adapter_names[mono]);
+    if (card2) {
+            printf("\ndisplay adapter %i = %s\n", display, hw_video_adapter_names[card2]);
     }
-    if(!(colour | mono)) {
+    if(!(card1 | card2)) {
         printf("\n tested for...");
         for(int i = HW_VIDEO_ADAPTER_MDA; i <= HW_VIDEO_ADAPTER_SVGA; ++i) {
             printf("\n? %s", hw_video_adapter_names[i]);
