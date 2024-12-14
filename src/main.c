@@ -3,6 +3,8 @@
 //#include "DEMOS/text2pix.h"
 //#include "DEMOS/text2bit.h"
 #include "TEST/test_ytable.h"
+//#include "TEST/test_video_info.h"
+
 
 int main(int argc, char** argv) {
 

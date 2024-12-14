@@ -10,7 +10,7 @@
 #include "../BIOS/bios_video_services.h"
 #include "../BIOS/bios_video_services_types.h"
 #include "../BIOS/bios_timer_io_services.h"
-#include "../MATH/math_prng.h"
+//#include "../MATH/math_prng.h"
 
 void demo_hga() {
         uint16_t colour, mono, buffer = HGA_BUFFER_0;

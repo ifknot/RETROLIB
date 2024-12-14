@@ -1,12 +1,3 @@
-/**
- *
- *  @brief     
- *  @details   ~
- *  @author    Jeremy Thornton
- *  @date      21.09.2024
- *  @copyright © Jeremy Thornton, 2024. All right reserved.
- *
- */
 #ifndef DEMO_HW_H
 #define DEMO_HW_H
 

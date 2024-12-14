@@ -42,6 +42,7 @@
 ---
 ### DONE
 ---
+- [x] DOSAPPS\VIDEOINF.EXE
 - [x] read write vram using y lookup
 - [x] test ytable
 - [x] fix MDA naming
