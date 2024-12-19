@@ -1,7 +1,7 @@
 ### DOING:
 ---
 - [...] TEXT2PIX demo
-
+- [ ] write a byte count version of write buffer
 ### TODO:
 ---
 - [ ] dos_tools_file_dump
