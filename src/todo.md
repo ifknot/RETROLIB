@@ -2,6 +2,7 @@
 ---
 - [...] TEXT2PIX demo
 - [ ] write a byte count version of write buffer
+- [ ] use file size to read whole file 
 ### TODO:
 ---
 - [ ] dos_tools_file_dump
