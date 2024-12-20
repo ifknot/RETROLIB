@@ -22,7 +22,7 @@
 #define ERR_FOPEN_INPUT    "ERROR: Unable to open input file %s"
 #define METRICS_INFO       "%s file %lu characters as pixels. Duration = %f secs"
 // value constants
-#define FILE_BLOCK_SIZE 720
+#define FILE_BLOCK_SIZE    8192     // 8K of data
 
 
 int pixelate(int argc, char** argv) {
@@ -73,16 +73,23 @@ int pixelate(int argc, char** argv) {
     bios_read_system_clock(&t1);
 // 6.1 process all the characters from the input file
     while(char_count) {
-        
+// 6.2 load (upto) 8K of file data 
+        file_bytes_read = dos_read_file_using_handle(fhandle, text_buffer, FILE_BLOCK_SIZE);
+// 6.3 convert file data into screen byte data 8 characters at a time per the given filter
+        byte_count = file_bytes_read >> 3;                          // div 8    
+
+// 6.4 process any remaining characters mod 8 into a final byte
+        bit_count = file_bytes_read & 7;                            // mod 8        
     }
-// 6.7 measure duration of conversion loop and display info
+// 6.7 measure duration of conversion loop
     bios_read_system_clock(&t2);
-    fprintf(stderr, METRICS_INFO, file_path, (unsigned long)char_count, bios_tools_timer_ticks_to_seconds(t2 - t1));      
 // 7. wait for ENTER key and switch back to text mode
     getchar();
     hga_text_mode();
 // 8. tidy up resources
     dos_close_file_using_handle(fhandle);
     mem_arena_delete(arena);
+// 9. display peformance metrics
+    fprintf(stderr, METRICS_INFO, file_path, (unsigned long)char_count, bios_tools_timer_ticks_to_seconds(t2 - t1));      
     return EXIT_SUCCESS;
 }
