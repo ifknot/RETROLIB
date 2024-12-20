@@ -19,8 +19,8 @@
 #define USAGE_FMT          "%s [inputfile] [outputfile]"
 #define ERR_GRAPHICS       "ERROR: This version of %s requires a Hercules Graphics Adapter."
 #define ERR_MEMORY         "ERROR: Memory allocation failure."
-#define ERR_FOPEN_INPUT    ""
-#define ERR_FOPEN_OUTPUT   ""
+#define ERR_FOPEN_INPUT    "ERROR: Unable to open input file %s"
+#define ERR_FOPEN_OUTPUT   "ERROR: "
 // value defines
 #define FILE_BLOCK_SIZE 720
 
@@ -51,7 +51,7 @@ int pixelate(int argc, char** argv) {
 // 3.1 try open the file
     fhandle = dos_open_file_using_handle(file_path, ACCESS_READ_ONLY);
     if (!fhandle) {
-        fprintf(stderr, ERR_FOPEN_INPUT);
+        fprintf(stderr, ERR_FOPEN_INPUT, file_path);
         return EXIT_FAILURE;
     }
 // 3.2 total characters to process
