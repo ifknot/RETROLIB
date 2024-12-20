@@ -14,14 +14,14 @@
 #include "../DOS/dos_tools_files.h"
 #include "../MEM/mem_arena.h"
 
-// string defines
+// string constants
 #define USAGE_INFO         "Converts a text file's characters to white pixels, punctuation to black pixels and newlines to a new pixel row."
-#define USAGE_FMT          "%s [inputfile] [outputfile]"
+#define USAGE_FMT          "%s [inputfile]"
 #define ERR_GRAPHICS       "ERROR: This version of %s requires a Hercules Graphics Adapter."
 #define ERR_MEMORY         "ERROR: Memory allocation failure."
 #define ERR_FOPEN_INPUT    "ERROR: Unable to open input file %s"
-#define ERR_FOPEN_OUTPUT   "ERROR: "
-// value defines
+#define METRICS_INFO       "%s file %lu characters as pixels. Duration = %f secs"
+// value constants
 #define FILE_BLOCK_SIZE 720
 
 
@@ -64,12 +64,20 @@ int pixelate(int argc, char** argv) {
     }
 // 4.1 allocate all of the arena as a char buffer
     text_buffer = (char*)mem_arena_alloc(arena, FILE_BLOCK_SIZE);
+// 5. switch to graphics mode
+    hga_graphics_mode();
+    hga_select_display_buffer((char)HGA_BUFFER_1);
+    hga_cls(HGA_BUFFER_1);
+// 6.0 reset the bios system clock to zero and take an initial reading
+    bios_set_system_clock(0);
+    bios_read_system_clock(&t1);
 
 
-
-    
-
-// 7. switch back to text mode
+// 6.7 measure duration of conversion loop and display info
+    bios_read_system_clock(&t2);
+    fprintf(stderr, METRICS_INFO, file_path, (unsigned long)char_count, bios_tools_timer_ticks_to_seconds(t2 - t1));      
+// 7. wait for ENTER key and switch back to text mode
+    getchar();
     hga_text_mode();
 // 8. tidy up resources
     dos_close_file_using_handle(fhandle);
