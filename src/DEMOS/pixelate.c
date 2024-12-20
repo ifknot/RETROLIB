@@ -14,16 +14,17 @@
 #include "../DOS/dos_tools_files.h"
 #include "../MEM/mem_arena.h"
 
+#define USAGE_INFO     "Converts a text file's characters to white pixels, punctuation to black pixels and newlines to a new pixel row."
+#define USAGE_FMT      "%s [inputfile] [outputfile]"
+#define ERR_GRAPHICS   "ERROR: This version of PIXELATE requires a Hercules Graphics Adapter."
+#define FILE_BLOCK_SIZE 720
+
 int pixelate(int argc, char** argv) {
-    char help_string[] = { "Usage:TEXT2PIX [path][filename]\nConverts a text file's characters to white pixels, punctuation to black pixels  and newlines to blank rows of pixels." };
-    char error_string[] = { "ERROR: This version of TEXT2PIX requires a Hercules Graphics Adapter." };
     char file_path[255];
     char* text_buffer;
-
     dos_file_handle_t fhandle = 0;
     mem_arena_t* arena;
     uint8_t card_detected, pixel_byte, pixel_bitmask;
-    const uint16_t FILE_BLOCK_SIZE = 720;
     uint16_t file_bytes_read, byte_count, bit_count, k;
     uint32_t char_count = 0;
     bios_ticks_since_midnight_t t1, t2;
