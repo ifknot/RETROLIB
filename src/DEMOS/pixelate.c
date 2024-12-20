@@ -71,8 +71,10 @@ int pixelate(int argc, char** argv) {
 // 6.0 reset the bios system clock to zero and take an initial reading
     bios_set_system_clock(0);
     bios_read_system_clock(&t1);
-
-
+// 6.1 process all the characters from the input file
+    while(char_count) {
+        
+    }
 // 6.7 measure duration of conversion loop and display info
     bios_read_system_clock(&t2);
     fprintf(stderr, METRICS_INFO, file_path, (unsigned long)char_count, bios_tools_timer_ticks_to_seconds(t2 - t1));      
