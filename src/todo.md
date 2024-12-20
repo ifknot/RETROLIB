@@ -3,12 +3,12 @@
 - [...] TEXT2PIX demo
 - [ ] write a byte count version of write buffer
 - [ ] use file size to read whole file
-- [ ] finish file dump
 ### TODO:
 ---
 - [ ] dos_tools_file_dump
 - [ ] test file size/file pos works properly
 - [ ] demo buffer png anim to git readme
+- [ ] getopt own version
 ---
 - [ ] plot pixel algos
 - [ ] pixel perf compare algos
