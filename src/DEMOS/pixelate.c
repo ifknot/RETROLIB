@@ -17,7 +17,8 @@
 // string defines
 #define USAGE_INFO         "Converts a text file's characters to white pixels, punctuation to black pixels and newlines to a new pixel row."
 #define USAGE_FMT          "%s [inputfile] [outputfile]"
-#define ERR_GRAPHICS       "ERROR: This version of PIXELATE requires a Hercules Graphics Adapter."
+#define ERR_GRAPHICS       "ERROR: This version of %s requires a Hercules Graphics Adapter."
+#define ERR_MEMORY         "ERROR: Memory allocation failure."
 #define ERR_FOPEN_INPUT    ""
 #define ERR_FOPEN_OUTPUT   ""
 // value defines
@@ -36,10 +37,9 @@ int pixelate(int argc, char** argv) {
 
 // 1. confirm appropriate graphics adapter present
     if (!hga_detect_adapter()) {
-        fprintf(stderr, ERR_GRAPHICS);
+        fprintf(stderr, ERR_GRAPHICS, argv[0]);
         return EXIT_FAILURE;
     }
-
 // 2. minimal user input checking
     if (argc != 2) {
         fprintf(stderr, USAGE_INFO);
@@ -51,7 +51,7 @@ int pixelate(int argc, char** argv) {
 // 3.1 try open the file
     fhandle = dos_open_file_using_handle(file_path, ACCESS_READ_ONLY);
     if (!fhandle) {
-        INFO("fail to find");
+        fprintf(stderr, ERR_FOPEN_INPUT);
         return EXIT_FAILURE;
     }
 // 3.2 total characters to process
@@ -59,9 +59,12 @@ int pixelate(int argc, char** argv) {
 // 4.0 create screen size block of memory space as an arena
     arena = mem_arena_new(MEM_ARENA_POLICY_DOS, FILE_BLOCK_SIZE);
     if (!arena) {
+        fprintf(stderr, ERR_MEMORY);
         return EXIT_FAILURE;
     }
 // 4.1 allocate all of the arena as a char buffer
     text_buffer = (char*)mem_arena_alloc(arena, FILE_BLOCK_SIZE);
+
+
     return EXIT_SUCCESS;
 }
