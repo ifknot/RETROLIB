@@ -66,5 +66,13 @@ int pixelate(int argc, char** argv) {
     text_buffer = (char*)mem_arena_alloc(arena, FILE_BLOCK_SIZE);
 
 
+
+    
+
+// 7. switch back to text mode
+    hga_text_mode();
+// 8. tidy up resources
+    dos_close_file_using_handle(fhandle);
+    mem_arena_delete(arena);
     return EXIT_SUCCESS;
 }
