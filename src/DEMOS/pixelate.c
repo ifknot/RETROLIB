@@ -1,4 +1,4 @@
-#include "pixelate.h" 
+#include "pixelate.h"
 
 #include <stdio.h>
 #include <stdint.h>
@@ -55,7 +55,7 @@ int pixelate(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 // 3.2 total characters to process
-    char_count = dos_tools_file_size(fhandle));
+    char_count = dos_tools_file_size(fhandle);
 // 4.0 create screen size block of memory space as an arena
     arena = mem_arena_new(MEM_ARENA_POLICY_DOS, FILE_BLOCK_SIZE);
     if (!arena) {
@@ -73,13 +73,13 @@ int pixelate(int argc, char** argv) {
     bios_read_system_clock(&t1);
 // 6.1 process all the characters from the input file
     while(char_count) {
-// 6.2 load (upto) 8K of file data 
+// 6.2 load (upto) 8K of file data
         file_bytes_read = dos_read_file_using_handle(fhandle, text_buffer, FILE_BLOCK_SIZE);
 // 6.3 convert file data into screen byte data 8 characters at a time per the given filter
-        byte_count = file_bytes_read >> 3;                          // div 8    
+        byte_count = file_bytes_read >> 3;                          // div 8
 
 // 6.4 process any remaining characters mod 8 into a final byte
-        bit_count = file_bytes_read & 7;                            // mod 8        
+        bit_count = file_bytes_read & 7;                            // mod 8
     }
 // 6.7 measure duration of conversion loop
     bios_read_system_clock(&t2);
@@ -90,6 +90,6 @@ int pixelate(int argc, char** argv) {
     dos_close_file_using_handle(fhandle);
     mem_arena_delete(arena);
 // 9. display peformance metrics
-    fprintf(stderr, METRICS_INFO, file_path, (unsigned long)char_count, bios_tools_timer_ticks_to_seconds(t2 - t1));      
+    fprintf(stderr, METRICS_INFO, file_path, (unsigned long)char_count, bios_tools_timer_ticks_to_seconds(t2 - t1));
     return EXIT_SUCCESS;
 }

@@ -23,7 +23,7 @@ void hga_write_vram_buffer_byte_location(uint16_t vram_segment, uint16_t byte_lo
 * @details
 * @note No sanity checking!
 */
-uint8_t hga_read_vram_buffer_byte_location(uint16_t vram_segment, uint16_t byte location);
+uint8_t hga_read_vram_buffer_byte_location(uint16_t vram_segment, uint16_t byte_location);
 
 /**
 * @brief Write an 8 bit byte pattern at (byte, line) coordinates x(0..89), y(0..347) to the specified HGA VRAM buffer

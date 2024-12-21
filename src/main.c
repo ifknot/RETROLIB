@@ -2,6 +2,7 @@
 
 //#include "DEMOS/text2pix.h"
 #include "TEST/test_video_info.h"
+
 int main(int argc, char** argv) {
 
 #ifndef __LARGE__
