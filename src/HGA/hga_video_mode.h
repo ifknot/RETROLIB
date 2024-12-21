@@ -5,7 +5,6 @@
 
 #include "hga_constants.h"
 #include "hga_video_mode_presets.h"
-//#include "hga_table_video_modes.h"
 
 /**
 *  @brief  program CRTC for video mode as described by the CRTC presets data table.

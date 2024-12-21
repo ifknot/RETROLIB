@@ -1,18 +1,9 @@
-/**
- *
- *  @brief     HGA macro definitions for assembly
- *  @details   The founder of Hercules Computer Technology, Van Suwannukul, created the Hercules Graphics
- *             Card so that he could work on his doctoral thesis on an IBM PC using the Thai alphabet,
- *             which was impossible at the low resolution of CGA or the fixed character set of MDA.
- *             It initially retailed in 1982 for $499.
- *  @url https://en.wikipedia.org/wiki/Hercules_Graphics_Card
- *  Everything is hard coded to shave a few clock cycles off the execution time
- *  Using #define enables immediate addressing mode - in which the data operand is a part of the instruction itself
- *  This matters on an 8088 where reg,imm is only 4 clock cycles as opposed to 12+EA for reg,mem
- *  This advantage dwindles on the 286 (2:5) and 386 (2:4), vanishing on the 486(1:1) and beyond
- */
 #ifndef HGA_CONSTANTS_H
 #define HGA_CONSTANTS_H
+/**
+* @url https://www.seasip.info/VintagePC/mda.html
+* @url https://www.seasip.info/VintagePC/hercplus.html
+*/
 
  /**
  *  Hercules macro definitions for assembly
@@ -25,7 +16,7 @@
 #define HGA_PIXELS_PER_BYTE     8
 #define HGA_BYTES_PER_LINE      90
 #define HGA_WORDS_PER_LINE      45
-#define HGA_BYTES_PER_SCREEN  32768           
+#define HGA_BYTES_PER_SCREEN  32768
 #define HGA_WORDS_PER_SCREEN  16384
 #define HGA_CHARS_PER_SCREEN  2000
 
