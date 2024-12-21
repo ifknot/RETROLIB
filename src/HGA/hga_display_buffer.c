@@ -56,7 +56,6 @@ uint8_t hga_read_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t 
 void hga_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern) {
 	__asm {
 		.8086
-		pushf								; preserve flags on entry(direction flag used)
 
 		// 1. setup HGA quad bank VRAM destination pointer ES:DI
 		xor 	di, di						; top left screen(0, 0)
@@ -70,6 +69,5 @@ void hga_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern) {
 		// 3. move the byte:byte pattern to VRAM
 		rep		stosw						; chain store byte pattern word to VRAM
 
-		popf								; restore flags on exit
 	}
 }
