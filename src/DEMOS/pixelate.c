@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-//#include "../DBG/debug_macros.h"
+#include "../DBG/debug_macros.h"
 #include "../BIOS/bios_timer_io_services.h"
 #include "../BIOS/bios_tools_timer.h"
 #include "../HGA/hga_detect_adapter.h"
@@ -15,12 +15,14 @@
 #include "../MEM/mem_arena.h"
 
 // string constants
-#define USAGE_INFO         "Converts a text file's characters to white pixels, punctuation to black pixels and newlines to a new pixel row."
-#define USAGE_FMT          "%s [inputfile]"
-#define ERR_GRAPHICS       "ERROR: This version of %s requires a Hercules Graphics Adapter."
-#define ERR_MEMORY         "ERROR: Memory allocation failure."
-#define ERR_FOPEN_INPUT    "ERROR: Unable to open input file %s"
-#define METRICS_INFO       "%s file %lu characters as pixels. Duration = %f secs"
+#define USAGE_INFO         "INFO: Converts a text file's characters to white pixels, punctuation to black pixels and newlines to a new pixel row.\n"
+#define USAGE_FMT          "\nUSAGE: %s [inputfile]\n"
+#define ERR_GRAPHICS       "ERROR: No valid graphics adapter found!\n"
+#define ERR_GRAPHICS_INFO  "INFO: This version of %s requires an Hercules Graphics Adapter.\n"
+#define ERR_MEMORY         "ERROR: Memory allocation failure!\n"
+#define ERR_FOPEN_INPUT    "ERROR: Unable to open input file %s!\n"
+#define FINPUT_INFO        "INFO: %s file size %lu bytes.\n"
+#define METRICS_INFO       "INFO: %s file %lu characters as pixels. Duration = %f secs\n"
 // value constants
 #define FILE_BLOCK_SIZE    8192     // 8K of data
 
@@ -31,13 +33,14 @@ int pixelate(int argc, char** argv) {
     dos_file_handle_t fhandle = 0;
     mem_arena_t* arena;
     uint8_t pixel_byte, pixel_bitmask;
-    uint16_t file_bytes_read, byte_count, bit_count, k;
+    uint16_t file_bytes_read, byte_count, bit_count;
     uint32_t char_count = 0;
     bios_ticks_since_midnight_t t1, t2;
 
 // 1. confirm appropriate graphics adapter present
     if (!hga_detect_adapter()) {
-        fprintf(stderr, ERR_GRAPHICS, argv[0]);
+        fprintf(stderr, ERR_GRAPHICS);
+        fprintf(stderr, ERR_GRAPHICS_INFO, argv[0]);
         return EXIT_FAILURE;
     }
 // 2. minimal user input checking
@@ -55,7 +58,7 @@ int pixelate(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 // 3.2 total characters to process
-    char_count = dos_tools_file_size(fhandle);
+    printf(FINPUT_INFO, argv[0], dos_tools_file_size(fhandle));
 // 4.0 create screen size block of memory space as an arena
     arena = mem_arena_new(MEM_ARENA_POLICY_DOS, FILE_BLOCK_SIZE);
     if (!arena) {
@@ -65,31 +68,50 @@ int pixelate(int argc, char** argv) {
 // 4.1 allocate all of the arena as a char buffer
     text_buffer = (char*)mem_arena_alloc(arena, FILE_BLOCK_SIZE);
 // 5. switch to graphics mode
-    hga_graphics_mode();
-    hga_select_display_buffer((char)HGA_BUFFER_1);
-    hga_cls(HGA_BUFFER_1);
+    //hga_graphics_mode();
+    //hga_select_display_buffer((char)HGA_BUFFER_1);
+    //hga_cls(HGA_BUFFER_1);
 // 6.0 reset the bios system clock to zero and take an initial reading
     bios_set_system_clock(0);
     bios_read_system_clock(&t1);
 // 6.1 process all the characters from the input file
-    while(char_count) {
-// 6.2 load (upto) 8K of file data
+    do {
         file_bytes_read = dos_read_file_using_handle(fhandle, text_buffer, FILE_BLOCK_SIZE);
-// 6.3 convert file data into screen byte data 8 characters at a time per the given filter
+        LOG(%u, file_bytes_read);
+// 6.2 convert file data into screen byte data 8 characters at a time per the given filter
         byte_count = file_bytes_read >> 3;                          // div 8
+// 6.3 convert the text 8 characters at time into a screen data byte
+        for (int i = 0; i < byte_count;++i) {
+            pixel_byte = 0;
+            pixel_bitmask = 0x80;
+            for (int j = 0; j < 8; ++j) {
+                char_count++;
 
+                pixel_bitmask >>= 1;                                // next bit
+            }
+        }
 // 6.4 process any remaining characters mod 8 into a final byte
         bit_count = file_bytes_read & 7;                            // mod 8
-    }
+        pixel_byte = 0;
+        pixel_bitmask = 0x80;
+        for (int j = 0; j < bit_count; ++j) {
+            char_count++;
+
+            pixel_bitmask >>= 1;
+        }
+// 6.5 write to HGA screen buffer
+//
+// 6.6 more file data to process?
+    } while (file_bytes_read);
 // 6.7 measure duration of conversion loop
     bios_read_system_clock(&t2);
 // 7. wait for ENTER key and switch back to text mode
-    getchar();
-    hga_text_mode();
+    //getchar();
+    //hga_text_mode();
 // 8. tidy up resources
     dos_close_file_using_handle(fhandle);
     mem_arena_delete(arena);
 // 9. display peformance metrics
-    fprintf(stderr, METRICS_INFO, file_path, (unsigned long)char_count, bios_tools_timer_ticks_to_seconds(t2 - t1));
+    printf(METRICS_INFO, file_path, char_count, bios_tools_timer_ticks_to_seconds(t2 - t1));
     return EXIT_SUCCESS;
 }

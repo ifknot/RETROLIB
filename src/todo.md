@@ -1,10 +1,11 @@
 ### DOING:
 ---
-- [...] TEXT2PIX demo
-- [ ] write a byte count version of write buffer
-- [ ] use file size to read whole file
+- [...] pixelate demo
+- [ ] hga_scroll_up
+- [ ] incolor video modes
 ### TODO:
 ---
+- [ ] hga_scroll_down
 - [ ] dos_tools_file_dump
 - [ ] test file size/file pos works properly
 - [ ] demo buffer png anim to git readme
