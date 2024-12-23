@@ -52,7 +52,6 @@
 - [x] fix MDA naming
 - [X] convert video mode preset names and table
 - [x] TEXT2BIT demo
-- [?] BITS2PIX demo
 - [x] 86Box on Mac https://github.com/86Box/86Box
 - [x] MacBox for 86Box https://github.com/Moonif/MacBox
 - [x] get it all working as below on ARM OS X
@@ -81,4 +80,4 @@
 
 ### MAYBE
 
-- [?] try a BIOS library (not useful for BIOS)
+- [ ]
