@@ -7,6 +7,7 @@
 #include "../DBG/debug_macros.h"
 #include "../BIOS/bios_timer_io_services.h"
 #include "../BIOS/bios_tools_timer.h"
+#include "../HGA/constants.h
 #include "../HGA/hga_detect_adapter.h"
 #include "../HGA/hga_video_mode.h"
 #include "../HGA/hga_display_buffer.h"
@@ -23,9 +24,10 @@
 #define ERR_FOPEN_INPUT    "ERROR: Unable to open input file %s!\n"
 #define FINPUT_INFO        "INFO: %s file size %lu bytes.\n"
 #define METRICS_INFO       "INFO: %s file %lu characters as pixels. Duration = %f secs\n"
-// value constants
-#define FILE_BLOCK_SIZE    8192     // 8K of data
 
+int is_pixel_character(char c) {
+
+}
 
 int pixelate(int argc, char** argv) {
     char file_path[255];
@@ -34,7 +36,7 @@ int pixelate(int argc, char** argv) {
     mem_arena_t* arena;
     uint8_t pixel_byte, pixel_bitmask;
     uint16_t file_bytes_read, byte_count, bit_count;
-    uint32_t char_count = 0;
+    uint32_t file_size, char_count = 0;
     bios_ticks_since_midnight_t t1, t2;
 
 // 1. confirm appropriate graphics adapter present
@@ -58,7 +60,8 @@ int pixelate(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 // 3.2 total characters to process
-    printf(FINPUT_INFO, argv[0], dos_tools_file_size(fhandle));
+    file_size = dos_tools_file_size(fhandle);
+    printf(FINPUT_INFO, argv[0], file_size);
 // 4.0 create screen size block of memory space as an arena
     arena = mem_arena_new(MEM_ARENA_POLICY_DOS, FILE_BLOCK_SIZE);
     if (!arena) {
@@ -66,7 +69,7 @@ int pixelate(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 // 4.1 allocate all of the arena as a char buffer
-    text_buffer = (char*)mem_arena_alloc(arena, FILE_BLOCK_SIZE);
+    text_buffer = (char*)mem_arena_alloc(arena, HGA_BYTES_PER_SCREEN);
 // 5. switch to graphics mode
     //hga_graphics_mode();
     //hga_select_display_buffer((char)HGA_BUFFER_1);
@@ -76,8 +79,8 @@ int pixelate(int argc, char** argv) {
     bios_read_system_clock(&t1);
 // 6.1 process all the characters from the input file
     do {
-        file_bytes_read = dos_read_file_using_handle(fhandle, text_buffer, FILE_BLOCK_SIZE);
-        LOG(%u, file_bytes_read);
+        file_bytes_read = dos_read_file_using_handle(fhandle, text_buffer, HGA_BYTES_PER_SCREEN);   
+        tpos = 0;                                                   // text position reset to start of text buffer
 // 6.2 convert file data into screen byte data 8 characters at a time per the given filter
         byte_count = file_bytes_read >> 3;                          // div 8
 // 6.3 convert the text 8 characters at time into a screen data byte
@@ -85,9 +88,12 @@ int pixelate(int argc, char** argv) {
             pixel_byte = 0;
             pixel_bitmask = 0x80;
             for (int j = 0; j < 8; ++j) {
-                char_count++;
-
+                if(is_pixel_character(text_buffer[tpos]) {
+                     pixel_byte |= pixel_bitmask;
+                }
                 pixel_bitmask >>= 1;                                // next bit
+                tpos++;                                             // next character
+                char_count++;                                       // running total
             }
         }
 // 6.4 process any remaining characters mod 8 into a final byte
@@ -95,11 +101,15 @@ int pixelate(int argc, char** argv) {
         pixel_byte = 0;
         pixel_bitmask = 0x80;
         for (int j = 0; j < bit_count; ++j) {
-            char_count++;
-
-            pixel_bitmask >>= 1;
+            // ? switch on character type
+            if(is_pixel_character(text_buffer[tpos]) {
+                 pixel_byte |= pixel_bitmask;
+            }
+            pixel_bitmask >>= 1;                                // next bit
+            tpos++;                                             // next character
+            char_count++;                                       // running total
         }
-// 6.5 write to HGA screen buffer
+// 6.5 scroll screen up if char_count < files_size
 //
 // 6.6 more file data to process?
     } while (file_bytes_read);
