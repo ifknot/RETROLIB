@@ -72,6 +72,17 @@ void hga_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern) {
 	}
 }
 
-void hga_scroll_up(uint16_t top, uint16_t lines) {
+void hga_scroll_up(uint16_t vram_segment, uint16_t lines) {
+	__asm {
+		.8086
 
+		// 1. setup HGA quad bank VRAM destination pointer ES:DI
+		xor 	di, di						; top left screen(0, 0)
+		mov		ax, vram_segment
+		mov		es, ax						; ES:DI point to VRAM destination
+		// 2. setup HGA quad bank VRAM source pointer DS:SI
+	  	mov		si, HGA_BYTES_PER_LINE		; top - 1 line left screen(0, 1)
+		mov		ax, vram_segment
+		mov		ds, ax						; DS:SI point to VRAM destination
+	
 }
