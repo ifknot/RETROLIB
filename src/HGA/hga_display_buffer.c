@@ -71,3 +71,7 @@ void hga_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern) {
 
 	}
 }
+
+void hga_scroll_up(uint16_t lines) {
+
+}
