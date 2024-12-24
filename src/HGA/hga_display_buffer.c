@@ -75,14 +75,27 @@ void hga_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern) {
 void hga_scroll_up(uint16_t vram_segment, uint16_t lines) {
 	__asm {
 		.8086
-
-		// 1. setup HGA quad bank VRAM destination pointer ES:DI
-		xor 	di, di						; top left screen(0, 0)
+		// 1. skip if lines = 0
+		mov 	cx, lines 
+		jcxz	END
+		// 2. initialise registers 
 		mov		ax, vram_segment
 		mov		es, ax						; ES:DI point to VRAM destination
-		// 2. setup HGA quad bank VRAM source pointer DS:SI
-	  	mov		si, HGA_BYTES_PER_LINE		; top - 1 line left screen(0, 1)
-		mov		ax, vram_segment
-		mov		ds, ax						; DS:SI point to VRAM destination
+		mov		ds, ax						; DS:SI point to VRAM source
+		mov 	bx, 0						; BX = line counter
+		// 3. loop over the number of lines to scroll up
+L1:		mov 	dx, cx 						; copy of number of lines to scroll
+		// 4. setup HGA quad bank VRAM *destination* pointer ES:DI		
+		mov 	di, HGA_TABLE_Y_LOOKUP[bx]	
+		inc 	bx 							; next line
+		// 5. setup HGA quad bank VRAM *source* pointer DS:SI
+	  	mov		si, HGA_TABLE_Y_LOOKUP[bx]  
+		inc 	bx							; next line
+		// 6. repeat string operation copy line "below" (taking into account HGA quad bank VRAM) to line above as 45 words 
+		mov 	cx, HGA_WORDS_PER_LINE		; no good bit shifting optimisation 45 words per line available
+		rep 	movsw
+		mov 	cx, dx
+		loop 	L1
+END:		
 	
 }
