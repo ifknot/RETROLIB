@@ -25,7 +25,7 @@
 #define FINPUT_INFO        "INFO: %s file size %lu bytes.\n"
 #define METRICS_INFO       "INFO: %s file %lu characters as pixels. Duration = %f secs\n"
 
-int is_pixel_character(char c) {
+token_t tokenize_character(char c) {
 
 }
 
@@ -35,7 +35,7 @@ int pixelate(int argc, char** argv) {
     dos_file_handle_t fhandle = 0;
     mem_arena_t* arena;
     uint8_t pixel_byte, pixel_bitmask;
-    uint16_t file_bytes_read, byte_count, bit_count;
+    uint16_t file_bytes_read, byte_count, bit_count, tpos, x, y;
     uint32_t file_size, char_count = 0;
     bios_ticks_since_midnight_t t1, t2;
 
@@ -80,7 +80,7 @@ int pixelate(int argc, char** argv) {
 // 6.1 process all the characters from the input file
     do {
         file_bytes_read = dos_read_file_using_handle(fhandle, text_buffer, HGA_BYTES_PER_SCREEN);   
-        tpos = 0;                                                   // text position reset to start of text buffer
+        x = y = tpos = 0;                                           // reset to top left of screen and start of text buffer
 // 6.2 convert file data into screen byte data 8 characters at a time per the given filter
         byte_count = file_bytes_read >> 3;                          // div 8
 // 6.3 convert the text 8 characters at time into a screen data byte
@@ -88,29 +88,46 @@ int pixelate(int argc, char** argv) {
             pixel_byte = 0;
             pixel_bitmask = 0x80;
             for (int j = 0; j < 8; ++j) {
-                if(is_pixel_character(text_buffer[tpos]) {
-                     pixel_byte |= pixel_bitmask;
+                switch (tokenize_character(text_buffer[tpos])) {
+                    case TOK_NEW_LINE:
+                        // if j < 7 screen buffer current pixel byte & reset pixel byte 0
+                        // y++
+                    break;
+                    case TOK_PIXEL:
+                        pixel_byte |= pixel_bitmask;
+                    break;
+                    case TOK_NO_PIXEL:
+                    default:
                 }
                 pixel_bitmask >>= 1;                                // next bit
                 tpos++;                                             // next character
                 char_count++;                                       // running total
             }
+            //hga_write_vram_buffer(HGA_BUFFER_0, x++, y);
         }
 // 6.4 process any remaining characters mod 8 into a final byte
         bit_count = file_bytes_read & 7;                            // mod 8
         pixel_byte = 0;
         pixel_bitmask = 0x80;
         for (int j = 0; j < bit_count; ++j) {
-            // ? switch on character type
-            if(is_pixel_character(text_buffer[tpos]) {
-                 pixel_byte |= pixel_bitmask;
+            switch (tokenize_character(text_buffer[tpos])) {
+               case TOK_NEW_LINE:
+                    // if j < 7 screen buffer current pixel byte & reset pixel byte 0
+                    // y++
+                break;
+                case TOK_PIXEL:
+                    pixel_byte |= pixel_bitmask;
+                break;
+                case TOK_NO_PIXEL:
+                default:
             }
             pixel_bitmask >>= 1;                                // next bit
             tpos++;                                             // next character
             char_count++;                                       // running total
-        }
+        }      
+        //hga_write_vram_buffer(HGA_BUFFER_0, x, y);
 // 6.5 scroll screen up if char_count < files_size
-//
+// hga_scroll_up(348);
 // 6.6 more file data to process?
     } while (file_bytes_read);
 // 6.7 measure duration of conversion loop
