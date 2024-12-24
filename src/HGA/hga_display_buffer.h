@@ -64,6 +64,6 @@ inline void hga_cls(uint16_t vram_segment) {
 /** 
 * @brief scroll graphics vram up starting at top anb by n lines 
 */
-void hga_scroll_up(uint16_t top, uint16_t lines);
+void hga_scroll_up(uint16_t lines);
 
 #endif
