@@ -8,10 +8,16 @@
 #ifndef PIXELATE_H
 #define PIXELATE_H
 
+enum token_t {
+  TOK_PIXEL,
+  TOK_NOPIXEL, 
+  TOK_NEW_LINE,
+};
+
 /** 
-* test if the arguement is a character to be represented by a pixel?
+* tokenize character pixel, no_pixel, new_line?
 */
-int is_pixel_character(char c);
+token_t tokenize_character(char c);
 
 /** 
 * pixelate a text file according to decision function above
