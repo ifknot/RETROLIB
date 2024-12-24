@@ -61,12 +61,6 @@ inline void hga_cls(uint16_t vram_segment) {
     hga_fill_vram_buffer(vram_segment, 0);
 }
 
-void hga_scroll_up(uint16_t lines);
-
-//void hga_scroll_down(uint16_t lines);
-
-//void hga_scroll_left(uint16_t bytes);
-
-//void hga_scroll_right(uint16_t bytes);
+void hga_scroll_up(uint16_t start, uint16_t lines)
 
 #endif
