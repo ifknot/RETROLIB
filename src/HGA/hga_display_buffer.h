@@ -62,8 +62,13 @@ inline void hga_cls(uint16_t vram_segment) {
 }
 
 /** 
-* @brief scroll graphics vram up number of lines 
+* @brief scroll graphics vram up number of lines and blank last line
 */
 void hga_scroll_up(uint16_t vram_segment, uint16_t lines);
+
+/**
+* @breid repeat scroll up entire screen until whole screen blank
+*/
+void hga_screen_scroll_up(uint16_t vram_segment);
 
 #endif
