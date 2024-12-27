@@ -26,10 +26,24 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 		and		cx, 07h						; mask off 0111 lower bits (mod 8)
 		mov 	dh, 0FFh					; load DH with 1111111
 		shr 	dh, cl						; shift along by x mod 8
-		not 	dh							; invert the bits 
-		// 5. 
-		sub 	bx, ax
-		
+		not 	dh							; invert the bits 		
+		// 5. x1 div 8 
+	    shr		ax, 1			            ; calculate column byte x1 / 8 
+	    shr		ax, 1			            ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
+	    shr		ax, 1
+		// 6. x2 div 8 
+	    shr		bx, 1			            ; calculate column byte x2 / 8 
+	    shr		bx, 1			            ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
+	    shr		bx, 1
+		// 7. OR left and right ends of the line  
+		add 	di, ax 						; select lhs byte 
+		or 		es:[di], dl					; OR in lhs of line 
+		sub 	bx, ax						; distance to rhs 
+		jnz		J1							; lhs and rhs not share same byte 
+		and		es:[di], dh					; occupy same byte and will need to mask out the right end
+J1:		add 	di, bx 						; select rhs byte
+		or 		es:[di], dh					; OR in rhs of line
+			
 	}
 }
 
