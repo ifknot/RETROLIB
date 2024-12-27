@@ -13,21 +13,28 @@ void hga_fast_vline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 	    mov   ax, vram_segment
 		mov   es, ax
 	    // 2. shift the pixel in DL right into the correct x mod 8 position 
-	    mov		ax, x1			                           ; load x 
-	    mov		cx, ax			                           ; copy of x 
-	    and		cx, 7h			                           ; mask off 0111 lower bits i.e.mod 8 (thanks powers of 2) 
-	    mov		dl, 80h			                           ; load DL with a single pixel at msb 10000000 
-	    shr		dl, cl			                           ; shift single bit along by x mod 8
+	    mov		ax, x1			                           	; load x 
+	    mov		cx, ax			                           	; copy of x 
+	    and		cx, 7h			                           	; mask off 0111 lower bits i.e.mod 8 (thanks powers of 2) 
+	    mov		dl, 80h			                           	; load DL with a single pixel at msb 10000000 
+	    shr		dl, cl			                           	; shift single bit along by x mod 8
 	    // 3. x div 8 
-	    shr		ax, 1			                           ; calculate column byte x / 8 
-	    shr		ax, 1			                           ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
+	    shr		ax, 1			                           	; calculate column byte x / 8 
+	    shr		ax, 1			                           	; poor old 8086 only has opcodes shifts by an implicit 1 or CL
 	    shr		ax, 1
 		// 4. setup y loop
-
-
+		mov 	bx, y1
+		mov 	cx, y2 
+		cmp 	cx, bx
+		jge		J1											; if y1 == y2 still plot a point
+		xchg 	bx, cx
+J1:		sub 	cx, bx										; BX is the start y CX is the y count
 	    // 5. lookup y and setup ES:DI point to target byte 
-	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                   ; lookup y offset
-		add   	di, ax                                       ; add in x / 8
+L1:	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
+		add   	di, ax                                      ; add in x / 8
+		inc 	bx 											; next line
 	    // 6. OR in the pixel 
+		or 		es:[di], dl
+		loop 	L1
 	}
 }
