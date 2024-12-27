@@ -3,7 +3,34 @@
 #include "hga_table_lookup_y.h"
 
 void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint8_t colour) {
-
+	__asm {
+		.8086
+	    // 1. set up VRAM segment in ES
+	    mov   	ax, vram_segment
+		mov   	es, ax
+		// 2. lookup y and setup ES:DI point to target line  
+	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]	; lookup y offset
+		// 2. arrange x1, x2 as larger, smaller 
+		mov		ax, x1						; load x1
+		mov 	bx, x2						; load x2 
+		cmp 	bx, ax		
+		jge 	J1 
+		xchg 	bx, ax
+		// 3. construct left most byte
+		mov		cx, ax						; copy x1
+		and		cx, 07h						; mask off 0111 lower bits (mod 8)
+		mov		dl, 0FFh					; load DL with 1111111
+		shr		dl, cl						; shift along by x mod 8
+		// 4. construct right most byte
+		mov 	cx, bx						; copy x2 
+		and		cx, 07h						; mask off 0111 lower bits (mod 8)
+		mov 	dh, 0FFh					; load DH with 1111111
+		shr 	dh, cl						; shift along by x mod 8
+		not 	dh							; invert the bits 
+		// 5. 
+		sub 	bx, ax
+		
+	}
 }
 
 void hga_fast_vline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint8_t colour) {
