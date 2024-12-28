@@ -26,7 +26,7 @@
 #define METRICS_INFO        "INFO: %s file %lu characters as pixels. Duration = %f secs\n"
 
 token_t tokenize_character(char c) {
-    if(c < 33 || c == 127 || c == 255) return TOK_NO_PIXEL;
+    if(c < 33) return TOK_NO_PIXEL;
     if(c == 10) return TOK_LF;
     if(c == 13) return TOK_UNDEFINED;   // i.e. consume carriage return
     return TOK_PIXEL;
@@ -92,7 +92,7 @@ int pixelate(int argc, char** argv) {
             pixel_bitmask = 0x80;
             for (int j = 0; j < 8; ++j) {
                 switch (tokenize_character(text_buffer[tpos])) {
-                    case TOK_NEW_LINE:
+                    case TOK_LF:
                         // if j < 7 screen buffer current pixel byte & reset pixel byte 0
                         // y++
                     break;
@@ -115,7 +115,7 @@ int pixelate(int argc, char** argv) {
         pixel_bitmask = 0x80;
         for (int j = 0; j < bit_count; ++j) {
             switch (tokenize_character(text_buffer[tpos])) {
-               case TOK_NEW_LINE:
+               case TOK_LF:
                     // if j < 7 screen buffer current pixel byte & reset pixel byte 0
                     // y++
                 break;
