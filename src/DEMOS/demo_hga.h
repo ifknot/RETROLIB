@@ -5,7 +5,7 @@
 
 #include "../DBG/debug_macros.h"
 
-#include "hga.h"
+#include "../HGA/hga.h"
 #include "../HW/hw_detect_graphics_adapter.h"
 #include "../BIOS/bios_video_services.h"
 #include "../BIOS/bios_video_services_types.h"
@@ -51,7 +51,7 @@ void demo_hga() {
                         }
                 }
                 YESNO("* switch back to MDA Text Mode... ");
-                mda_text_mode();
+                hga_text_mode();
                 INFO("MDA Text Mode.");
         }
 }

@@ -1,6 +1,7 @@
 #include <stdio.h>
 
-#include "DEMOS/pixelate.h"
+//#include "DEMOS/pixelate.h"
+#include "DEMOS/demo_lines.h"
 
 int main(int argc, char** argv) {
 
@@ -10,6 +11,7 @@ int main(int argc, char** argv) {
     return 0;
 #endif
 
-	return pixelate(argc, argv);
+	//return pixelate(argc, argv);
+	return demo(argc, argv);
 
 }

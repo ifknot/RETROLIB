@@ -17,19 +17,12 @@
 #include "hw_constants_graphics.h"
 
 uint8_t hw_detect_monochrome_adapter() {
-	return hga_detect_adapter();
+	return hga_detect_adapter();   // NB detects MDA adapter too
 }
 
 uint8_t hw_detect_colour_adapter() {
-	uint8_t card = HW_VIDEO_ADAPTER_UKNOWN;
-
-	card = vga_detect_adapter();
-	if (card) return card;
-
-	card = ega_detect_adapter();
-	if (card) return card;
-
-	card = cga_detect_adapter();
-
-	return card;
+	if (vga_detect_adapter()) return HW_VIDEO_ADAPTER_VGA;
+	if (ega_detect_adapter()) return HW_VIDEO_ADAPTER_EGA;
+	if (cga_detect_adapter()) return HW_VIDEO_ADAPTER_CGA;
+	return HW_VIDEO_ADAPTER_UKNOWN;;
 }

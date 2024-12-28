@@ -43,7 +43,7 @@ int pixelate(int argc, char** argv) {
     bios_ticks_since_midnight_t t1, t2;
 
 // 1. confirm appropriate graphics adapter present
-    if (!hga_detect_adapter()) {
+    if (hga_detect_adapter() < HW_VIDEO_ADAPTER_HGA) {
         fprintf(stderr, ERR_GRAPHICS);
         fprintf(stderr, ERR_GRAPHICS_INFO, argv[0]);
         return EXIT_FAILURE;
