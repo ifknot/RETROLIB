@@ -1,5 +1,6 @@
 #ifndef HGA_FAST_LINE_H
 #define HGA_FAST_LINE_H
+#include <stdint.h>
 
 /**
 * starting at screen coord (x1,y1) draws a horizontal line to point (x2, y2) ignoring y2 arguement

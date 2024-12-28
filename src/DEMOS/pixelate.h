@@ -8,18 +8,22 @@
 #ifndef PIXELATE_H
 #define PIXELATE_H
 
-enum token_t {
+typedef enum tokens {
+  TOK_NO_PIXEL,
   TOK_PIXEL,
-  TOK_NOPIXEL, 
-  TOK_NEW_LINE,
-};
+  TOK_LF,
+  TOK_CR,
+  TOK_UNDEFINED
+} token_t;
 
-/** 
-* tokenize character pixel, no_pixel, new_line?
+
+/**
+* @brief tokenize character no_pixel, pixel, new_line, etc...
+* @note assumes IBM codepage 437 after 128
 */
 token_t tokenize_character(char c);
 
-/** 
+/**
 * pixelate a text file according to decision function above
 */
 int pixelate(int argc, char** argv);

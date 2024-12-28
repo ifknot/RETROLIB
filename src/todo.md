@@ -2,9 +2,12 @@
 ---
 - [...] pixelate demo
 - [ ] hga_scroll_up
-- [ ] incolor video modes
+- [ ] hline
+- [ ] vline
+
 ### TODO:
 ---
+- [ ] incolor video modes
 - [ ] hga_scroll_down
 - [ ] dos_tools_file_dump
 - [ ] test file size/file pos works properly
