@@ -18,14 +18,16 @@ int demo(int argc, char** argv) {
         fprintf(stderr, ERR_GRAPHICS_INFO, argv[0]);
         return EXIT_FAILURE;
     }
-    // 2. switch to HGA graphics mode 
+    // 2. wait for ENTER key and switch to HGA graphics mode 
+    getchar();
     hga_graphics_mode();
     hga_select_display_buffer((char)HGA_BUFFER_1);
     hga_cls(HGA_BUFFER_1);
 
+    // 3. draw lines
     hga_fast_vline(HGA_BUFFER_1, 10, 10, 10, 100, HGA_WHITE) {
     
-    //7. wait for ENTER key and switch back to text mode
+    // 4. wait for ENTER key and switch back to text mode
     getchar();
     hga_text_mode();
     
