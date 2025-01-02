@@ -10,6 +10,9 @@
 - [ ] rectangle
 - [ ] filled_rectangle
 - [ ] incolor video modes
+- [ ] demo Mondrian
+  - [ ] incolor
+  - [ ] cga 
 - [ ] hga_scroll_down
 - [ ] dos_tools_file_dump
 - [ ] test file size/file pos works properly
@@ -26,6 +29,9 @@
 - [ ] plot pixel algos
 - [ ] pixel perf compare algos
 - [ ] demo Mendelbrot fixed point
+  - [ ] hga
+  - [ ] incolor
+  - [ ] cga
 ---
 - [ ] bresenham line
 - [ ] demo lines
