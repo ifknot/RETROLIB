@@ -7,12 +7,21 @@
 
 ### TODO:
 ---
+- [ ] rectangle
+- [ ] filled_rectangle
 - [ ] incolor video modes
 - [ ] hga_scroll_down
 - [ ] dos_tools_file_dump
 - [ ] test file size/file pos works properly
 - [ ] demo buffer png anim to git readme
 - [ ] getopt own version
+---
+- [ ] Q10.6
+  - [ ] conversions
+  - [ ] operators
+  - [ ] trigonometry
+  - [ ] 2D vectors 
+- [ ] Q16.16 
 ---
 - [ ] plot pixel algos
 - [ ] pixel perf compare algos
@@ -44,6 +53,8 @@
 
 ---
 - [ ] draw some 1 bit playing cards for a nice change
+- [ ] mouse input
+- [ ] drag and drop playing cards
 
 ---
 ### DONE
