@@ -1,23 +1,27 @@
 ### DOING:
 ---
-- [...] pixelate demo
+- [...] demo pixelate text 
 - [ ] hga_scroll_up
 - [ ] hline
 - [ ] vline
 
 ### TODO:
 ---
+- [ ] the computer as a creative medium
+  - [ ] demo buffer png anim to git readme
+  - [ ] demo Mendelbrot fixed point
+    - [ ] hga
+    - [ ] incolor
+    - [ ] cga
+  - [ ] demo Mondrian
+    - [ ] incolor
+    - [ ] cga 
 - [ ] rectangle
 - [ ] filled_rectangle
 - [ ] incolor video modes
-- [ ] demo Mondrian
-  - [ ] incolor
-  - [ ] cga 
 - [ ] hga_scroll_down
-- [ ] dos_tools_file_dump
 - [ ] test file size/file pos works properly
-- [ ] demo buffer png anim to git readme
-- [ ] getopt own version
+
 ---
 - [ ] Q10.6
   - [ ] conversions
@@ -28,10 +32,6 @@
 ---
 - [ ] plot pixel algos
 - [ ] pixel perf compare algos
-- [ ] demo Mendelbrot fixed point
-  - [ ] hga
-  - [ ] incolor
-  - [ ] cga
 ---
 - [ ] bresenham line
 - [ ] demo lines
@@ -100,4 +100,5 @@
 
 ### MAYBE
 
-- [ ]
+- [ ] getopt own version
+- [ ] dos_tools_file_dump
