@@ -7,7 +7,7 @@
 
 ### TODO:
 ---
-- [ ] the computer as a creative medium
+- [ ] code as a creative medium
   - [ ] demo buffer png anim to git readme
   - [ ] demo Mendelbrot fixed point
     - [ ] hga
