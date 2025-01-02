@@ -1,7 +1,9 @@
 ### DOING:
 ---
-- [...] demo pixelate text 
-- [ ] hga_scroll_up
+- [ ] demo pixelate text 
+  - [ ] hga_scroll_up
+  - [ ] bible
+  - [ ] shakespeare
 - [ ] hline
   - [ ] thickness 
 - [ ] vline
