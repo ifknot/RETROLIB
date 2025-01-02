@@ -3,7 +3,9 @@
 - [...] demo pixelate text 
 - [ ] hga_scroll_up
 - [ ] hline
+  - [ ] thickness 
 - [ ] vline
+  - [ ] thickness 
 
 ### TODO:
 ---
