@@ -5,9 +5,8 @@
 
 /**
 * @brief select which of the 2 HGA adapter VRAM buffers ( 0 or 1 ) to be displayed on screen
-* @note No sanity checking! Expects 0 or 1.
 */
-void hga_select_display_buffer(uint8_t select);
+void hga_select_display_buffer(uint16_t vram_segment);
 
 /**
 * @brief Write an 8 bit byte pattern at byte count location (0 .. 31,320) to the specified HGA VRAM buffer
@@ -61,7 +60,7 @@ inline void hga_cls(uint16_t vram_segment) {
     hga_fill_vram_buffer(vram_segment, 0);
 }
 
-/** 
+/**
 * @brief scroll graphics vram up number of lines and blank last line
 */
 void hga_scroll_up(uint16_t vram_segment, uint16_t lines);

@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "../DBG/debug_macros.h"
 #include "../BIOS/bios_timer_io_services.h"
 #include "../BIOS/bios_tools_timer.h"
 #include "../HGA/hga_constants.h"
@@ -19,11 +18,11 @@
 #define USAGE_INFO          "INFO: Converts a text file's characters to white pixels, punctuation to black pixels and newlines to a new pixel row.\n"
 #define USAGE_FMT           "\nUSAGE: %s [inputfile]\n"
 #define ERR_GRAPHICS        "ERROR: No valid graphics adapter found!\n"
-#define ERR_GRAPHICS_INFO   "INFO: This version of %s requires an Hercules Graphics Adapter.\n"
+#define ERR_INFO_GRAPHICS   "ERROR INFO: This version of %s requires an Hercules Graphics Adapter.\n"
 #define ERR_MEMORY          "ERROR: Memory allocation failure!\n"
 #define ERR_FOPEN_INPUT     "ERROR: Unable to open input file %s!\n"
-#define FINPUT_INFO         "INFO: %s file size %lu bytes.\n"
-#define METRICS_INFO        "INFO: %s file %lu characters as pixels. Duration = %f secs\n"
+#define INFO_FINPUT         "INFO: %s file size %lu bytes.\n"
+#define INFO_METRICS        "INFO: %s file %lu characters as pixels. Duration = %f secs\n"
 
 token_t tokenize_character(char c) {
     if(c < 33) return TOK_NO_PIXEL;
@@ -45,7 +44,7 @@ int pixelate(int argc, char** argv) {
 // 1. confirm appropriate graphics adapter present
     if (hga_detect_adapter() < HW_VIDEO_ADAPTER_HGA) {
         fprintf(stderr, ERR_GRAPHICS);
-        fprintf(stderr, ERR_GRAPHICS_INFO, argv[0]);
+        fprintf(stderr, ERR_INFO_GRAPHICS, argv[0]);
         return EXIT_FAILURE;
     }
 // 2. minimal user input checking
@@ -64,7 +63,7 @@ int pixelate(int argc, char** argv) {
     }
 // 3.2 total characters to process
     file_size = dos_tools_file_size(fhandle);
-    printf(FINPUT_INFO, argv[0], (unsigned long)file_size);
+    printf(INFO_FINPUT, argv[0], (unsigned long)file_size);
 // 4.0 create screen size block of memory space as an arena
     arena = mem_arena_new(MEM_ARENA_POLICY_DOS, HGA_BYTES_PER_SCREEN);
     if (!arena) {
@@ -144,6 +143,6 @@ int pixelate(int argc, char** argv) {
     dos_close_file_using_handle(fhandle);
     mem_arena_delete(arena);
 // 9. display peformance metrics
-    printf(METRICS_INFO, file_path, (unsigned long)char_count, bios_tools_timer_ticks_to_seconds(t2 - t1));
+    printf(INFO_METRICS, file_path, (unsigned long)char_count, bios_tools_timer_ticks_to_seconds(t2 - t1));
     return EXIT_SUCCESS;
 }

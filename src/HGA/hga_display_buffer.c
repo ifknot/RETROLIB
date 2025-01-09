@@ -1,19 +1,25 @@
-#include "hga_display_buffer.h"
 #include "hga_constants.h"
+#include "hga_display_buffer.h"
 #include "hga_table_lookup_y.h"
 
-void hga_select_display_buffer(uint8_t select) {
+void hga_select_display_buffer(uint16_t vram_segment) {
     __asm {
-      .8086
+        .8086
 
-      mov     dx, HGA_CONTROL_REGISTER
-      mov 	  al, select
-      and 	  al, 00000001b				; only bit 0 selects buffer
-      //jz      J0
-      mov     al, 10001010b     		; screen on buffer 1 second display page buffer B000 : 800
-      jmp     J1
-J0:   mov     al, 00001010b     		; screen on buffer 0 default display page buffer B000 : 000
-J1:   out     dx, al
+        mov     dx, HGA_CONTROL_REGISTER
+        mov     ax, vram_segment
+        cmp     ax, HGA_BUFFER_0
+        je      J0
+        cmp     ax, HGA_BUFFER_1
+        je      J1
+        jmp     END
+J0:     mov     al, 00001010b     		; screen on buffer 0 default display page buffer B000 : 000
+        out     dx, al
+        jmp     END
+J1:     mov     al, 10001010b     		; screen on buffer 1 second display page buffer B000 : 800
+        out     dx, al
+        jmp     END
+END:
 
     }
 }
