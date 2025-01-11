@@ -34,6 +34,7 @@ int demo(int argc, char** argv) {
     hga_cls(HGA_BUFFER_1);
 
     // 3. draw lines
+    /*
     int j = 1;
     //for(int j = 0; j < 100; ++j) {
         for(int i =10; i < 100; ++i) {
@@ -41,7 +42,8 @@ int demo(int argc, char** argv) {
             j+=1;
         }
         //}
-
+    */
+    hga_fast_hline(HGA_BUFFER_1, 0, 10, 100, 10, HGA_WHITE);
     // 4. wait for ENTER key and switch back to text mode
     getchar();
     hga_text_mode();
