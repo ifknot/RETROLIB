@@ -43,7 +43,11 @@ int demo(int argc, char** argv) {
         }
         //}
     */
-    hga_fast_hline(HGA_BUFFER_1, 0, 10, 100, 10, HGA_WHITE);
+    int j = 10;
+    for(int i =0; i < 100; ++i) {
+        hga_fast_hline(HGA_BUFFER_1, i, j, i, j, HGA_WHITE);
+        j+=2;
+    }
     // 4. wait for ENTER key and switch back to text mode
     getchar();
     hga_text_mode();
