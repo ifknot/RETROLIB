@@ -6,52 +6,52 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 	__asm {
 		.8086
 	    // 1. set up VRAM segment in ES
-	    mov   	ax, vram_segment
+		mov   	ax, vram_segment
 		mov   	es, ax
 		// 2. lookup y and setup ES:DI point to target line
 		mov     bx, y1                                      ; load y1
         shl     bx, 1                                       ; convert BC to a word pointer
-	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset		
+	   	 mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset		
 		// 3.1 special cases 
 		mov     bx, x1		
-        mov     ax, x2
+       	mov     ax, x2
 		cmp 	ax, bx 
 		jne 	J1
 		// 3.2 special case x1 and x2 are the same ie a single pixel 
 		mov 	cx, ax
 		and     cx, 7                                   ; mask off 0111 lower bits ie x mod 8 (thanks powers of 2)
-        xor     cl, 7                                   ; CL = number of bits to shift left (thanks bit flip XOR)
-        mov     dl, 11111110b                           ; AL = pixel mask
-        rol     dl, cl                                  ; roll mask around by x mod 8
-        mov     dh, colour                              ; load ah with a single pixel at lsb (e.g. white 00000001 black 00000000)
-        shl     dh, cl                                  ; shift single bit along by x mod 8
+		xor     cl, 7                                   ; CL = number of bits to shift left (thanks bit flip XOR)
+		mov     dl, 11111110b                           ; AL = pixel mask
+		rol     dl, cl                                  ; roll mask around by x mod 8
+		mov     dh, colour                              ; load ah with a single pixel at lsb (e.g. white 00000001 black 00000000)
+		shl     dh, cl                                  ; shift single bit along by x mod 8
 		shr     ax, 1									; calculate column byte x / 8
-        shr     ax, 1									; poor old 8086 only has opcodes shifts by an implicit 1 or CL
-        shr     ax, 1
+		shr     ax, 1									; poor old 8086 only has opcodes shifts by an implicit 1 or CL
+		shr     ax, 1
 		add 	di, ax 
 		and     es:[di], al                             ; mask out the pixel bit
         or      es:[di], ah                             ; plot single point 'line'
 		jmp 	END
 			
 J1		shr		bx, 1			                           	; calculate column byte x / 8
-        shr		bx, 1			                           	; poor old 8086 only has opcodes shifts by an implicit 1 or CL
-        shr		bx, 1
+		shr		bx, 1			                           	; poor old 8086 only has opcodes shifts by an implicit 1 or CL
+		shr		bx, 1
 
-        shr     ax, 1
-        shr     ax, 1
-        shr     ax, 1
-      
-        mov     cx, ax                                      ; copy of x2
-        sub     cx, bx                                      ; CX is now line length in bytes
-        // 5.2 special case zero length
-        jnz    CASE1                                         
-        // 5.3 special case x1 and x2 are the same ie a single pixel 
-        // OR in lhs of line
-        //or 		es:[di + bx], dl
+		shr     ax, 1
+		shr     ax, 1
+		shr     ax, 1
+  
+		mov     cx, ax                                      ; copy of x2
+		sub     cx, bx                                      ; CX is now line length in bytes
+		// 5.2 special case zero length
+		jnz    CASE1                                         
+		// 5.3 special case x1 and x2 are the same ie a single pixel 
+		// OR in lhs of line
+		//or 		es:[di + bx], dl
 
-     // AND mask OR in rhs of line
-        //and     es:[di + bx], dh
-        //not     dh
+	 // AND mask OR in rhs of line
+		//and     es:[di + bx], dh
+		//not     dh
 CASE1
 END:
 	}
