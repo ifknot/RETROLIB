@@ -12,15 +12,7 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 		mov     bx, y1                                      ; load y1
         shl     bx, 1                                       ; convert BC to a word pointer
 	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
-		// 3.1 setup DL lhs and DH rhs of the line
-		mov     dx, 80FFh                                  ;
-		mov		cx, x1						                ; load x1
-		and     cx, 7                                       ; x1 mod 8
-		sar     dl, cl
-		// 3.2 setup DH rhs of the line
-		mov 	cx, x2						                ; load x2
-		and     cx, 7                                       ; x2 mod 8
-		shr     dh, cl                                      ; DH is the mask of the rhs line
+		
 		// 4. x1 and x2 div 8
 		mov     bx, x1
 		shr		bx, 1			                           	; calculate column byte x / 8
@@ -34,14 +26,15 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
         mov     cx, ax                                      ; copy of x2
         sub     cx, bx                                      ; CX is now line length in bytes
         // 5.2 special case zero length
-        jcxz    END                                         ; zero length line
-        // 5.3 special case x1 and x2 share same byte
+        jnz    CASE1                                         
+        // 5.3 special case x1 and x2 are the same ie a single pixel 
         // OR in lhs of line
         or 		es:[di + bx], dl
 
-J1:     // AND mask OR in rhs of line
+     // AND mask OR in rhs of line
         and     es:[di + bx], dh
         //not     dh
+CASE1
 END:
 	}
 }
@@ -76,6 +69,18 @@ L1:	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
 		loop 	L1
 	}
 }
+
+/*
+// 3.1 setup DL lhs and DH rhs of the line
+		mov     dx, 80FFh                                  ;
+		mov		cx, x1						                ; load x1
+		and     cx, 7                                       ; x1 mod 8
+		sar     dl, cl
+		// 3.2 setup DH rhs of the line
+		mov 	cx, x2						                ; load x2
+		and     cx, 7                                       ; x2 mod 8
+		shr     dh, cl                                      ; DH is the mask of the rhs line
+*/
 
 /*
 		// 3. construct left most byte
