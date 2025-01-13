@@ -13,14 +13,22 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
         shl     bx, 1                                       ; convert BX to a word pointer
 	   	mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset		
 		// 3. build lhs of line
-		mov     bx, x1		
-       	mov     ax, x2
-		mov 	cx, bx										; copy x1
+		mov     ax, x1		
+       	mov     bx, x2
+		mov 	cx, ax										; copy x1
 		and     cx, 7                                   	; mask off 0111 lower bits ie x mod 8 (thanks powers of 2)
-		mov 	dl, 11111111b								; inverse mask 
+		mov 	dl, 11111111b								; load DL inverse mask 
 		shr 	dl, cl										; shorten mask to fit line start 
 		not 	dl											; invert to make mask 
-		mov 	dh, colour 
+		mov 	dh, colour 									; load DH colour
+		not 	dh 											; invert colour
+		xor 	cl, 7										; CL = number of bits to shift left (thanks bit flip XOR)
+		shl 	dh, cl										; shift inverted colour
+		not		dh											; revert to set bits 
+		// 4. draw lhs of line 
+		add 	di, ax 
+		and     es:[di], dl                             ; mask out the pixel bits
+        or      es:[di], dh                             ; draw lhs line
 		
 		
 END:
@@ -52,6 +60,7 @@ void hga_fast_vline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 L1:	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
 		add   	di, ax                                      ; add in x / 8
 		add 	bx, 2 										; next line
+*** need to mask out for black colour ***
 	    // 6. OR in the pixel
 		or 		es:[di], dl
 		loop 	L1
