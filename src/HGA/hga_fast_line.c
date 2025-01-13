@@ -12,23 +12,7 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 		mov     bx, y1                                      ; load y1
         shl     bx, 1                                       ; convert BX to a word pointer
 	   	mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset		
-		// 3. build lhs of line
-		mov     ax, x1		
-       	mov     bx, x2
-		mov 	cx, ax										; copy x1
-		and     cx, 7                                   	; mask off 0111 lower bits ie x mod 8 (thanks powers of 2)
-		mov 	dl, 11111111b								; load DL inverse mask 
-		shr 	dl, cl										; shorten mask to fit line start 
-		not 	dl											; invert to make mask 
-		mov 	dh, colour 									; load DH colour
-		not 	dh 											; invert colour
-		xor 	cl, 7										; CL = number of bits to shift left (thanks bit flip XOR)
-		shl 	dh, cl										; shift inverted colour
-		not		dh											; revert to set bits 
-		// 4. draw lhs of line 
-		add 	di, ax 
-		and     es:[di], dl                             ; mask out the pixel bits
-        or      es:[di], dh                             ; draw lhs line
+		
 		
 		
 END:
@@ -39,15 +23,16 @@ void hga_fast_vline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 	__asm {
 		.8086
 	    // 1. set up VRAM segment in ES
-	    mov   ax, vram_segment
-		mov   es, ax
-	    // 2. shift the pixel in DL right into the correct x mod 8 position
+	    mov   	ax, vram_segment
+		mov   	es, ax
+		// 2. setup mask and colour 
+		mov   	dl, 01111111b								; DL is pixel mask  
+	    // 3. shift the pixel in DL right into the correct x mod 8 position
 	    mov		ax, x1			                           	; load x
 	    mov		cx, ax			                           	; copy of x
 	    and		cx, 7h			                           	; mask off 0111 lower bits i.e.mod 8 (thanks powers of 2)
-	    mov		dl, 80h			                           	; load DL with a single pixel at msb 10000000
-	    shr		dl, cl			                           	; shift single bit along by x mod 8
-	    // 3. x div 8
+		rol 	dl, cl										; rotate mask bit by x mod 8
+	    shr		dh, cl			                           	; shift colour bit right by x mod 8
 	    shr		ax, 1			                           	; calculate column byte x / 8
 	    shr		ax, 1			                           	; poor old 8086 only has opcodes shifts by an implicit 1 or CL
 	    shr		ax, 1
@@ -60,9 +45,9 @@ void hga_fast_vline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 L1:	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
 		add   	di, ax                                      ; add in x / 8
 		add 	bx, 2 										; next line
-*** need to mask out for black colour ***
-	    // 6. OR in the pixel
-		or 		es:[di], dl
+	    // 6. colour the selected pixel
+		and		es:[di], dh									; mask out target pixel
+		or 		es:[di], dl									; or in the 'colour'
 		loop 	L1
 	}
 }
