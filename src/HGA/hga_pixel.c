@@ -42,7 +42,7 @@ void hga_plot_pixel_lookup_table(uint16_t vram_segment, uint16_t x, uint16_t y, 
         shr     bx, 1
         shr     bx, 1
         add     di, bx
-        // 3. setup AL = pixel bit mask, AH = pixel 'colour'
+        // 3. setup AL = pixel bit mask, AH = pixel 'colour' (have to mask in case colour bit is 0)
         and     cx, 7                                   ; mask off 0111 lower bits ie x mod 8 (thanks powers of 2)
         xor     cl, 7                                   ; CL = number of bits to shift left (thanks bit flip XOR)
         mov     al, 11111110b                           ; AL = pixel mask
