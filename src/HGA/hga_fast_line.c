@@ -11,28 +11,35 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 		// 2. lookup y and setup ES:DI point to target line
 		mov     bx, y1                                      ; load y1
         shl     bx, 1                                       ; convert BC to a word pointer
-	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
-		
-		// 4. x1 and x2 div 8
-		mov     bx, x1
-		shr		bx, 1			                           	; calculate column byte x / 8
+	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset		
+		// 3.1 special cases 
+		mov     bx, x1		
+        mov     ax, x2
+		cmp 	ax, bx 
+		jne 	J1
+		// 3.2 special case x1 and x2 are the same ie a single pixel 
+		mov 	dl, 80h
+
+
+
+J1		shr		bx, 1			                           	; calculate column byte x / 8
         shr		bx, 1			                           	; poor old 8086 only has opcodes shifts by an implicit 1 or CL
         shr		bx, 1
-        mov     ax, x2
+
         shr     ax, 1
         shr     ax, 1
         shr     ax, 1
-        // 5.1 setup line length special cases
+      
         mov     cx, ax                                      ; copy of x2
         sub     cx, bx                                      ; CX is now line length in bytes
         // 5.2 special case zero length
         jnz    CASE1                                         
         // 5.3 special case x1 and x2 are the same ie a single pixel 
         // OR in lhs of line
-        or 		es:[di + bx], dl
+        //or 		es:[di + bx], dl
 
      // AND mask OR in rhs of line
-        and     es:[di + bx], dh
+        //and     es:[di + bx], dh
         //not     dh
 CASE1
 END:
