@@ -8,10 +8,7 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 	    // 1. set up VRAM segment in ES
 		mov   	ax, vram_segment
 		mov   	es, ax
-		// 2. lookup y and setup ES:DI point to target line
-		mov     bx, y1                                      ; load y1
-        shl     bx, 1                                       ; convert BX to a word pointer
-	   	mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
+
 
 
 
@@ -28,7 +25,7 @@ void hga_fast_vline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 		// 2. setup registers
 		mov   	dh, 00000001                                ; DH is mask byte
 		mov     dl, colour                                  ; DL load colour
-		mov		ax, x1			                           	; AX loaod x
+		mov		ax, x1			                           	; AX load x
         mov		cx, ax			                           	; CX copy of x
         and		cx, 7h			                           	; mask off 0111 lower bits i.e.mod 8 (thanks powers of 2)										; rotate mask bit by x mod 8
 		xor     cx, 7h                                      ; convert to bits to shift left
@@ -40,11 +37,11 @@ void hga_fast_vline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 	    shr		ax, 1			                           	; calculate column byte x / 8
 	    shr		ax, 1			                           	; poor old 8086 only has opcodes shifts by an implicit 1 or CL
 	    shr		ax, 1
-		// 5. setup y loop and bound the line to the screen
-		mov 	bx, y1
-		mov 	cx, y2
-		sub 	cx, bx										; BX is the start y CX is the y count
-        shl     bx, 1                                       ; BX is a word pointer so double
+		// 5. setup y loop and lookup pointer
+		mov 	bx, y1                                      ; BX load y1
+		mov 	cx, y2                                      ; CX load y2
+		sub 	cx, bx										; convert CX line length
+        shl     bx, 1                                       ; convert BX word pointer
 		// 5. lookup y and setup ES:DI point to target byte
 L1:	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
 		add   	di, ax                                      ; add in x / 8
@@ -52,7 +49,7 @@ L1:	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
 	    // 6. colour the selected pixel
 		and		es:[di], dh								    ; mask out target pixel
 		or 		es:[di], dl									; or in the 'colour'
-		loop 	L1
+		loop 	L1                                          ; for line length
 	}
 }
 
