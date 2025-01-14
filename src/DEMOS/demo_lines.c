@@ -35,14 +35,14 @@ int demo(int argc, char** argv) {
 
     // 3. draw white lines
     int j = 1;
-    for(int i =10; i < 100; ++i) {
+    for(int i =10; i < 100; i+=1) {
         hga_fast_vline(HGA_BUFFER_1, i, j, i, j + 174, HGA_WHITE);
         j+=1;
     }
     getchar();
-    // 4. draw black lines 
+    // 4. draw black lines
     j = 1;
-    for(int i =10; i < 50; ++i) {
+    for(int i =10; i < 100; i+=2) {
         hga_fast_vline(HGA_BUFFER_1, i, j + 1, i, j + 173, HGA_BLACK);
         j+=2;
     }
