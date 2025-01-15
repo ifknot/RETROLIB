@@ -11,18 +11,16 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 		// 2. lookup y and setup ES:DI point to target row
 		mov 	bx, y1										; BX load y
 		mov   	di, HGA_TABLE_Y_LOOKUP[bx]					; lookup y offset
-		// 3. set up registers and lhs of line 
+		// 3. set up registers
 		mov 	ax, x1										; AX load x1
 		mov 	bx, x2 										; BX load x2 
 		mov 	si, bx 										; SI copy x2 
 		sub 	si, ax										; SI line length	
-		mov 	dl, colour									; DL load 'colour' 
-		test 	dl, dl 
-		jz		BLACK
-		mov 	dl, 11111111b								; 8 'white' pixels 
-BLACK:	mov		dh, 11111111b								; proto-mask
-
-
+		// 4. build lsh & rsh masks
+		mov 	dx, 0FFFFh 									; DL lhs DH rhs proto-masks
+		mov 	cx, ax										; copy x1 
+		and 	cx, 7h			                           	; CX is x1 mod 8
+		
 
 END:
 	}
