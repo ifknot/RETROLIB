@@ -15,8 +15,11 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 		mov 	ax, x1										; AX load x1
 		mov 	bx, x2 										; BX load x2 
 		mov 	cx, ax 										; CX copy x1 
-		
-	
+		mov 	dl, colour									; DL load 'colour' 
+		test 	dl, dl 
+		jz		BLACK
+		mov 	dl, 11111111b								; 8 'white' pixels 
+BLACK:	mov		dh, 11111111b								; proto-mask
 
 
 
