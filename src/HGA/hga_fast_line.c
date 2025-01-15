@@ -8,7 +8,15 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 	    // 1. set up VRAM segment in ES
 		mov   	ax, vram_segment
 		mov   	es, ax
-
+		// 2. lookup y and setup ES:DI point to target row
+		mov 	bx, y1										; BX load y
+		mov   	di, HGA_TABLE_Y_LOOKUP[bx]					; lookup y offset
+		// 3. set up registers and lhs of line 
+		mov 	ax, x1										; AX load x1
+		mov 	bx, x2 										; BX load x2 
+		mov 	cx, ax 										; CX copy x1 
+		
+	
 
 
 
