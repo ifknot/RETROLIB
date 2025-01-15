@@ -14,7 +14,8 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 		// 3. set up registers and lhs of line 
 		mov 	ax, x1										; AX load x1
 		mov 	bx, x2 										; BX load x2 
-		mov 	cx, ax 										; CX copy x1 
+		mov 	si, bx 										; SI copy x2 
+		sub 	si, ax										; SI line length	
 		mov 	dl, colour									; DL load 'colour' 
 		test 	dl, dl 
 		jz		BLACK
