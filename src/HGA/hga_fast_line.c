@@ -23,8 +23,8 @@ void hga_fast_vline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 	    mov   	ax, vram_segment
 		mov   	es, ax
 		// 2. setup registers
-		mov   	dh, 00000001                                ; DH is mask byte
-		mov     dl, colour                                  ; DL load colour
+		mov   	dh, 00000001                                ; DH is (proto)mask byte
+		mov     dl, colour                                  ; DL load 'colour'
 		mov		ax, x1			                           	; AX load x
         mov		cx, ax			                           	; CX copy of x
         and		cx, 7h			                           	; mask off 0111 lower bits i.e.mod 8 (thanks powers of 2)										; rotate mask bit by x mod 8
