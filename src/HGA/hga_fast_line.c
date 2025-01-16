@@ -12,41 +12,47 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 		mov 	bx, y1										; BX load y
 		mov   	di, HGA_TABLE_Y_LOOKUP[bx]					; lookup y offset
 		// 3. set up registers
-		mov 	ax, x1										; AX load x1
-		mov 	bx, x2 										; BX load x2 
-		mov 	si, bx 										; SI copy x2 
-		sub 	si, ax										; SI line length	
-		// 4.1 build lsh & rsh masks
+		mov 	bx, x1										; BX load x1
+		mov 	ax, x2 										; AX load x2
+		// 4. build lsh & rsh proto-masks
 		mov 	dx, 0FFFFh 									; DL lhs DH rhs proto-masks (little endian)
-		mov 	cx, ax										; copy x1 
+		mov 	cx, bx										; copy x1
 		and 	cx, 7h			                           	; CX is x1 mod 8
-		shr 	dl, cl										; shift lhs proto mask to starting pixel 
-		mov 	cx, bx										; copy x2
+		shr 	dl, cl										; shift lhs proto mask to starting pixel
+		mov 	cx, ax										; copy x2
 		and 	cx, 7h			                           	; CX is x2 mod 8
 		xor 	cx, 7h										; convert to bits to shift left
 		shl 	dh,cl 										; shift rhs proto mask to ending pixel
-		// 5. reduce x1 and x2 to column bytes 
-		shr		ax, 1			                           	; calculate column byte x1 / 8
-	    shr		ax, 1			                            ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
-	    shr		ax, 1
-		shr		bx, 1			                           	; calculate column byte x2 / 8
-	    shr		bx, 1			                           	
+		// 5. reduce x1 and x2 to column bytes
+		shr		bx, 1			                           	; calculate column byte x1 / 8
+	    shr		bx, 1			                            ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
 	    shr		bx, 1
-		// 6. special case same byte
-		cmp 	ax, bx
-		jne 	J0
-		// work out 'colour' bits into bl (x1 == x2) 
-		// not dx into mask
-		// and dl, dh into same byte
-		// and or in 'colour'
-		jmp END
-		// 7. general case 
+		shr		ax, 1			                           	; calculate column byte x2 / 8
+	    shr		ax, 1
+	    shr		ax, 1
+		// 6 work out 'colour' bits into cl AND ch
+		mov     cl, colour
+		mov     ch, cl
+		test    cl, cl                                      ; is it black?
+		jz      BLK
+		mov     cx, dx                                      ; proto-mask is white bits to 'colour'
+BLK:    // 7.1 special case same byte
+		cmp 	bx, ax                                      ; lhs and rhs share same byte?
+		jne     GEN
+		and     dl, dh                                      ; combine proto-mask into dl
+		not     dl		                                    ; convert proto-mask to mask
+		and     cl, ch                                      ; combine 'colour' bits into cl
+        // 7.2 colour the combined lhs/rhs byte
+		and     es:[di + bx], dl                            ; mask out target bits
+		or      es:[di + bx], cl                            ; colour target bits
+		jmp     END
+GEN:		// 7. general case
 		// work out line size into cx
-		// work out 'colour' bits into bl 
+		// work out 'colour' bits into bl
 		// not dx into mask
-		// and dl, dh lhs and rhs bytes 
-		// or in 'colour' lhs and rhs bytes 
-		// 8. fill in solid byte if cx test 1 
+		// and dl, dh lhs and rhs bytes
+		// or in 'colour' lhs and rhs bytes
+		// 8. fill in solid byte if cx test 1
 		// 9. fill in word(s) if cx > 1
 END:
 	}

@@ -32,19 +32,24 @@ int demo(int argc, char** argv) {
     hga_graphics_mode();
     hga_select_display_buffer(HGA_BUFFER_1);
     hga_cls(HGA_BUFFER_1);
-
+    getchar();
     // 3. draw white lines
+    /*
     int j = 1;
-    for(int i =10; i < 100; i+=1) {
+    for(int i = 10; i < 100; i+=1) {
         hga_fast_vline(HGA_BUFFER_1, i, j, i, j + 174, HGA_WHITE);
         j+=1;
     }
     getchar();
     // 4. draw black lines
     j = 1;
-    for(int i =10; i < 100; i+=2) {
+    for(int i = 10; i < 100; i+=2) {
         hga_fast_vline(HGA_BUFFER_1, i, j + 1, i, j + 173, HGA_BLACK);
         j+=2;
+    }
+    */
+    for(int i = 0; i < 8; ++i) {
+        hga_fast_hline(HGA_BUFFER_1, i, 10 + i, i, 10 + i, HGA_WHITE);
     }
     //  wait for ENTER key and switch back to text mode
     getchar();
