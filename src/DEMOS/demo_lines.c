@@ -48,9 +48,43 @@ int demo(int argc, char** argv) {
         j+=2;
     }
     */
-    for(int i = 0; i < 8; ++i) {
-        hga_fast_hline(HGA_BUFFER_1, i, 10 + i, i, 10 + i, HGA_WHITE);
-    }
+
+    hga_fast_hline(HGA_BUFFER_1, 0, 0, 0, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 1, 1, 1, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 2, 2, 2, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 3, 3, 3, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 4, 4, 4, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 5, 5, 5, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 6, 6, 6, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 7, 7, 7, 0, HGA_WHITE);
+
+    hga_fast_hline(HGA_BUFFER_1, 0, 8, 0, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 1, 8, 1, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 2, 8, 2, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 3, 8, 3, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 4, 8, 4, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 5, 8, 5, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 6, 8, 6, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 7, 8, 7, 0, HGA_WHITE);
+
+    hga_fast_hline(HGA_BUFFER_1, 0, 10, 7, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 1, 11, 7, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 2, 12, 7, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 3, 13, 7, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 4, 14, 7, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 5, 15, 7, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 6, 16, 7, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 7, 17, 7, 0, HGA_WHITE);
+
+    hga_fast_hline(HGA_BUFFER_1, 0, 18, 7, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 0, 19, 6, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 0, 20, 5, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 0, 21, 4, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 0, 22, 3, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 0, 23, 2, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 0, 24, 1, 0, HGA_WHITE);
+    hga_fast_hline(HGA_BUFFER_1, 0, 25, 0, 0, HGA_WHITE);
+
     //  wait for ENTER key and switch back to text mode
     getchar();
     hga_text_mode();

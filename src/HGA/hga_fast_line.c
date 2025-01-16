@@ -10,6 +10,7 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 		mov   	es, ax
 		// 2. lookup y and setup ES:DI point to target row
 		mov 	bx, y1										; BX load y
+	    shl     bx, 1                                       ; convert BX word pointer
 		mov   	di, HGA_TABLE_Y_LOOKUP[bx]					; lookup y offset
 		// 3. set up registers
 		mov 	bx, x1										; BX load x1
