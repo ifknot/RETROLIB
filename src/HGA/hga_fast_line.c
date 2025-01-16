@@ -26,12 +26,20 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 		xor 	cx, 7h										; convert to bits to shift left
 		shl 	dh,cl 										; shift rhs proto mask to ending pixel
 		// 5. reduce x1 and x2 to column bytes 
-		// ax and bx shr 3
+		shr		ax, 1			                           	; calculate column byte x1 / 8
+	    shr		ax, 1			                            ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
+	    shr		ax, 1
+		shr		bx, 1			                           	; calculate column byte x2 / 8
+	    shr		bx, 1			                           	
+	    shr		bx, 1
 		// 6. special case same byte
+		cmp 	ax, bx
+		jne 	J0
 		// work out 'colour' bits into bl (x1 == x2) 
 		// not dx into mask
 		// and dl, dh into same byte
-		// and or in 'colour'  
+		// and or in 'colour'
+		jmp END
 		// 7. general case 
 		// work out line size into cx
 		// work out 'colour' bits into bl 
@@ -40,10 +48,6 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 		// or in 'colour' lhs and rhs bytes 
 		// 8. fill in solid byte if cx test 1 
 		// 9. fill in word(s) if cx > 1
-
-		
-		
-
 END:
 	}
 }
