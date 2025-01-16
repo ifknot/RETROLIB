@@ -38,7 +38,8 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 		// not dx into mask
 		// and dl, dh lhs and rhs bytes 
 		// or in 'colour' lhs and rhs bytes 
-		
+		// 8. fill in solid byte if cx test 1 
+		// 9. fill in word(s) if cx > 1
 
 		
 		
