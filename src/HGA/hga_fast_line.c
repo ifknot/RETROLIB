@@ -16,13 +16,31 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 		mov 	bx, x2 										; BX load x2 
 		mov 	si, bx 										; SI copy x2 
 		sub 	si, ax										; SI line length	
-		// 4. build lsh & rsh masks
-		mov 	dx, 0FFFFh 									; DL lhs DH rhs proto-masks
+		// 4.1 build lsh & rsh masks
+		mov 	dx, 0FFFFh 									; DL lhs DH rhs proto-masks (little endian)
 		mov 	cx, ax										; copy x1 
 		and 	cx, 7h			                           	; CX is x1 mod 8
+		shr 	dl, cl										; shift lhs proto mask to starting pixel 
+		mov 	cx, bx										; copy x2
+		and 	cx, 7h			                           	; CX is x2 mod 8
+		xor 	cx, 7h										; convert to bits to shift left
+		shl 	dh,cl 										; shift rhs proto mask to ending pixel
+		// 5. reduce x1 and x2 to column bytes 
+		// ax and bx shr 3
+		// 6. special case same byte
+		// work out 'colour' bits into bl (x1 == x2) 
+		// not dx into mask
+		// and dl, dh into same byte
+		// and or in 'colour'  
+		// 7. general case 
+		// work out line size into cx
+		// work out 'colour' bits into bl 
+		// not dx into mask
+		// and dl, dh lhs and rhs bytes 
+		// or in 'colour' lhs and rhs bytes 
+		
 
-
-		// 5. work out 'colour' bits
+		
 		
 
 END:
