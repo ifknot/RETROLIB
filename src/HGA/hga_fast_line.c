@@ -20,6 +20,9 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 		mov 	dx, 0FFFFh 									; DL lhs DH rhs proto-masks
 		mov 	cx, ax										; copy x1 
 		and 	cx, 7h			                           	; CX is x1 mod 8
+
+
+		// 5. work out 'colour' bits
 		
 
 END:
