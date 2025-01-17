@@ -50,7 +50,7 @@ J0:    // 7.1 special case same byte
 		and     es:[di + bx], dl                            ; mask out target bits 	- 16 + EA(8)
 		or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)	
 		jmp     END
-J1:		// 8.0 special case same word
+J1:		// 8.0 special case same word (saves 48 clock cycles on 8086 line lengths 1 - 17)
 		// 9.0. general case
 		// work out line size into cx
 		// work out 'colour' bits into bl
