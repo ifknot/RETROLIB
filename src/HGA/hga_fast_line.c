@@ -41,6 +41,7 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 		jz      J0
 		mov     ax, dx                                      ; proto-mask is white bits to 'colour'
 J0:    // 7.1 special case same byte
+	//todo: jcxz and reorder code
 		test	cx, cx                                      ; lhs and rhs share same byte?
 		jnz     J1
 		and     dl, dh                                      ; combine proto-mask into dl
