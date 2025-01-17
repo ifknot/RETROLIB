@@ -34,15 +34,15 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 		// 6. calculate line length in bytes
 		mov 	cx, ax 
 		sub 	cx, bx										; CX line length (bytes)
-		// 6 work out 'colour' bits into al AND ah
+		// 7.0 work out 'colour' bits into al AND ah
 		mov     al, colour
 		mov     ah, al
 		test    al, al                                      ; is it black?
-		jz      BLK
+		jz      J0
 		mov     ax, dx                                      ; proto-mask is white bits to 'colour'
-BLK:    // 7.1 special case same byte
+J0:    // 7.1 special case same byte
 		test	cx, cx                                      ; lhs and rhs share same byte?
-		jnz     GEN
+		jnz     J1
 		and     dl, dh                                      ; combine proto-mask into dl
 		not     dl		                                    ; convert proto-mask to mask
 		and     al, ah                                      ; combine 'colour' bits into al
@@ -50,7 +50,8 @@ BLK:    // 7.1 special case same byte
 		and     es:[di + bx], dl                            ; mask out target bits
 		or      es:[di + bx], al                            ; colour target bits
 		jmp     END
-GEN:		// 7. general case
+J1:		// 8.0 special case same word
+		// 9.0. general case
 		// work out line size into cx
 		// work out 'colour' bits into bl
 		// not dx into mask
