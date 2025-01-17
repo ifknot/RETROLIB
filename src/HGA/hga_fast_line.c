@@ -46,9 +46,9 @@ J0:    // 7.1 special case same byte
 		and     dl, dh                                      ; combine proto-mask into dl
 		not     dl		                                    ; convert proto-mask to mask
 		and     al, ah                                      ; combine 'colour' bits into al
-        // 7.2 colour the combined lhs/rhs byte
-		and     es:[di + bx], dl                            ; mask out target bits
-		or      es:[di + bx], al                            ; colour target bits
+        // 7.2 colour the combined lhs/rhs byte										Clock Cycles
+		and     es:[di + bx], dl                            ; mask out target bits 	- 16 + EA(8)
+		or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)	
 		jmp     END
 J1:		// 8.0 special case same word
 		// 9.0. general case
