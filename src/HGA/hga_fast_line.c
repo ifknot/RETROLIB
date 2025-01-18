@@ -32,34 +32,34 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 	    shr		ax, 1
 	    shr		ax, 1
 		// 6. calculate line length in bytes
-		mov 	cx, ax 
+		mov 	cx, ax
 		sub 	cx, bx										; CX line length (bytes)
 		// 7.0 work out 'colour' bits into al AND ah
 		mov     al, colour
 		mov     ah, al
 		test    al, al                                      ; is it black?
-		jz      J0
+		jz      BLK
 		mov     ax, dx                                      ; proto-mask is white bits to 'colour'
-J0:    // 7.1 special case same byte
-	//todo: jcxz and reorder code
-		test	cx, cx                                      ; lhs and rhs share same byte?
-		jnz     J1
+BLK:    jcxz    J0                                          ; lhs and rhs share same byte?
+        dec     cx
+        jcxz    J1                                          ; lhs and rhs sahre same word?
+        // 7.0 general case
+        jmp END
+
+J1:		// 8.0 special case same word (saves 48 clock cycles on 8086 line lengths 1 - 15)
+        not     dx                                          ; convert proto-mask to mask word
+        // 8.1 colour the shared lhs:rhs word                                       Clock Cycles
+        and     es:[di + bx], dx                            ; mask out target word 	- 16 + EA(8)
+		or      es:[di + bx], ax                            ; colour target word	- 16 + EA(8)
+		jmp END
+
+J0:     // 9.1 special case same byte (saves 48 clock cycles on 8086 line lengths 0 - 7)
 		and     dl, dh                                      ; combine proto-mask into dl
 		not     dl		                                    ; convert proto-mask to mask
 		and     al, ah                                      ; combine 'colour' bits into al
-        // 7.2 colour the combined lhs/rhs byte										Clock Cycles
+        // 9.2 colour the combined lhs&rhs byte										Clock Cycles
 		and     es:[di + bx], dl                            ; mask out target bits 	- 16 + EA(8)
-		or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)	
-		jmp     END
-J1:		// 8.0 special case same word (saves 48 clock cycles on 8086 line lengths 1 - 17)
-		// 9.0. general case
-		// work out line size into cx
-		// work out 'colour' bits into bl
-		// not dx into mask
-		// and dl, dh lhs and rhs bytes
-		// or in 'colour' lhs and rhs bytes
-		// 8. fill in solid byte if cx test 1
-		// 9. fill in word(s) if cx > 1
+		or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)
 END:
 	}
 }
