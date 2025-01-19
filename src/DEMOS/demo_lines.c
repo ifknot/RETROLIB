@@ -65,7 +65,6 @@ int demo(int argc, char** argv) {
     // 6. draw black hlines 0..7hga_fast_hline(HGA_BUFhga_fast_hline(HGA_BUFFER_1, k + j, j, k + j, 0, HGA_WHITE);FER_1, k + j, j, k + j, 0, HGA_WHITE);
     hga_fill_vram_buffer(HGA_BUFFER_1, 0xFF);
     getchar();
-
     k = 0;
     y = 8;
     for(int i = 0; i <90; ++i) {
@@ -79,8 +78,38 @@ int demo(int argc, char** argv) {
     }
     */
     // 7. draw white shared word hlines
-    hga_fast_hline(HGA_BUFFER_1, 7, 10, 8, 0, HGA_WHITE);
-
+    int k = 0;
+    for(int j = 0; j < 45; j++) {
+        int a = 7;
+        int b = 8;
+        for(int i =0; i < 8;++i) {
+            hga_fast_hline(HGA_BUFFER_1, k + a, i, k + b, 0, HGA_WHITE);
+            hga_fast_hline(HGA_BUFFER_1, k + a, i + 8, k + b, 0, HGA_WHITE);
+            hga_fast_hline(HGA_BUFFER_1, k + a, i + 110, k + b, 0, HGA_WHITE);
+            hga_fast_hline(HGA_BUFFER_1, k + a, i + 218, k + b, 0, HGA_WHITE);
+            a--;
+            b++;
+        }
+        k+=16;
+    }
+    getchar();
+    // 8. draw black shared word hlines
+    hga_fill_vram_buffer(HGA_BUFFER_1, 0xFF);
+    getchar();
+    k = 0;
+    for(int j = 0; j < 45; j++) {
+        int a = 7;
+        int b = 8;
+        for(int i =0; i < 8;++i) {
+            hga_fast_hline(HGA_BUFFER_1, k + a, i, k + b, 0, HGA_BLACK);
+            hga_fast_hline(HGA_BUFFER_1, k + a, i + 8, k + b, 0, HGA_BLACK);
+            hga_fast_hline(HGA_BUFFER_1, k + a, i + 110, k + b, 0, HGA_BLACK);
+            hga_fast_hline(HGA_BUFFER_1, k + a, i + 218, k + b, 0, HGA_BLACK);
+            a--;
+            b++;
+        }
+        k+=16;
+    }
     //  wait for ENTER key and switch back to text mode
     getchar();
     hga_text_mode();
