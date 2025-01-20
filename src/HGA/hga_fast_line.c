@@ -35,8 +35,12 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 		mov 	cx, ax
 		sub 	cx, bx										; CX line length (bytes)
 		// 7.0 work out 'colour' bits into al AND ah
+		mov 	al, colour
+		mov 	ah, al
+		test 	al, al
+		jz 		BLK
 		mov     ax, dx                                      ; proto-mask is white bits to 'colour'
-	    jcxz    J0                                          ; lhs and rhs share same byte?
+BLK:	jcxz    J0                                          ; lhs and rhs share same byte?
         dec     cx
         jcxz    J1                                          ; lhs and rhs share same word?
 	
@@ -47,7 +51,7 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 		and     es:[di], dl                            		; mask out target bits 	- 16 + EA(8)
 		or      es:[di], al                            		; colour target bits	- 16 + EA(8)
 		// 7.3 work out fill 'colour'
-	
+		
 		// 7.4 handle odd or even line lengths 
 		test 	cx, 1 
 		jz 		EVEN
@@ -64,7 +68,6 @@ J1:		// 8.0 special case same word (saves 48 clock cycles on 8086 line lengths 2
         not     dx                                          ; convert proto-mask to mask word
         // 8.1 colour the shared lhs:rhs word                                       Clock Cycles
         and     es:[di + bx], dx                            ; mask out target word 	- 16 + EA(8)
-	*** test colour
 		or      es:[di + bx], ax                            ; colour target word	- 16 + EA(8)
 		jmp 	END
 J0:     // 9.1 special case same byte (saves 48 clock cycles on 8086 line lengths 0 - 7)
@@ -73,7 +76,6 @@ J0:     // 9.1 special case same byte (saves 48 clock cycles on 8086 line length
 		and     al, ah                                      ; combine 'colour' bits into al
         // 9.2 colour the combined lhs&rhs byte										Clock Cycles
 		and     es:[di + bx], dl                            ; mask out target bits 	- 16 + EA(8)
-	*** test colour
 		or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)
 END:
 	}
