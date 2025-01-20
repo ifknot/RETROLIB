@@ -55,18 +55,15 @@ BLK:	jcxz    J0                                          ; lhs and rhs share sam
 		and     es:[di + bx], dh                            ; mask out target bits 	- 16 + EA(8)
 		or      es:[di + bx], ah                            ; colour target bits	- 16 + EA(8)
 		// 7.3 work out fill 'colour'
-		
+		// mov 	al, colour 
 		// 7.4 handle odd or even line lengths 
-		//test 	cx, 1 
-		//jz 		EVEN
-		//mov 	al, colour 
-		//stosb
-		
-		// odd do one byte FF 
-		// rep stosw
+		// shr cx, 1		; lsb -> carry flag
+		// jnc EVEN
+		// cld 	direction flag
+		// stosb	odd do one byte FF 
 		// jcxz END 
-EVEN:	// remaining word(s) 
-		// andor word FFFF
+EVEN:	// remaining word(s) AX FFFF
+		// rep stosw		; CX is checked for !=0 before even the first step
         jmp 	END
 J1:		// 8.0 special case same word (saves 48 clock cycles on 8086 line lengths 2 - 15)
         not     dx                                          ; convert proto-mask to mask word
