@@ -63,7 +63,7 @@ BLK:	jcxz    J0                                          ; lhs and rhs share sam
 		//stosb
 		
 		// odd do one byte FF 
-		// dec cx 
+		// rep stosw
 		// jcxz END 
 EVEN:	// remaining word(s) 
 		// andor word FFFF
