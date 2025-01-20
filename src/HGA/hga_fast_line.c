@@ -46,17 +46,21 @@ BLK:	jcxz    J0                                          ; lhs and rhs share sam
 	
         // 7.1 general case
 		not 	dx											; convert proto-mask to mask word
-		// 7.2 colour the lhs line 
-		add 	di, bx										; have ES:DI point to target byte 
+		// 7.2 colour lhs and rhs line 
+		add 	di, bx										; have ES:DI point to lhs
 		and     es:[di], dl                            		; mask out target bits 	- 16 + EA(8)
 		or      es:[di], al                            		; colour target bits	- 16 + EA(8)
+		mov 	bx, cx										; rhs offset = length
+		inc 	bx											; + 1
+		and     es:[di + bx], dh                            ; mask out target bits 	- 16 + EA(8)
+		or      es:[di + bx], ah                            ; colour target bits	- 16 + EA(8)
 		// 7.3 work out fill 'colour'
 		
 		// 7.4 handle odd or even line lengths 
-		test 	cx, 1 
-		jz 		EVEN
-		mov 	al, colour 
-		stosb
+		//test 	cx, 1 
+		//jz 		EVEN
+		//mov 	al, colour 
+		//stosb
 		
 		// odd do one byte FF 
 		// dec cx 
