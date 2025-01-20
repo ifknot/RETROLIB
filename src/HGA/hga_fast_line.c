@@ -42,17 +42,22 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 		mov     ax, dx                                      ; proto-mask is white bits to 'colour'
 BLK:    jcxz    J0                                          ; lhs and rhs share same byte?
         dec     cx
-        jcxz    J1                                          ; lhs and rhs sahre same word?
+        jcxz    J1                                          ; lhs and rhs share same word?
         // 7.0 general case
-        jmp END
-
-J1:		// 8.0 special case same word (saves 48 clock cycles on 8086 line lengths 1 - 15)
+		// andor lhs and rhs 
+		// check if odd/even
+		// odd do one byte FF 
+		// dec cx 
+		// jcxz END 
+		// remaining word(s) 
+		// andor word FFFF
+        jmp 	END
+J1:		// 8.0 special case same word (saves 48 clock cycles on 8086 line lengths 2 - 15)
         not     dx                                          ; convert proto-mask to mask word
         // 8.1 colour the shared lhs:rhs word                                       Clock Cycles
         and     es:[di + bx], dx                            ; mask out target word 	- 16 + EA(8)
 		or      es:[di + bx], ax                            ; colour target word	- 16 + EA(8)
-		jmp END
-
+		jmp 	END
 J0:     // 9.1 special case same byte (saves 48 clock cycles on 8086 line lengths 0 - 7)
 		and     dl, dh                                      ; combine proto-mask into dl
 		not     dl		                                    ; convert proto-mask to mask
