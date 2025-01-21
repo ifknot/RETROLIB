@@ -77,6 +77,7 @@ int demo(int argc, char** argv) {
         k+=8;
     }
     */
+    /*
     // 7. draw white shared word hlines
     int k = 0;
     for(int j = 0; j < 45; j++) {
@@ -109,6 +110,13 @@ int demo(int argc, char** argv) {
             b++;
         }
         k+=16;
+    }
+    */
+    // 9. draw white lines length over mulitple bytes
+    int k = 8;
+    for(int i = 0; i < 45; ++i) {
+        hga_fast_hline(HGA_BUFFER_1, 0, i + 10, k + 15, 0, HGA_WHITE);
+        k+=8;
     }
     //  wait for ENTER key and switch back to text mode
     getchar();

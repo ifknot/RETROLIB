@@ -38,40 +38,38 @@ void hga_fast_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2
 		mov 	al, colour
 		mov 	ah, al
 		test 	al, al
-		jz 		BLK
+		jz 		Z0
 		mov     ax, dx                                      ; proto-mask is white bits to 'colour'
-BLK1:	jcxz    J0                                          ; lhs and rhs share same byte?
+Z0:	    jcxz    J0                                          ; lhs and rhs share same byte?
         dec     cx
         jcxz    J1                                          ; lhs and rhs share same word?
-	
         // 7.1 general case
 		not 	dx											; convert proto-mask to mask word
-		// 7.2 colour lhs and rhs line 
+		// 7.2 colour lhs and rhs line
 		add 	di, bx										; have ES:DI point to lhs
 		and     es:[di], dl                            		; mask out target bits 	- 16 + EA(8)
 		or      es:[di], al                            		; colour target bits	- 16 + EA(8)
 		mov 	bx, cx										; rhs offset = length
-		inc 	bx											; + 1
+		inc 	di											; next byte
 		and     es:[di + bx], dh                            ; mask out target bits 	- 16 + EA(8)
 		or      es:[di + bx], ah                            ; colour target bits	- 16 + EA(8)
 		// 7.3 work out fill 'colour'
 		mov 	al, colour
 		mov 	ah, al
 		test 	al, al
-		jz 		BLK2
+		jz 		Z1
 		mov     ax, 0FFFFh                                   ; AX white
-BLK2: 
-		// 7.4 handle odd or even line lengths 
-		// shr cx, 1		; lsb -> carry flag
-		// jnc EVEN
-		// cld 	direction flag
-		// stosb	odd do one byte al 'colour'
-		// jcxz END 
-EVEN:	// remaining word(s) ax 'colour' 
-		// rep stosw		; CX is checked for !=0 before even the first step
+Z1:     // 7.4 handle odd or even line lengths
+		cld                                                  ; clear direction flag
+		shr     cx, 1		                                 ; number of words to fill, lsb -> carry flag
+		jnc     NC0                                          ; even so no byte to fill
+		stosb	                                             ; odd do one byte al 'colour'
+		jcxz    END
+NC0:	// remaining word(s) ax 'colour'
+		rep     stosw		                                 ; CX is checked for !=0 before even the first step
         jmp 	END
 J1:		// 8.0 special case same word (saves 48 clock cycles on 8086 line lengths 2 - 15)
-        not     dx                                          ; convert proto-mask to mask word
+        not     dx                                           ; convert proto-mask to mask word
         // 8.1 colour the shared lhs:rhs word                                       Clock Cycles
         and     es:[di + bx], dx                            ; mask out target word 	- 16 + EA(8)
 		or      es:[di + bx], ax                            ; colour target word	- 16 + EA(8)
@@ -122,45 +120,3 @@ L1:	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
 		loop 	L1                                          ; for line length
 	}
 }
-
-/*
-// 3.1 setup DL lhs and DH rhs of the line
-		mov     dx, 80FFh                                  ;
-		mov		cx, x1						                ; load x1
-		and     cx, 7                                       ; x1 mod 8
-		sar     dl, cl
-		// 3.2 setup DH rhs of the line
-		mov 	cx, x2						                ; load x2
-		and     cx, 7                                       ; x2 mod 8
-		shr     dh, cl                                      ; DH is the mask of the rhs line
-*/
-
-/*
-		// 3. construct left most byte
-		mov		cx, ax						; copy x1
-		and		cx, 07h						; mask off 0111 lower bits (mod 8)
-		mov		dl, 0FFh					; load DL with 1111111
-		shr		dl, cl						; shift along by x mod 8
-		// 4. construct right most byte
-		mov 	cx, bx						; copy x2
-		and		cx, 07h						; mask off 0111 lower bits (mod 8)
-		mov 	dh, 0FFh					; load DH with 1111111
-		shr 	dh, cl						; shift along by x mod 8
-		not 	dh							; invert the bits
-		// 5. x1 div 8
-	    shr		ax, 1			            ; calculate column byte x1 / 8
-	    shr		ax, 1			            ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
-	    shr		ax, 1
-		// 6. x2 div 8
-	    shr		bx, 1			            ; calculate column byte x2 / 8
-	    shr		bx, 1			            ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
-	    shr		bx, 1
-		// 7. OR left and right ends of the line
-		add 	di, ax 						; select lhs byte
-		or 		es:[di], dl					; OR in lhs of line
-		sub 	bx, ax						; distance to rhs
-		jnz		J1							; lhs and rhs not share same byte
-		and		es:[di], dh					; occupy same byte and will need to mask out the right end
-J1:		add 	di, bx 						; select rhs byte
-		or 		es:[di], dh					; OR in rhs of line
-		*/
