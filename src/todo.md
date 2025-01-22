@@ -1,14 +1,12 @@
 ### DOING:
 ---
+- [ ] rectangle
+- [ ] demo rectangle
+---
 - [ ] demo pixelate text 
   - [ ] hga_scroll_up
   - [ ] bible
   - [ ] shakespeare
-- [ ] hline
-  - [ ] thickness 
-- [ ] vline
-  - [ ] thickness 
-
 ### TODO:
 ---
 - [ ] code as a creative medium
@@ -40,8 +38,7 @@
 - [ ] bresenham line
 - [ ] demo lines
 ---
-- [ ] rectangle
-- [ ] demo rectangle
+
 ---
 - [ ] circle (unroll loop)
 - [ ] demo circle
@@ -56,6 +53,8 @@
 ---
 ### DONE
 ---
+- [x] hline  
+- [x] vline
 - [x] DOSAPPS\VIDEOINF.EXE
 - [x] finish buffer demo
 - [x] read write vram using y lookup
