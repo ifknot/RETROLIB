@@ -1,10 +1,10 @@
 ### DOING:
 ---
-- [ ] #define to select HGA, INCOLOR, CGA, etc...
-- [ ] rectangle
+- [ ] hga rectangle
+- [ ] hga filled rectangle
 - [ ] demo rectangle
 ---
-- [ ] demo pixelate text 
+- [ ] demo hga pixelate text 
   - [ ] hga_scroll_up
   - [ ] bible
   - [ ] shakespeare
@@ -19,12 +19,9 @@
   - [ ] demo Mondrian
     - [ ] incolor
     - [ ] cga 
-- [ ] rectangle
-- [ ] filled_rectangle
 - [ ] incolor video modes
 - [ ] hga_scroll_down
 - [ ] test file size/file pos works properly
-
 ---
 - [ ] Q10.6
   - [ ] conversions
@@ -33,18 +30,17 @@
   - [ ] 2D vectors 
 - [ ] Q16.16 
 ---
-- [ ] plot pixel algos
-- [ ] pixel perf compare algos
+- [ ] hga pixel perf compare algos
 ---
-- [ ] bresenham line
+- [ ] hga bresenham line
 - [ ] demo lines
 ---
-
+- [ ] hga read pixel
 ---
-- [ ] circle (unroll loop)
+- [ ] hga circle (unroll loop)
 - [ ] demo circle
 ---
-- [ ] byte aligned block transfer
+- [ ] hga byte aligned block transfer
 - [ ] demo byte_aligned_blt
 ---
 - [ ] draw some 1 bit playing cards for a nice change
@@ -54,13 +50,14 @@
 ---
 ### DONE
 ---
-- [x] hline  
-- [x] vline
+- [x] hga hline  
+- [x] hga vline
+- [x] hga 2 types plot pixel
 - [x] DOSAPPS\VIDEOINF.EXE
-- [x] finish buffer demo
-- [x] read write vram using y lookup
-- [x] test ytable
-- [x] fix MDA naming
+- [x] hga finish buffer demo
+- [x] hga read write vram using y lookup
+- [x] hga test ytable
+- [x] hga fix MDA naming
 - [X] convert video mode preset names and table
 - [x] TEXT2BIT demo
 - [x] 86Box on Mac https://github.com/86Box/86Box
