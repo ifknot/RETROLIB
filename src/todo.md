@@ -1,5 +1,6 @@
 ### DOING:
 ---
+- [ ] #define to select HGA, INCOLOR, CGA, etc...
 - [ ] rectangle
 - [ ] demo rectangle
 ---
