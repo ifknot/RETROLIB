@@ -6,7 +6,7 @@
 /**
 * @brief select which of the 2 HGA adapter VRAM buffers ( 0 or 1 ) to be displayed on screen
 */
-void hga_select_display_buffer(uint16_t vram_segment);
+void hga_raw_select_display_buffer(uint16_t vram_segment);
 
 /**
 * @brief Write an 8 bit byte pattern at byte count location (0 .. 31,320) to the specified HGA VRAM buffer
@@ -14,7 +14,7 @@ void hga_select_display_buffer(uint16_t vram_segment);
 * @details
 * @note No sanity checking!
 */
-void hga_write_vram_buffer_byte_location(uint16_t vram_segment, uint16_t byte_location, uint8_t byte_pattern);
+void hga_raw_write_vram_buffer_byte_location(uint16_t vram_segment, uint16_t byte_location, uint8_t byte_pattern);
 
 /**
 * @brief Read an 8 bit byte pattern at byte count location (0 .. 31,320) to the specified HGA VRAM buffer
@@ -22,28 +22,28 @@ void hga_write_vram_buffer_byte_location(uint16_t vram_segment, uint16_t byte_lo
 * @details
 * @note No sanity checking!
 */
-uint8_t hga_read_vram_buffer_byte_location(uint16_t vram_segment, uint16_t byte_location);
+uint8_t hga_raw_read_vram_buffer_byte_location(uint16_t vram_segment, uint16_t byte_location);
 
 /**
 * @brief Write an 8 bit byte pattern at (byte, line) coordinates x(0..89), y(0..347) to the specified HGA VRAM buffer
 * @details
 * @note No sanity checking!
 */
-void hga_write_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t byte_pattern);
+void hga_raw_write_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t byte_pattern);
 
 /**
 * @brief Read an 8 bit byte pattern at (byte, line) coordinates x(0..89), y(0..347) from the specified HGA VRAM buffer
 * @details
 * @note No sanity checking!
 */
-uint8_t hga_read_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y);
+uint8_t hga_raw_read_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y);
 
-inline void hga_write_vram_buffer(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t byte_pattern) {
-  hga_write_vram_buffer_lookup(vram_segment, x, y, byte_pattern);
+inline void hga_raw_write_vram_buffer(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t byte_pattern) {
+  hga_raw_write_vram_buffer_lookup(vram_segment, x, y, byte_pattern);
 }
 
-inline uint8_t hga_read_vram_buffer(uint16_t vram_segment, uint16_t x, uint16_t y) {
-  return hga_read_vram_buffer_lookup(vram_segment, x, y);
+inline uint8_t hga_raw_read_vram_buffer(uint16_t vram_segment, uint16_t x, uint16_t y) {
+  return hga_raw_read_vram_buffer_lookup(vram_segment, x, y);
 }
 
 /**
@@ -51,7 +51,7 @@ inline uint8_t hga_read_vram_buffer(uint16_t vram_segment, uint16_t x, uint16_t 
 * @details
 * @note No sanity checking! Expects vram_segment to be valid.
 */
-void hga_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern);
+void hga_raw_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern);
 
 /**
 * @brief clear the specified HGA VRAM buffer to black
@@ -62,12 +62,14 @@ inline void hga_cls(uint16_t vram_segment) {
 
 /**
 * @brief scroll graphics vram up number of lines and blank last line
+* @note No sanity checking!
 */
-void hga_scroll_up(uint16_t vram_segment, uint16_t lines);
+void hga_raw_scroll_up(uint16_t vram_segment, uint16_t lines);
 
 /**
 * @breid repeat scroll up entire screen until whole screen blank
+* @note No sanity checking!
 */
-void hga_screen_scroll_up(uint16_t vram_segment);
+void hga_raw_screen_scroll_up(uint16_t vram_segment);
 
 #endif
