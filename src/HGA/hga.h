@@ -9,6 +9,5 @@
 #include "hga_video_mode_presets.h"
 #include "hga_pixel.h"
 #include "hga_fast_line.h"
-#include "hga_rectangle.h"
 
 #endif
