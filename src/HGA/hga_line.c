@@ -1,8 +1,8 @@
-#include "hga_raw_line.h"
+#include "hga_line.h"
 
 #include "hga_table_lookup_y.h"
 
-void hga_raw_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint8_t colour) {
+void hga_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint8_t colour) {
 	__asm {
 		.8086
 	    // 1. set up VRAM segment in ES
@@ -85,7 +85,7 @@ END:
 	}
 }
 
-void hga_raw_vline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint8_t colour) {
+void hga_vline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint8_t colour) {
 	__asm {
 		.8086
 	    // 1. set up VRAM segment in ES

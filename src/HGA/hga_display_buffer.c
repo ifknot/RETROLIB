@@ -2,7 +2,7 @@
 #include "hga_display_buffer.h"
 #include "hga_table_lookup_y.h"
 
-void hga_raw_select_display_buffer(uint16_t vram_segment) {
+void hga_select_display_buffer(uint16_t vram_segment) {
     __asm {
         .8086
 
@@ -24,7 +24,7 @@ END:
     }
 }
 
-void hga_raw_write_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t byte_pattern) {
+void hga_write_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t byte_pattern) {
 
     __asm {
 		.8086
@@ -41,7 +41,7 @@ void hga_raw_write_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_
 	}
 }
 
-uint8_t hga_raw_read_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y) {
+uint8_t hga_read_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y) {
 	uint8_t byte_pattern;
 	__asm {
 		.8086
@@ -59,7 +59,7 @@ uint8_t hga_raw_read_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint1
 	return byte_pattern;
 }
 
-void hga_raw_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern) {
+void hga_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern) {
 	__asm {
 		.8086
 
@@ -78,7 +78,7 @@ void hga_raw_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern) {
 	}
 }
 
-void hga_raw_scroll_up(uint16_t vram_segment, uint16_t lines) {
+void hga_scroll_up(uint16_t vram_segment, uint16_t lines) {
 	__asm {
 		.8086
 		// 1. skip if lines = 0
@@ -113,7 +113,7 @@ END:
 	//blank last line
 }
 
-void hga_raw_screen_scroll_up(uint16_t vram_segment) {
+void hga_screen_scroll_up(uint16_t vram_segment) {
 	for(uint16_t i = HGA_SCREEN_Y_MAX; i > 0; --i) {
 		hga_scroll_up(vram_segment, i);
 	}

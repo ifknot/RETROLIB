@@ -29,7 +29,7 @@
  */
 #include "hga_pixel.h"
 
-void hga_raw_plot_pixel_lookup_table(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t c) {
+void hga_plot_pixel_lookup_table(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t c) {
     __asm {
         // 1. set up registers
         mov     ax, vram_segment
@@ -55,7 +55,7 @@ void hga_raw_plot_pixel_lookup_table(uint16_t vram_segment, uint16_t x, uint16_t
     }
 }
 
-void hga_raw_plot_pixel_calculate(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t c) {
+void hga_plot_pixel_calculate(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t c) {
     __asm {
         .8086
         pushf                                           ; preserve flags on entry

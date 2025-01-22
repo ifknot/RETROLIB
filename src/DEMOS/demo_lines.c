@@ -9,7 +9,7 @@
 #include "../HGA/hga_detect_adapter.h"
 #include "../HGA/hga_video_mode.h"
 #include "../HGA/hga_display_buffer.h"
-#include "../HGA/hga_fast_line.h"
+#include "../HGA/hga_line.h"
 #include "../HGA/hga_colours.h"
 
 #define ERR_GRAPHICS        "ERROR: No valid graphics adapter found!\n"
@@ -115,7 +115,16 @@ int demo(int argc, char** argv) {
     // 9. draw white lines length over mulitple bytes
     int k = 8;
     for(int i = 0; i < 45; ++i) {
-        hga_fast_hline(HGA_BUFFER_1, 0, i + 10, k + 15, 0, HGA_WHITE);
+        hga_hline(HGA_BUFFER_1, 0, i + 10, k + 15, 0, HGA_WHITE);
+        k+=8;
+    }
+    getchar();
+    // 10. draw black lines length over mulitple bytes
+    hga_fill_vram_buffer(HGA_BUFFER_1, 0xFF);
+    getchar();
+    k = 8;
+    for(int i = 0; i < 45; ++i) {
+        hga_hline(HGA_BUFFER_1, 0, i + 10, k + 15, 0, HGA_BLACK);
         k+=8;
     }
     //  wait for ENTER key and switch back to text mode
