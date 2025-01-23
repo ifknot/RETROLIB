@@ -20,5 +20,13 @@ void hga_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_t w, ui
         add     cx, w                                       ; x + w 
 		and 	cx, 7h			                           	; CX is x + w mod 8
 		xor 	cx, 7h										; convert to bits to shift left
-		shl 	dh,cl 										; shift rhs proto mask to ending pixel
+		shl 	dh, cl 										; shift rhs proto mask to ending pixel
+	// 5. reduce x and w to column bytes
+		shr		bx, 1			                           	; calculate column byte x / 8
+	    shr		bx, 1			                            ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
+	    shr		bx, 1										; BX line start byte
+		mov 	cx, w										; calculate line length in bytes
+		shr		cx, 1			                           	; width / 8
+	    shr		cx, 1	
+	    shr		cx, 1										; CX line length (bytes)
 }
