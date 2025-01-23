@@ -1,6 +1,9 @@
 ### DOING:
 ---
 - [ ] hga rectangle
+  - [ ] rectangle
+  - [ ] dash
+  - [ ] fill 
 - [ ] hga filled rectangle
 - [ ] demo rectangle
 ---
