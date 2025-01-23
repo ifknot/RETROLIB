@@ -3,7 +3,8 @@
 void hga_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t colour) {
     __asm {
 		.8086
-HLINE1:	 // 1. set up VRAM segment in ES
+HLINE1:	// draw the top horizontal line
+		// 1. set up VRAM segment in ES
 		mov   	ax, vram_segment
 		mov   	es, ax
 		// 2. lookup y and setup ES:DI point to target row
@@ -25,17 +26,21 @@ HLINE1:	 // 1. set up VRAM segment in ES
 		shr		bx, 1			                           	; calculate column byte x / 8
 	    shr		bx, 1			                            ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
 	    shr		bx, 1										; BX line start byte
+		push 	bx 											; copy BX stack
 		mov 	cx, w										; calculate line length in bytes
 		shr		cx, 1			                           	; width / 8
 	    shr		cx, 1	
 	    shr		cx, 1										; CX line length (bytes)
+		push 	cx											; copy CX stack
 		// 5.0 work out 'colour' bits into al AND ah
 		mov 	al, colour
 		mov 	ah, al
 		test 	al, al
 		jz 		Z0
 		mov     ax, dx                                      ; proto-mask is white bits to 'colour'
-Z0:	    jcxz    J0                                          ; lhs and rhs share same byte?
+Z0:	    push 	ax 											; copy AX stack
+		push 	dx											; copy DX stack
+		jcxz    J0                                          ; lhs and rhs share same byte?
         dec     cx
         jcxz    J1                                          ; lhs and rhs share same word?
         // 5.1.0 general case
@@ -76,5 +81,16 @@ J0:     // 5.3.0 special case same byte (saves 48 clock cycles on 8086 line leng
         // 5.3.1 colour the combined lhs&rhs byte										Clock Cycles
 		and     es:[di + bx], dl                            ; mask out target bits 	- 16 + EA(8)
 		or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)
-HLINE2:
+HLINE2: // draw the bottom horizontal line
+		// 6. lookup y + h and setup ES:DI point to target row
+        mov 	bx, y 										; BX load y
+		add 	bx, h
+	    shl     bx, 1                                       ; convert BX word pointer
+		mov   	di, HGA_TABLE_Y_LOOKUP[bx]					; lookup y + h offset
+		// 7. restore proto-mask, colour, x / 8  and w / 8 from stack 
+		pop 	dx 											; DX proto-mask
+		pop 	ax 											; AX 'colour'
+		pop 	cx 											; CX line length (bytes)
+		pop 	bx											; BX starting byte lhs
+		
 }
