@@ -1,9 +1,10 @@
-#include "hga_rectangle.h" 
+#include "hga_rectangle.h"
+#include "hga_table_lookup_y.h"
 
 void hga_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t colour) {
     __asm {
 		.8086
-HLINE1:	// draw the top horizontal line
+		// draw the top horizontal line
 		// 1. set up VRAM segment in ES
 		mov   	ax, vram_segment
 		mov   	es, ax
@@ -18,7 +19,7 @@ HLINE1:	// draw the top horizontal line
 		and 	cx, 7h			                           	; CX is x mod 8
 		shr 	dl, cl										; shift lhs proto mask to starting pixel
 		mov 	cx, bx										; copy x
-        add     cx, w                                       ; x + w 
+        add     cx, w                                       ; x + w
 		and 	cx, 7h			                           	; CX is x + w mod 8
 		xor 	cx, 7h										; convert to bits to shift left
 		shl 	dh, cl 										; shift rhs proto mask to ending pixel
@@ -29,7 +30,7 @@ HLINE1:	// draw the top horizontal line
 		push 	bx 											; copy BX stack
 		mov 	cx, w										; calculate line length in bytes
 		shr		cx, 1			                           	; width / 8
-	    shr		cx, 1	
+	    shr		cx, 1
 	    shr		cx, 1										; CX line length (bytes)
 		push 	cx											; copy CX stack
 		// 5.0 work out 'colour' bits into al AND ah
@@ -64,16 +65,16 @@ Z1:     // 5.1.3 handle odd or even line lengths
 		shr     cx, 1		                                 ; number of words to fill, lsb -> carry flag
 		jnc     NC0                                          ; even so no byte to fill
 		stosb	                                             ; odd do one byte al 'colour'
-		jcxz    HLINE2 
+		jcxz    HLINE
 NC0:	// 5.1.4 fill remaining word(s) ax 'colour'
 		rep     stosw		                                 ; CX is checked for !=0 before even the first step
-        jmp 	HLINE2
+        jmp 	HLINE
 J1:		// 5.2.0 special case same word (saves 48 clock cycles on 8086 line lengths 2 - 15)
         not     dx                                           ; convert proto-mask to mask word
         // 5.2.1 colour the shared lhs:rhs word                                       Clock Cycles
         and     es:[di + bx], dx                            ; mask out target word 	- 16 + EA(8)
 		or      es:[di + bx], ax                            ; colour target word	- 16 + EA(8)
-		jmp 	HLINE2
+		jmp 	HLINE
 J0:     // 5.3.0 special case same byte (saves 48 clock cycles on 8086 line lengths 0 - 7)
 		and     dl, dh                                      ; combine proto-mask into dl
 		not     dl		                                    ; convert proto-mask to mask
@@ -81,13 +82,13 @@ J0:     // 5.3.0 special case same byte (saves 48 clock cycles on 8086 line leng
         // 5.3.1 colour the combined lhs&rhs byte										Clock Cycles
 		and     es:[di + bx], dl                            ; mask out target bits 	- 16 + EA(8)
 		or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)
-HLINE2: // draw the bottom horizontal line
+HLINE : // draw the bottom horizontal line
 		// 6. lookup y + h and setup ES:DI point to target row
         mov 	bx, y 										; BX load y
 		add 	bx, h
 	    shl     bx, 1                                       ; convert BX word pointer
 		mov   	di, HGA_TABLE_Y_LOOKUP[bx]					; lookup y + h offset
-		// 7. restore proto-mask, colour, x / 8  and w / 8 from stack 
+		// 7. restore proto-mask, colour, x / 8  and w / 8 from stack
 		pop 	dx 											; DX proto-mask
 		pop 	ax 											; AX 'colour'
 		pop 	cx 											; CX line length (bytes)
@@ -120,7 +121,7 @@ Z2:     // 8.1.3 handle odd or even line lengths
 		jcxz    VLINE
 NC1:	// 5.1.4 fill remaining word(s) ax 'colour'
 		rep     stosw		                                 ; CX is checked for !=0 before even the first step
-        jmp 	VLINE 
+        jmp 	VLINE
 J3:		// 5.2.0 special case same word (saves 48 clock cycles on 8086 line lengths 2 - 15)
         not     dx                                           ; convert proto-mask to mask word
         // 5.2.1 colour the shared lhs:rhs word                                       Clock Cycles
@@ -135,4 +136,5 @@ J2:     // 5.3.0 special case same byte (saves 48 clock cycles on 8086 line leng
 		and     es:[di + bx], dl                            ; mask out target bits 	- 16 + EA(8)
 		or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)
 VLINE: // vertical lines
+    }
 }
