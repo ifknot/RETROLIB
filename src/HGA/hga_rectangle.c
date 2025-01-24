@@ -142,7 +142,7 @@ VLINE: 	// vertical lines
 		mov     dl, colour                                  ; DL load 'colour'
 		mov		ax, x			                           	; AX load x
         mov		cx, ax			                           	; CX copy of x
-        and		cx, 7h			                           	; mask off 0111 lower bits i.e.mod 8 (thanks powers of 2)										; rotate mask bit by x mod 8
+        and		cx, 7h			                           	; mask off 0111 lower bits i.e.mod 8 (thanks powers of 2)
 		xor     cx, 7h                                      ; convert to bits to shift left
         // 2. setup pixel and mask
 	    shl		dx, cl			                           	; shift colour bit & proto-mask into position
