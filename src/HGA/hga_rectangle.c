@@ -32,6 +32,7 @@ void hga_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_t w, ui
 		shr		cx, 1			                           	; width / 8
 	    shr		cx, 1
 	    shr		cx, 1										; CX line length (bytes)
+*** TODO use spare si register for the recurringlu useful width div 8 ***
 		push 	cx											; copy CX stack
 		// 5.0 work out 'colour' bits into al AND ah
 		mov 	al, colour
