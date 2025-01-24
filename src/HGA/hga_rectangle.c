@@ -18,8 +18,9 @@ void hga_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_t w, ui
 		mov 	cx, bx										; copy x
 		and 	cx, 7h			                           	; CX is x mod 8
 		shr 	dl, cl										; shift lhs proto mask to starting pixel
-		mov 	cx, bx										; copy x
-        add     cx, w                                       ; x + w
+		mov 	cx, w										; CX = w
+		mov 	si, cx										; SI = w copy saving clock cycles later w loads
+		add     cx, bx                                      ; x + w
 		and 	cx, 7h			                           	; CX is x + w mod 8
 		xor 	cx, 7h										; convert to bits to shift left
 		shl 	dh, cl 										; shift rhs proto mask to ending pixel
@@ -28,12 +29,11 @@ void hga_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_t w, ui
 	    shr		bx, 1			                            ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
 	    shr		bx, 1										; BX line start byte
 		push 	bx 											; copy BX stack
-		mov 	cx, w										; calculate line length in bytes
+		mov 	cx, si										; calculate line length in bytes
 		shr		cx, 1			                           	; width / 8
 	    shr		cx, 1
 	    shr		cx, 1										; CX line length (bytes)
-*** TODO use spare si register for the recurringlu useful width div 8 ***
-		push 	cx											; copy CX stack
+		mov 	si, cx										; SI = w / 8  
 		// 5.0 work out 'colour' bits into al AND ah
 		mov 	al, colour
 		mov 	ah, al
@@ -92,7 +92,7 @@ HLINE:  // draw the bottom horizontal line
 		// 7. restore proto-mask, colour, x / 8  and w / 8 from stack
 		pop 	dx 											; DX proto-mask
 		pop 	ax 											; AX 'colour'
-		pop 	cx 											; CX line length (bytes)
+		mov 	cx, si 										; CX line length (bytes) w / 8
 		pop 	bx											; BX starting byte lhs
 		// 8.0 handle special cases
 		jcxz    J2                                          ; lhs and rhs share same byte?
@@ -166,10 +166,8 @@ L0:	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
 		or 		es:[di], dl									; or in the 'colour'
 		loop 	L0      
 
-		// add cx, w
-		// shr ax, 1
-		// shr ax, 1
-		// shr ax, 1
+		// add di, si (rhs vline)
+		
 	
     }
 }
