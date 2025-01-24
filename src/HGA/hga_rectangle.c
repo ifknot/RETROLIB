@@ -166,7 +166,9 @@ L0:	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
 		or 		es:[di], dl									; or in the 'colour'
 		loop 	L0      
 
-		// add di, si (rhs vline)
+		// mov   di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
+		// add   di, ax
+		// add 	di, si (rhs vline)
 		
 	
     }
