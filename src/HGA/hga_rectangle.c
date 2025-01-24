@@ -82,7 +82,7 @@ J0:     // 5.3.0 special case same byte (saves 48 clock cycles on 8086 line leng
         // 5.3.1 colour the combined lhs&rhs byte										Clock Cycles
 		and     es:[di + bx], dl                            ; mask out target bits 	- 16 + EA(8)
 		or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)
-HLINE : // draw the bottom horizontal line
+HLINE:  // draw the bottom horizontal line
 		// 6. lookup y + h and setup ES:DI point to target row
         mov 	bx, y 										; BX load y
 		add 	bx, h
