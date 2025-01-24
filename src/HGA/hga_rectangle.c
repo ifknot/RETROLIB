@@ -139,7 +139,7 @@ VLINE: 	// vertical lines
 		// 1. setup registers
 		mov   	dh, 00000001                                ; DH is (proto)mask byte
 		mov     dl, colour                                  ; DL load 'colour'
-		mov		ax, x1			                           	; AX load x
+		mov		ax, x			                           	; AX load x
         mov		cx, ax			                           	; CX copy of x
         and		cx, 7h			                           	; mask off 0111 lower bits i.e.mod 8 (thanks powers of 2)										; rotate mask bit by x mod 8
 		xor     cx, 7h                                      ; convert to bits to shift left
@@ -151,9 +151,10 @@ VLINE: 	// vertical lines
 	    shr		ax, 1			                           	; poor old 8086 only has opcodes shifts by an implicit 1 or CL
 	    shr		ax, 1
 		// 4. setup y loop and lookup pointer
-		mov 	bx, y1                                      ; BX load y1
-		mov 	cx, y2                                      ; CX load y2
-		sub 	cx, bx										; convert CX line length
+		mov 	bx, y                                      	; BX load y
+		inc 	bx											; first pixel already drawn hline
+		mov 	cx, h                                      	; CX load height
+		sub 	cx, 2										; top and bottom pixels already in place hline
         shl     bx, 1                                       ; convert BX word pointer
 		// 5. lookup y and setup ES:DI point to target byte
 L0:	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
@@ -162,6 +163,12 @@ L0:	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
 	    // 6. colour the selected pixel
 		and		es:[di], dh								    ; mask out target pixel
 		or 		es:[di], dl									; or in the 'colour'
-		loop 	L0                          
+		loop 	L0      
+
+		// add cx, w
+		// shr ax, 1
+		// shr ax, 1
+		// shr ax, 1
+	
     }
 }
