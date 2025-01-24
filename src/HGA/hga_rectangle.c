@@ -135,6 +135,33 @@ J2:     // 5.3.0 special case same byte (saves 48 clock cycles on 8086 line leng
         // 5.3.1 colour the combined lhs&rhs byte										Clock Cycles
 		and     es:[di + bx], dl                            ; mask out target bits 	- 16 + EA(8)
 		or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)
-VLINE: // vertical lines
+VLINE: 	// vertical lines
+		// 1. setup registers
+		mov   	dh, 00000001                                ; DH is (proto)mask byte
+		mov     dl, colour                                  ; DL load 'colour'
+		mov		ax, x1			                           	; AX load x
+        mov		cx, ax			                           	; CX copy of x
+        and		cx, 7h			                           	; mask off 0111 lower bits i.e.mod 8 (thanks powers of 2)										; rotate mask bit by x mod 8
+		xor     cx, 7h                                      ; convert to bits to shift left
+        // 2. setup pixel and mask
+	    shl		dx, cl			                           	; shift colour bit & proto-mask into position
+		not     dh                                          ; convert to mask
+		// 3. convert x to column byte
+	    shr		ax, 1			                           	; calculate column byte x / 8
+	    shr		ax, 1			                           	; poor old 8086 only has opcodes shifts by an implicit 1 or CL
+	    shr		ax, 1
+		// 4. setup y loop and lookup pointer
+		mov 	bx, y1                                      ; BX load y1
+		mov 	cx, y2                                      ; CX load y2
+		sub 	cx, bx										; convert CX line length
+        shl     bx, 1                                       ; convert BX word pointer
+		// 5. lookup y and setup ES:DI point to target byte
+L0:	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
+		add   	di, ax                                      ; add in x / 8
+		add 	bx, 2 										; next line
+	    // 6. colour the selected pixel
+		and		es:[di], dh								    ; mask out target pixel
+		or 		es:[di], dl									; or in the 'colour'
+		loop 	L0                          
     }
 }
