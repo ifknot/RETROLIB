@@ -169,6 +169,7 @@ L0:	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
 		mov   	dh, 00000001                                ; DH is (proto)mask byte
 		mov     dl, colour                                  ; DL load 'colour'
 		mov		ax, x			                           	; AX load x
+		add 	ax, w 										; AX = x + w
         mov		cx, ax			                           	; CX copy of x + w
         and		cx, 7h			                           	; mask off 0111 lower bits i.e.mod 8 (thanks powers of 2)										; rotate mask bit by x mod 8
 		xor     cx, 7h                                      ; convert to bits to shift left
@@ -179,8 +180,6 @@ L0:	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
 	    shr		ax, 1			                           	; calculate column byte x / 8
 	    shr		ax, 1			                           	; poor old 8086 only has opcodes shifts by an implicit 1 or CL
 	    shr		ax, 1
-		// 9.1 offset to rhs x / 8 + w / 8
-		add 	ax, si										; AX = x / 8 + w / 8 
 		// 10. setup y loop and lookup pointer
 		mov 	bx, y                                      	; BX load y
 		inc 	bx											; first pixel already drawn hline
