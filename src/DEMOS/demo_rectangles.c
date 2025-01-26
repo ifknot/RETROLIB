@@ -44,7 +44,6 @@ int rectangles(int argc, char** argv) {
 
     hga_hline(HGA_BUFFER_1, 200, 98, 200 + 100, 98 + 100, HGA_WHITE);
 
-
     // wait for ENTER key and switch back to text mode
     getchar();
     hga_text_mode();

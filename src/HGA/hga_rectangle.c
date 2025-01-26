@@ -128,19 +128,20 @@ END:
 		dec 	cx										    ; top and bottom pixels already in place hline
         shl     bx, 1                                       ; convert BX word pointer
 		// 5. lookup y and setup ES:DI point to target byte
-L0:	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
+L0:	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup lhs y offset
 		add   	di, ax                                      ; add in x / 8
 		add 	bx, 2 										; next line
 	    // 6. colour the selected pixel
 		and		es:[di], dh								    ; mask out target pixel
 		or 		es:[di], dl									; or in the 'colour'
 		loop 	L0
-/*
+
 		// 7. setup registers for rhs vline
 		mov   	dh, 00000001                                ; DH is (proto)mask byte
 		mov     dl, colour                                  ; DL load 'colour'
 		mov		ax, x			                           	; AX load x
 		add 	ax, w 										; AX = x + w
+		dec     ax                                          ; zero base width
         mov		cx, ax			                           	; CX copy of x + w
         and		cx, 7h			                           	; mask off 0111 lower bits i.e.mod 8 (thanks powers of 2)										; rotate mask bit by x mod 8
 		xor     cx, 7h                                      ; convert to bits to shift left
@@ -165,6 +166,6 @@ L1:	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
 		and		es:[di], dh								    ; mask out target pixel
 		or 		es:[di], dl									; or in the 'colour'
 		loop 	L1
-*/
+
     }
 }
