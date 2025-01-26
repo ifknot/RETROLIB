@@ -8,15 +8,20 @@ void hga_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_t w, ui
 		// 1. set up VRAM segment in ES
 		mov   	ax, vram_segment
 		mov   	es, ax
-		// 2. lookup y and setup ES:DI point to target row
-        mov 	bx, y 										; BX load y
+		// 2. lookup y and y + h and setup ES:DI point to target row use SI as swap reg
+		mov     ax, y
+        mov 	bx, ax 										; BX load y
 	    shl     bx, 1                                       ; convert BX word pointer
-		mov   	di, HGA_TABLE_Y_LOOKUP[bx]					; lookup y offset
+		mov   	di, HGA_TABLE_Y_LOOKUP[bx]					; DI = lookup y offset
+		add     ax, h
+		mov 	bx, ax 										; BX load y + h
+		shl     bx, 1                                       ; convert BX word pointer
+		mov   	si, HGA_TABLE_Y_LOOKUP[bx]					; SI = lookup y + h offset
 		// 3. set up registers
 		mov 	bx, x										; BX load x
 		mov 	ax, w 										; AX load width
 		dec     ax                                          ; zero base the width
-		add     ax, bx                                      ; AX is now 'x2'
+		add     ax, bx                                      ; AX = x + w
         // 4. build lsh & rsh proto-masks
         mov 	dx, 0FFFFh 									; DL lhs DH rhs proto-masks (little endian)
 		mov 	cx, bx										; copy x1
@@ -51,10 +56,19 @@ Z0:	    jcxz    J0                                          ; lhs and rhs share 
 		add 	di, bx										; have ES:DI point to lhs
 		and     es:[di], dl                            		; mask out target bits 	- 16 + EA(8)
 		or      es:[di], al                            		; colour target bits	- 16 + EA(8)
-		mov 	bx, cx										; rhs offset = length
+		xchg 	bx, cx										; BX rhs offset = CX length
 		inc 	di											; next byte
 		and     es:[di + bx], dh                            ; mask out target bits 	- 16 + EA(8)
 		or      es:[di + bx], ah                            ; colour target bits	- 16 + EA(8)
+		xchg    di, si                                      ; DI = lower line y offset
+		xchg    bx, cx                                      ; swap back
+		add 	di, bx
+		and     es:[di], dl
+		or      es:[di], al
+		mov 	bx, cx
+		inc 	di
+		and     es:[di + bx], dh
+		or      es:[di + bx], ah
 		// 7.1.2 work out fill 'colour'
 		mov 	al, colour
 		mov 	ah, al
@@ -64,12 +78,19 @@ Z0:	    jcxz    J0                                          ; lhs and rhs share 
 Z1:     // 7.1.3 handle odd or even line lengths
 		cld                                                  ; clear direction flag
 		shr     cx, 1		                                 ; number of words to fill, lsb -> carry flag
+		mov     bx, cx                                       ; copy of word count
 		jnc     NC0                                          ; even so no byte to fill
 		stosb	                                             ; odd do one byte al 'colour'
+		xchg    di, si                                       ; swap lines
+		xchg    bx, cx
+		stosb                                                ; odd byte colour lower line
 		jcxz    END
 NC0:	// 7.1.4 remaining word(s) ax 'colour'
 		rep     stosw		                                 ; CX is checked for !=0 before even the first step
-        jmp 	END
+        xchg    di, si                                       ; swap lines
+		xchg    bx, cx
+		rep     stosw
+		jmp 	END
 J1:		// 7.2.0 special case same word (saves 48 clock cycles on 8086 line lengths 2 - 15)
         not     dx                                           ; convert proto-mask to mask word
         // 7.2.1 colour the shared lhs:rhs word                                       Clock Cycles

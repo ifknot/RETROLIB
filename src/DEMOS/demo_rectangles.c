@@ -37,14 +37,11 @@ int rectangles(int argc, char** argv) {
     hga_cls(HGA_BUFFER_1);
     //
     getchar();
-    int j = 0;
-    for (int i = 0; i < 152; ++ i) {
 
-        hga_rectangle(HGA_BUFFER_1, 0, j, 100, 100, HGA_WHITE);
-        //hga_hline(HGA_BUFFER_1, 0, j + 1, 0, 0, HGA_WHITE);
+    hga_rectangle(HGA_BUFFER_1, 200, 100, 100, 100, HGA_WHITE);
+    //hga_hline(HGA_BUFFER_1, 0, j + 1, 0, 0, HGA_WHITE);
 
-        j += 2;
-    }
+
     // wait for ENTER key and switch back to text mode
     getchar();
     hga_text_mode();
