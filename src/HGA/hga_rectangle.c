@@ -53,22 +53,20 @@ Z0:	    jcxz    J0                                          ; lhs and rhs share 
         // 7.1.0 general case
 		not 	dx											; convert proto-mask to mask word
 		// 7.1.1 colour lhs and rhs line
-		add 	di, bx										; have ES:DI point to lhs
-		and     es:[di], dl                            		; mask out target bits 	- 16 + EA(8)
-		or      es:[di], al                            		; colour target bits	- 16 + EA(8)
-		xchg 	bx, cx										; BX rhs offset = CX length
-		inc 	di											; next byte
-		and     es:[di + bx], dh                            ; mask out target bits 	- 16 + EA(8)
-		or      es:[di + bx], ah                            ; colour target bits	- 16 + EA(8)
-		xchg    di, si                                      ; DI = lower line y offset
-		xchg    bx, cx                                      ; swap back
-		add 	di, bx
+		add     di, bx
+		add     si, bx
 		and     es:[di], dl
 		or      es:[di], al
-		mov 	bx, cx
-		inc 	di
+		and     es:[si], dl
+		or      es:[si], al
+		mov     bx, cx
+		inc     di
+		inc     si
 		and     es:[di + bx], dh
 		or      es:[di + bx], ah
+		and     es:[si + bx], dh
+		or      es:[si + bx], ah
+
 		// 7.1.2 work out fill 'colour'
 		mov 	al, colour
 		mov 	ah, al
@@ -81,21 +79,22 @@ Z1:     // 7.1.3 handle odd or even line lengths
 		mov     bx, cx                                       ; copy of word count
 		jnc     NC0                                          ; even so no byte to fill
 		stosb	                                             ; odd do one byte al 'colour'
-		xchg    di, si                                       ; swap lines
-		xchg    bx, cx
+		xchg    di, si
 		stosb                                                ; odd byte colour lower line
 		jcxz    END
 NC0:	// 7.1.4 remaining word(s) ax 'colour'
-		rep     stosw		                                 ; CX is checked for !=0 before even the first step
-        xchg    di, si                                       ; swap lines
-		xchg    bx, cx
-		rep     stosw
+		//rep     stosw		                                 ; CX is checked for !=0 before even the first step
+		xchg    di, si
+		//rep     stosw
 		jmp 	END
 J1:		// 7.2.0 special case same word (saves 48 clock cycles on 8086 line lengths 2 - 15)
         not     dx                                           ; convert proto-mask to mask word
         // 7.2.1 colour the shared lhs:rhs word                                       Clock Cycles
-        and     es:[di + bx], dx                            ; mask out target word 	- 16 + EA(8)
-		or      es:[di + bx], ax                            ; colour target word	- 16 + EA(8)
+        and     es:[di + bx], dx                             ; mask out target word 	- 16 + EA(8)
+		or      es:[di + bx], ax                             ; colour target word	- 16 + EA(8)
+		xchg    di, si                                       ; swap lines
+		and     es:[di + bx], dx
+		or      es:[di + bx], ax
 		jmp 	END
 J0:     // 7.3.0 special case same byte (saves 48 clock cycles on 8086 line lengths 0 - 7)
 		and     dl, dh                                      ; combine proto-mask into dl
@@ -104,6 +103,9 @@ J0:     // 7.3.0 special case same byte (saves 48 clock cycles on 8086 line leng
         // 7.3.1 colour the combined lhs&rhs byte										Clock Cycles
 		and     es:[di + bx], dl                            ; mask out target bits 	- 16 + EA(8)
 		or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)
+		xchg    di, si                                      ; swap lines
+		and     es:[di + bx], dl
+		or      es:[di + bx], al
 END:
 /*VLINE: 	// vertical lines
 		// 1. setup registers for lhs vline

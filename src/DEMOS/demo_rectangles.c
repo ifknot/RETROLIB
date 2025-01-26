@@ -39,7 +39,10 @@ int rectangles(int argc, char** argv) {
     getchar();
 
     hga_rectangle(HGA_BUFFER_1, 200, 100, 100, 100, HGA_WHITE);
-    //hga_hline(HGA_BUFFER_1, 0, j + 1, 0, 0, HGA_WHITE);
+    hga_rectangle(HGA_BUFFER_1, 10, 1, 14, 14, HGA_WHITE);
+    hga_rectangle(HGA_BUFFER_1, 1, 6, 4, 4, HGA_WHITE);
+
+    hga_hline(HGA_BUFFER_1, 200, 98, 200 + 100, 98 + 100, HGA_WHITE);
 
 
     // wait for ENTER key and switch back to text mode
