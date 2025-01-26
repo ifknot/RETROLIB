@@ -19,29 +19,27 @@ void hga_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_t w, ui
 		mov   	si, HGA_TABLE_Y_LOOKUP[bx]					; SI = lookup y + h offset
 		// 3. set up registers
 		mov 	bx, x										; BX load x
-		mov 	ax, w 										; AX load width
-		dec     ax                                          ; zero base the width
-		add     ax, bx                                      ; AX = x + w
-        // 4. build lsh & rsh proto-masks
+        // 4. build lsh & rsh proto-masks (would a look up table be quicker?)
         mov 	dx, 0FFFFh 									; DL lhs DH rhs proto-masks (little endian)
-		mov 	cx, bx										; copy x1
-		and 	cx, 7h			                           	; CX is x1 mod 8
+		mov 	cx, bx										; copy x
+		and 	cx, 7h			                           	; CX is x mod 8
 		shr 	dl, cl										; shift lhs proto mask to starting pixel
-		mov 	cx, ax										; copy x2
-		and 	cx, 7h			                           	; CX is x2 mod 8
+		mov     cx, w                                       ; CX load width
+		dec     cx                                          ; zero base width
+		add     cx, bx                                      ; CX = x + w
+		and 	cx, 7h			                           	; CX is x + w mod 8
 		xor 	cx, 7h										; convert to bits to shift left
 		shl 	dh,cl 										; shift rhs proto mask to ending pixel
-		// 5. reduce x1 and x2 to column bytes
+		// 5. reduce x to column bytes
 		shr		bx, 1			                           	; calculate column byte x1 / 8
 	    shr		bx, 1			                            ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
 	    shr		bx, 1
-		shr		ax, 1			                           	; calculate column byte x2 / 8
-	    shr		ax, 1
-	    shr		ax, 1
-		// 6. calculate line length in bytes
-		mov 	cx, ax
-		sub 	cx, bx
-		// 7.0 work out 'colour' bits into al AND ah
+  		// 6. reduce w to column bytes
+  		mov     cx, w
+  		shr     cx, 1
+  		shr     cx, 1
+  		shr     cx, 1
+		// 7.0 work out 'colour' bits into al AND ah (would a look up table be quicker?)
 		mov 	al, colour
 		mov 	ah, al
 		test 	al, al
@@ -83,9 +81,11 @@ Z1:     // 7.1.3 handle odd or even line lengths
 		stosb                                                ; odd byte colour lower line
 		jcxz    END
 NC0:	// 7.1.4 remaining word(s) ax 'colour'
-		//rep     stosw		                                 ; CX is checked for !=0 before even the first step
+        mov     bx, cx
+		rep     stosw		                                 ; CX is checked for !=0 before even the first step
 		xchg    di, si
-		//rep     stosw
+		mov     cx, bx
+		rep     stosw
 		jmp 	END
 J1:		// 7.2.0 special case same word (saves 48 clock cycles on 8086 line lengths 2 - 15)
         not     dx                                           ; convert proto-mask to mask word
@@ -107,7 +107,6 @@ J0:     // 7.3.0 special case same byte (saves 48 clock cycles on 8086 line leng
 		and     es:[di + bx], dl
 		or      es:[di + bx], al
 END:
-/*VLINE: 	// vertical lines
 		// 1. setup registers for lhs vline
 		mov   	dh, 00000001                                ; DH is (proto)mask byte
 		mov     dl, colour                                  ; DL load 'colour'
@@ -136,6 +135,7 @@ L0:	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
 		and		es:[di], dh								    ; mask out target pixel
 		or 		es:[di], dl									; or in the 'colour'
 		loop 	L0
+/*
 		// 7. setup registers for rhs vline
 		mov   	dh, 00000001                                ; DH is (proto)mask byte
 		mov     dl, colour                                  ; DL load 'colour'
