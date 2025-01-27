@@ -4,7 +4,8 @@
 void hga_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t colour) {
     __asm {
 		.8086
-		// draw the top horizontal line
+
+		// draw horizontal lines
 		// 1. set up VRAM segment in ES
 		mov   	ax, vram_segment
 		mov   	es, ax
@@ -106,66 +107,52 @@ J0:     // 7.3.0 special case same byte (saves 48 clock cycles on 8086 line leng
 		xchg    di, si                                      ; swap lines
 		and     es:[di + bx], dl
 		or      es:[di + bx], al
-END:
-		// 1. setup registers for lhs vline
-		mov   	dh, 00000001                                ; DH is (proto)mask byte
-		mov     dl, colour                                  ; DL load 'colour'
-		mov		ax, x			                           	; AX load x
-        mov		cx, ax			                           	; CX copy of x
-        and		cx, 7h			                           	; mask off 0111 lower bits i.e.mod 8 (thanks powers of 2)
-		xor     cx, 7h                                      ; convert to bits to shift left
-        // 2. setup pixel and mask
-	    shl		dx, cl			                           	; shift colour bit & proto-mask into position
-		not     dh                                          ; convert to mask
-		// 3. convert x to column byte
-	    shr		ax, 1			                           	; calculate column byte x / 8
-	    shr		ax, 1			                           	; poor old 8086 only has opcodes shifts by an implicit 1 or CL
-	    shr		ax, 1
-		// 4. setup y loop and lookup pointer
-		mov 	bx, y                                      	; BX load y
-		inc 	bx											; first pixel already drawn hline
-		mov 	cx, h                                      	; CX load height
-		dec 	cx										    ; top and bottom pixels already in place hline
-        shl     bx, 1                                       ; convert BX word pointer
-		// 5. lookup y and setup ES:DI point to target byte
-L0:	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup lhs y offset
-		add   	di, ax                                      ; add in x / 8
-		add 	bx, 2 										; next line
-	    // 6. colour the selected pixel
-		and		es:[di], dh								    ; mask out target pixel
-		or 		es:[di], dl									; or in the 'colour'
-		loop 	L0
 
+END:    // draw verticle lines - use all the registers!
 		// 7. setup registers for rhs vline
-		mov   	dh, 00000001                                ; DH is (proto)mask byte
-		mov     dl, colour                                  ; DL load 'colour'
-		mov		ax, x			                           	; AX load x
-		add 	ax, w 										; AX = x + w
-		dec     ax                                          ; zero base width
-        mov		cx, ax			                           	; CX copy of x + w
+		mov   	ah, 00000001                                ; AH lhs (proto)mask
+		mov     al, colour                                  ; AL lhs 'colour'
+		mov     dx, ax                                      ; DH rhs (proto)mask DL rhs 'colour'
+		mov		si, x			                           	; SI load x
+		mov     bx, w                                       ; BX load width
+        // 8. setup lhs pixel and mask
+        mov		cx, si			                           	; CX copy of x
         and		cx, 7h			                           	; mask off 0111 lower bits i.e.mod 8 (thanks powers of 2)										; rotate mask bit by x mod 8
 		xor     cx, 7h                                      ; convert to bits to shift left
-        // 8. setup pixel and mask
-	    shl		dx, cl			                           	; shift colour bit & proto-mask into position
-		not     dh                                          ; convert to mask
-		// 9.0 convert x to column byte
-	    shr		ax, 1			                           	; calculate column byte x / 8
-	    shr		ax, 1			                           	; poor old 8086 only has opcodes shifts by an implicit 1 or CL
-	    shr		ax, 1
+	    shl		ax, cl			                           	; shift colour bit & proto-mask into position
+		not     ah                                          ; convert to mask
+		// setup rhs pixel and mask
+		mov		cx, si			                           	; CX copy of x
+		add     cx, bx                                      ; CX = x + w
+		dec     cx
+        and		cx, 7h			                           	; mask off 0111 lower bits i.e.mod 8 (thanks powers of 2)										; rotate mask bit by x mod 8
+        xor     cx, 7h
+        shl     dx, cl
+        not     dh
+		// 9.0 convert x and w to column byte
+	    shr		si, 1			                           	; calculate column byte x / 8
+	    shr		si, 1			                           	; poor old 8086 only has opcodes shifts by an implicit 1 or CL
+	    shr		si, 1
+		shr     bx, 1
+		shr     bx, 1
+		shr     bx, 1
 		// 10. setup y loop and lookup pointer
-		mov 	bx, y                                      	; BX load y
-		inc 	bx											; first pixel already drawn hline
-		mov 	cx, h                                      	; CX load height
+		mov 	cx, h                                      	; CX load height counter
 		dec     cx										    ; top and bottom pixels already in place hline
-        shl     bx, 1                                       ; convert BX word pointer
-		// 11. lookup y and setup ES:DI point to target byte
-L1:	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
-		add   	di, ax                                      ; add in x / 8 + w /8
-		add 	bx, 2 										; next line
-	    // 12. colour the selected pixel
-		and		es:[di], dh								    ; mask out target pixel
-		or 		es:[di], dl									; or in the 'colour'
+		push    bp
+		mov     bp, y
+		inc     bp
+		shl     bp, 1
+		// 11. lhs & rhs pixels
+L1:	    mov   	di, HGA_TABLE_Y_LOOKUP[bp]                  ; lookup y offset
+		add   	di, si                                      ; add in x / 8
+		and		es:[di], ah								    ; mask lhs pixel
+		or 		es:[di], al									; or lhs 'colour'
+		add     di, bx
+		and		es:[di], dh						            ; mask rhs pixel
+		or 		es:[di], dl						            ; or rhs 'colour'
+		add 	bp, 2 										; next line
 		loop 	L1
-
+		pop bp
     }
 }
