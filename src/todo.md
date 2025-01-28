@@ -1,9 +1,8 @@
 ### DOING:
 ---
 - [ ] hga rectangle
-  - [ ] rectangle
-  - [ ] dash
-  - [ ] fill 
+  - [x] rectangle
+  - [?] dash
 - [ ] hga filled rectangle
 - [ ] demo rectangle
 ---
@@ -34,6 +33,9 @@
 - [ ] Q16.16 
 ---
 - [ ] hga pixel perf compare algos
+- [ ] Mandelbrot
+  - [ ] Q10.6
+  - [ ] Q16.16 
 ---
 - [ ] hga bresenham line
 - [ ] demo lines
