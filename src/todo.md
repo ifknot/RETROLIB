@@ -1,15 +1,17 @@
 ### DOING:
 ---
-- [ ] hga rectangle
+- [x] hga rectangle
   - [x] rectangle
   - [?] dash
 - [ ] hga filled rectangle
 - [ ] demo rectangle
+- [ ] move to done
 ---
 - [ ] demo hga pixelate text 
   - [ ] hga_scroll_up
   - [ ] bible
   - [ ] shakespeare
+  - [ ] move to done
 ### TODO:
 ---
 - [ ] code as a creative medium
