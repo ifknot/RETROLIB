@@ -78,8 +78,9 @@ J0:     // 7.3.0 special case same byte (saves 48 clock cycles on 8086 line leng
 		and     dl, dh                                      ; combine proto-mask into dl
 		not     dl		                                    ; convert proto-mask to mask
 		and     al, ah                                      ; combine 'colour' bits into al
-        // 7.3.1 colour the combined lhs&rhs byte										Clock Cycles
-		and     es:[di + bx], dl                            ; mask out target bits 	- 16 + EA(8)
+        // 7.3.1 colour the combined lhs&rhs byte for row height					Clock Cycles
+		mov 	cx, h
+L0:		and     es:[di + bx], dl                            ; mask out target bits 	- 16 + EA(8)
 		or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)
 END:
 	}
