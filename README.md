@@ -7,7 +7,9 @@ Check out the [Wiki](https://github.com/ifknot/RETROLIB/wiki) for details on set
   - [x] rectangle
   - [?] dash
 - [ ] hga filled rectangle
-- [ ] demo rectangle
+- [ ] rectangle_t
+- [ ] math_random
+- [ ] demo rectangle recursive generative Mondrian-esque
 - [ ] move to done
 ---
 - [ ] demo hga pixelate text 
