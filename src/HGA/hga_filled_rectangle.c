@@ -37,7 +37,36 @@ Z0:		// 6.0 select special cases
 		jcxz    J0                                          ; byte length = 0 i.e. lhs and rhs share same byte
 		dec     cx
         jcxz    J1                                          ; byte length (was) = 1 i.e. lhs and rhs share same word
-		jmp 	END
+		// 6.1.0 general case
+		not 	dx											; convert proto-mask to mask word
+		mov 	si, h										; SI loop counter resevoir
+		// 6.1.1 colour lhs and rhs line
+L2:	
+		add 	di, bx										; have ES:DI point to lhs
+		and     es:[di], dl                            		; mask out target bits 	- 16 + EA(8)
+		or      es:[di], al                            		; colour target bits	- 16 + EA(8)
+		mov 	bx, cx										; rhs offset = length
+		inc 	di											; next byte
+		and     es:[di + bx], dh                            ; mask out target bits 	- 16 + EA(8)
+		or      es:[di + bx], ah                            ; colour target bits	- 16 + EA(8)
+		// 6.1.2 work out fill 'colour'
+		mov 	al, colour
+		mov 	ah, al
+		test 	al, al
+		jz 		Z1
+		mov     ax, 0FFFFh                                   ; AX white
+Z1:     // 6.1.3 handle odd or even line lengths
+		cld                                                  ; clear direction flag
+		shr     cx, 1		                                 ; number of words to fill, lsb -> carry flag
+		jnc     NC0                                          ; even so no byte to fill
+		stosb	                                             ; odd do one byte al 'colour'
+		jcxz    NEXT
+NC0:	// 6.1.4 remaining word(s) ax 'colour'
+		rep     stosw		                                 ; CX is checked for !=0 before even the first step
+        jmp 	END
+NEXT:	mov 	cx, si 										 ; CX height loop SI length
+		loop 	L2
+	
 J1:		// 6.2.0 special case lhs & rhs share same word
         not     dx                                           ; convert proto-mask to mask word
         // 6.2.1 colour the combined lhs&rhs word				
@@ -50,7 +79,7 @@ J1:		// 6.2.0 special case lhs & rhs share same word
 L1: 	mov 	di, HGA_TABLE_Y_LOOKUP[bp]                  ; lookup y offset
         and     es:[di + bx], dx                            ; mask out target word 	
 		or      es:[di + bx], ax                            ; colour target word
-		loop 	L0											; repeat for height
+		loop 	L1											; repeat for height
 		jmp 	END
 J0:     // 6.3.0 special case lhs & rhs share same byte 
 		and     dl, dh                                      ; combine proto-mask into dl
