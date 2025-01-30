@@ -51,7 +51,7 @@ L0:		mov 	di, HGA_TABLE_Y_LOOKUP[bp]                  ; lookup y offset
 		and     es:[di + bx], dl                            ; mask out target bits 	
 		or      es:[di + bx], al                            ; colour target bits
 		loop 	L0											; repeat for height
-END:
+END:	pop 	bp											; restore BP so __asm can exit properly
 	}
 }
 
