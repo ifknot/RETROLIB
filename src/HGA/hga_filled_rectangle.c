@@ -39,9 +39,15 @@ Z0:		// 6.0 select special cases
         jcxz    J1                                          ; byte length (was) = 1 i.e. lhs and rhs share same word
 		// 6.1.0 general case
 		not 	dx											; convert proto-mask to mask word
-		mov 	si, h										; SI loop counter resevoir
+		mov 	si, cx										; SI width loop counter resevoir
+		mov 	cx, h										; CX load height loop counter 
+		push    bp											; preserve BP 
+		mov     bp, y										; BP load y
+		shl     bp, 1										; convert to word index  
 		// 6.1.1 colour lhs and rhs line
-L2:	
+L2:		push 	cx											; preserve height loop counter
+		mov 	cx, si										; restore line width loop counter
+		mov 	di, HGA_TABLE_Y_LOOKUP[bp]                  ; lookup y offset
 		add 	di, bx										; have ES:DI point to lhs
 		and     es:[di], dl                            		; mask out target bits 	- 16 + EA(8)
 		or      es:[di], al                            		; colour target bits	- 16 + EA(8)
@@ -63,10 +69,9 @@ Z1:     // 6.1.3 handle odd or even line lengths
 		jcxz    NEXT
 NC0:	// 6.1.4 remaining word(s) ax 'colour'
 		rep     stosw		                                 ; CX is checked for !=0 before even the first step
-        jmp 	END
-NEXT:	mov 	cx, si 										 ; CX height loop SI length
+NEXT:	pop		cx 										 	 ; CX height loop 
 		loop 	L2
-	
+		jmp 	END
 J1:		// 6.2.0 special case lhs & rhs share same word
         not     dx                                           ; convert proto-mask to mask word
         // 6.2.1 colour the combined lhs&rhs word				
