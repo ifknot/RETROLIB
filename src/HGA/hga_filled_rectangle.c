@@ -35,8 +35,24 @@ void hga_filled_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_
 		mov     ax, dx                                      ; proto-mask is white bits to 'colour'
 Z0:		// 6.0 select special cases 
 		jcxz    J0                                          ; byte length = 0 i.e. lhs and rhs share same byte
+		dec     cx
+        jcxz    J1                                          ; byte length (was) = 1 i.e. lhs and rhs share same word
 		jmp 	END
-J0:     // 6.3.0 special case lhs & rhs share byte 
+J1:		// 6.2.0 special case lhs & rhs share same word
+        not     dx                                           ; convert proto-mask to mask word
+        // 6.2.1 colour the combined lhs&rhs word				
+		mov 	cx, h										; CX = height counter
+		// 6.2.2 setup y lookup index 
+		push    bp											; preserve BP 
+		mov     bp, y										; BP load y
+		shl     bp, 1										; convert to word index  
+		// 6.2.3 look up row and colour word pixels
+L1: 	mov 	di, HGA_TABLE_Y_LOOKUP[bp]                  ; lookup y offset
+        and     es:[di + bx], dx                            ; mask out target word 	
+		or      es:[di + bx], ax                            ; colour target word
+		loop 	L0											; repeat for height
+		jmp 	END
+J0:     // 6.3.0 special case lhs & rhs share same byte 
 		and     dl, dh                                      ; combine proto-mask into dl
 		not     dl		                                    ; convert proto-mask to mask
 		and     al, ah                                      ; combine 'colour' bits into al
@@ -46,7 +62,7 @@ J0:     // 6.3.0 special case lhs & rhs share byte
 		push    bp											; preserve BP 
 		mov     bp, y										; BP load y
 		shl     bp, 1										; convert to word index
-		// 6.3.3 look up row and colour pixels
+		// 6.3.3 look up row and colour byte pixels
 L0:		mov 	di, HGA_TABLE_Y_LOOKUP[bp]                  ; lookup y offset
 		and     es:[di + bx], dl                            ; mask out target bits 	
 		or      es:[di + bx], al                            ; colour target bits
