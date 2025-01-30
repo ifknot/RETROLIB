@@ -5,7 +5,52 @@
 void hga_filled_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t colour) {
 	__asm {
 		.8086
-	    
+		// 1. set up VRAM segment in ES
+		mov   	ax, vram_segment
+		mov   	es, ax
+		// 2. build lsh & rsh proto-masks
+		mov 	dx, 0FFFFh 									; DL lhs DH rhs proto-masks (little endian)
+		mov 	cx, bx										; copy x1
+		and 	cx, 7h			                           	; CX is x1 mod 8
+		shr 	dl, cl										; shift lhs proto mask to starting pixel
+		mov 	cx, ax										; copy x2
+		and 	cx, 7h			                           	; CX is x2 mod 8
+		xor 	cx, 7h										; convert to bits to shift left
+		shl 	dh,cl 										; shift rhs proto mask to ending pixel
+		// 3. reduce x1 and x2 to column bytes
+		shr		bx, 1			                           	; calculate column byte x1 / 8
+	    shr		bx, 1			                            ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
+	    shr		bx, 1
+		shr		ax, 1			                           	; calculate column byte x2 / 8
+	    shr		ax, 1
+	    shr		ax, 1
+		// 4. calculate line length in bytes
+		mov 	cx, ax
+		sub 	cx, bx										; CX line length (bytes)
+		// 5. work out 'colour' bits into al AND ah
+		mov 	al, colour
+		mov 	ah, al
+		test 	al, al
+		jz 		Z0
+		mov     ax, dx                                      ; proto-mask is white bits to 'colour'
+Z0:		// 6.0 select special cases 
+		jcxz    J0                                          ; byte length = 0 i.e. lhs and rhs share same byte
+		jmp 	END
+J0:     // 6.3.0 special case lhs & rhs share byte 
+		and     dl, dh                                      ; combine proto-mask into dl
+		not     dl		                                    ; convert proto-mask to mask
+		and     al, ah                                      ; combine 'colour' bits into al
+        // 6.3.1 colour the combined lhs&rhs byte				
+		mov 	cx, h										; CX = height counter
+		// 6.3.2 setup y lookup index 
+		push    bp											; preserve BP 
+		mov     bp, y										; BP load y
+		shl     bp, 1										; convert to word index
+		// 6.3.3 look up row and colour pixels
+L0:		mov 	di, HGA_TABLE_Y_LOOKUP[bp]                  ; lookup y offset
+		and     es:[di + bx], dl                            ; mask out target bits 	
+		or      es:[di + bx], al                            ; colour target bits
+		loop 	L0											; repeat for height
 END:
 	}
 }
