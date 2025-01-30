@@ -5,7 +5,13 @@
 void hga_filled_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t colour) {
 	__asm {
 		.8086
-	    // 1. set up VRAM segment in ES
+	    
+END:
+	}
+}
+
+/*
+// 1. set up VRAM segment in ES
 		mov   	ax, vram_segment
 		mov   	es, ax
 		// 2. lookup y and setup ES:DI point to target row
@@ -82,6 +88,4 @@ J0:     // 7.3.0 special case same byte (saves 48 clock cycles on 8086 line leng
 		mov 	cx, h
 L0:		and     es:[di + bx], dl                            ; mask out target bits 	- 16 + EA(8)
 		or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)
-END:
-	}
-}
+*/
