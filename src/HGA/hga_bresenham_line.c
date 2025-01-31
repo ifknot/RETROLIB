@@ -1,7 +1,20 @@
 #include "hga_bresenham_line.h" 
 
 void hga_bresenham_line(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint8_t colour) {
-
+    __asm {
+		.8086
+	    // 1. set up VRAM segment in ES
+	    mov   	ax, vram_segment
+		mov   	es, ax
+        // 
+        mov     cx, x2 
+        sub     cx, x1                            ; CX is delta_x 
+        mov     si, y2 
+        sub     si, y1                            ; SI is delta_y 
+        mov     dx, bx                            ; DX is decision variable 
+        shl     dx,  1                            ; 2 * delta_y
+        sub     dx, cx                            ; 2 * delta_y - delta_x 
+        
 }
 
 /*
