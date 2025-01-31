@@ -10,16 +10,6 @@
 #include <stdint.h>
 
 /**
-* https://ics.uci.edu/~gopi/CS112/web/handouts/OldFiles/Bresenham.pdf
-* The Bresenham algorithm can be interpreted as slightly modified digital differential analyzer 
-* (using 0.5 as error threshold instead of 0, which is required for non-overlapping polygon rasterizing).
-*/
-void hga_bresenham_line(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint8_t colour);
-
-
-void hga_dda_line(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint8_t colour);
-
-/**
 * @brief starting at screen coord (x1,y1) draws a horizontal line to point (x2, y2)
 * ignoring y2 arguement
 * @note ABSOLUTELY NO BOUNDS CHECKING!
