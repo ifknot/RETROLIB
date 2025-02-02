@@ -1,4 +1,4 @@
-#include "hga_filled_rectangle.h" 
+#include "hga_filled_rectangle.h"
 
 #include "hga_table_lookup_y.h"
 
@@ -33,17 +33,18 @@ void hga_filled_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_
 		test 	al, al
 		jz 		Z0
 		mov     ax, dx                                      ; proto-mask is white bits to 'colour'
-Z0:		// 6.0 select special cases 
-		jcxz    J0                                          ; byte length = 0 i.e. lhs and rhs share same byte
-		dec     cx
-        jcxz    J1                                          ; byte length (was) = 1 i.e. lhs and rhs share same word
-		// 6.1.0 general case
+Z0:		// 6.0 select special cases
+		//jcxz    J0                                          ; byte length = 0 i.e. lhs and rhs share same byte
+		//dec     cx
+        //jcxz    J1                                          ; byte length (was) = 1 i.e. lhs and rhs share same word
+		jmp J1
+        // 6.1.0 general case
 		not 	dx											; convert proto-mask to mask word
 		mov 	si, cx										; SI width loop counter resevoir
-		mov 	cx, h										; CX load height loop counter 
-		push    bp											; preserve BP 
+		mov 	cx, h										; CX load height loop counter
+		push    bp											; preserve BP
 		mov     bp, y										; BP load y
-		shl     bp, 1										; convert to word index  
+		shl     bp, 1										; convert to word index
 		// 6.1.1 colour lhs and rhs line
 L2:		push 	cx											; preserve height loop counter
 		mov 	cx, si										; restore line width loop counter
@@ -69,36 +70,36 @@ Z1:     // 6.1.3 handle odd or even line lengths
 		jcxz    NEXT
 NC0:	// 6.1.4 remaining word(s) ax 'colour'
 		rep     stosw		                                 ; CX is checked for !=0 before even the first step
-NEXT:	pop		cx 										 	 ; CX height loop 
+NEXT:	pop		cx 										 	 ; CX height loop
 		loop 	L2
 		jmp 	END
 J1:		// 6.2.0 special case lhs & rhs share same word
         not     dx                                           ; convert proto-mask to mask word
-        // 6.2.1 colour the combined lhs&rhs word				
+        // 6.2.1 colour the combined lhs&rhs word
 		mov 	cx, h										; CX = height counter
-		// 6.2.2 setup y lookup index 
-		push    bp											; preserve BP 
+		// 6.2.2 setup y lookup index
+		push    bp											; preserve BP
 		mov     bp, y										; BP load y
-		shl     bp, 1										; convert to word index  
+		shl     bp, 1										; convert to word index
 		// 6.2.3 look up row and colour word pixels
 L1: 	mov 	di, HGA_TABLE_Y_LOOKUP[bp]                  ; lookup y offset
-        and     es:[di + bx], dx                            ; mask out target word 	
+        and     es:[di + bx], dx                            ; mask out target word
 		or      es:[di + bx], ax                            ; colour target word
 		loop 	L1											; repeat for height
 		jmp 	END
-J0:     // 6.3.0 special case lhs & rhs share same byte 
+J0:     // 6.3.0 special case lhs & rhs share same byte
 		and     dl, dh                                      ; combine proto-mask into dl
 		not     dl		                                    ; convert proto-mask to mask
 		and     al, ah                                      ; combine 'colour' bits into al
-        // 6.3.1 colour the combined lhs&rhs byte				
+        // 6.3.1 colour the combined lhs&rhs byte
 		mov 	cx, h										; CX = height counter
-		// 6.3.2 setup y lookup index 
-		push    bp											; preserve BP 
+		// 6.3.2 setup y lookup index
+		push    bp											; preserve BP
 		mov     bp, y										; BP load y
 		shl     bp, 1										; convert to word index
 		// 6.3.3 look up row and colour byte pixels
 L0:		mov 	di, HGA_TABLE_Y_LOOKUP[bp]                  ; lookup y offset
-		and     es:[di + bx], dl                            ; mask out target bits 	
+		and     es:[di + bx], dl                            ; mask out target bits
 		or      es:[di + bx], al                            ; colour target bits
 		loop 	L0											; repeat for height
 END:	pop 	bp											; restore BP so __asm can exit properly

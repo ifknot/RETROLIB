@@ -48,7 +48,7 @@ void hga_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_t w, ui
 		mov     ax, dx                                      ; proto-mask is white bits to 'colour'
 Z0:	    jcxz    J0                                          ; lhs and rhs share same byte?
         dec     cx
-        jcxz    J1                                          ; lhs and rhs share same word?
+        //jcxz    J1                                          ; lhs and rhs share same word?
         // 7.1.0 general case
 		not 	dx											; convert proto-mask to mask word
 		// 7.1.1 colour lhs and rhs line
@@ -133,18 +133,18 @@ VERT:   // draw verticle lines - use all the registers!
 	    shr		si, 1			                           	; poor old 8086 only has opcodes shifts by an implicit 1 or CL
 	    shr		si, 1
 		// 3.1 reduce w to column byte
-		shr     bx, 1										; w /8 
+		shr     bx, 1										; w /8
 		shr     bx, 1
 		shr     bx, 1
-		// 4. setup height loop counter 
+		// 4. setup height loop counter
 		mov 	cx, h                                      	; CX load height counter
 		dec     cx										    ; top and bottom pixels already in place hline
-		// 5. setup y lookup index 
+		// 5. setup y lookup index
 		push    bp											; preserve BP for __asm use
 		mov     bp, y										; BP load y
 		inc     bp											; top line already drawn
 		shl     bp, 1										; convert to word index
-		// 6.0 look up row 
+		// 6.0 look up row
 L1:	    mov   	di, HGA_TABLE_Y_LOOKUP[bp]                  ; lookup y offset
 		// 6.1 plot lhs pixel
 		add   	di, si                                      ; add in x / 8
