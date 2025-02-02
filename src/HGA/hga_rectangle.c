@@ -20,26 +20,28 @@ void hga_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_t w, ui
 		mov   	si, HGA_TABLE_Y_LOOKUP[bx]					; SI = lookup y + h offset
 		// 3. set up registers
 		mov 	bx, x										; BX load x
+		mov 	ax, bx 										; AX copy x
+		add     ax, w                                       ; add width
+		dec     ax                                          ; AX is defacto x2
         // 4. build lsh & rsh proto-masks (would a look up table be quicker?)
         mov 	dx, 0FFFFh 									; DL lhs DH rhs proto-masks (little endian)
-		mov 	cx, bx										; copy x
-		and 	cx, 7h			                           	; CX is x mod 8
+		mov 	cx, bx										; copy x1
+		and 	cx, 7h			                           	; CX is x1 mod 8
 		shr 	dl, cl										; shift lhs proto mask to starting pixel
-		mov     cx, w                                       ; CX load width
-		dec     cx                                          ; zero base width
-		add     cx, bx                                      ; CX = x + w
-		and 	cx, 7h			                           	; CX is x + w mod 8
+		mov 	cx, ax										; copy x2
+		and 	cx, 7h			                           	; CX is x2 mod 8
 		xor 	cx, 7h										; convert to bits to shift left
 		shl 	dh,cl 										; shift rhs proto mask to ending pixel
-		// 5. reduce x to column bytes
+        // 5. reduce x1 and x2 to column bytes
 		shr		bx, 1			                           	; calculate column byte x1 / 8
 	    shr		bx, 1			                            ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
 	    shr		bx, 1
-  		// 6. reduce w to column bytes
-  		mov     cx, w
-  		shr     cx, 1
-  		shr     cx, 1
-  		shr     cx, 1
+		shr		ax, 1			                           	; calculate column byte x2 / 8
+	    shr		ax, 1
+	    shr		ax, 1
+		// 6. calculate line length in bytes
+		mov 	cx, ax
+		sub 	cx, bx										; CX line length (bytes)
 		// 7.0 work out 'colour' bits into al AND ah (would a look up table be quicker?)
 		mov 	al, colour
 		mov 	ah, al
@@ -48,7 +50,7 @@ void hga_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_t w, ui
 		mov     ax, dx                                      ; proto-mask is white bits to 'colour'
 Z0:	    jcxz    J0                                          ; lhs and rhs share same byte?
         dec     cx
-        //jcxz    J1                                          ; lhs and rhs share same word?
+        jcxz    J1                                          ; lhs and rhs share same word?
         // 7.1.0 general case
 		not 	dx											; convert proto-mask to mask word
 		// 7.1.1 colour lhs and rhs line
@@ -108,31 +110,31 @@ J0:     // 7.3.0 special case same byte (saves 48 clock cycles on 8086 line leng
 		or      es:[di + bx], al
 
 VERT:   // draw verticle lines - use all the registers!
-		// 1. setup registers for lhs & rhs vline
+		// 1. setup registers
 		mov   	ah, 00000001                                ; AH lhs (proto)mask
 		mov     al, colour                                  ; AL lhs 'colour'
 		mov     dx, ax                                      ; DH rhs (proto)mask DL rhs 'colour'
-		mov		si, x			                           	; SI load x
-		mov     bx, w                                       ; BX load width
+		mov		bx, x			                           	; BX load x
+		mov     si, bx                                      ; SI copy x
+		add     si, w                                       ; add width
+		dec     si                                          ; SI is defacto x2
         // 2.0 setup lhs pixel and mask
-        mov		cx, si			                           	; CX copy of x
+        mov		cx, bx			                           	; CX copy of x1
         and		cx, 7h			                           	; mask off 0111 lower bits i.e.mod 8 (thanks powers of 2)										; rotate mask bit by x mod 8
 		xor     cx, 7h                                      ; convert to bits to shift left
 	    shl		ax, cl			                           	; shift colour bit & proto-mask into position
 		not     ah                                          ; convert to mask
 		// 2.1 setup rhs pixel and mask
-		mov		cx, si			                           	; CX copy of x
-		add     cx, bx                                      ; CX = x + w
-		dec     cx											; zero base width
-        and		cx, 7h			                           	; mask off 0111 lower bits i.e.mod 8 (thanks powers of 2)										; rotate mask bit by x mod 8
+		mov		cx, si			                           	; CX copy of x2
+	    and		cx, 7h			                           	; mask off 0111 lower bits i.e.mod 8 (thanks powers of 2)										; rotate mask bit by x mod 8
         xor     cx, 7h										; convert to bits to shift left
         shl     dx, cl										; shift colour bit & proto-mask into position
         not     dh											; convert to mask
-		// 3.0 reduce x to column byte
+		// 3.0 reduce x1 to column byte
 	    shr		si, 1			                           	; calculate column byte x / 8
 	    shr		si, 1			                           	; poor old 8086 only has opcodes shifts by an implicit 1 or CL
 	    shr		si, 1
-		// 3.1 reduce w to column byte
+		// 3.1 reduce x2 to column byte
 		shr     bx, 1										; w /8
 		shr     bx, 1
 		shr     bx, 1
@@ -147,13 +149,13 @@ VERT:   // draw verticle lines - use all the registers!
 		// 6.0 look up row
 L1:	    mov   	di, HGA_TABLE_Y_LOOKUP[bp]                  ; lookup y offset
 		// 6.1 plot lhs pixel
-		add   	di, si                                      ; add in x / 8
-		and		es:[di], ah								    ; mask lhs pixel
-		or 		es:[di], al									; or lhs 'colour'
+		and		es:[di + bx], ah						    ; mask lhs pixel
+		or 		es:[di + bx], al							; or lhs 'colour'
+		xchg    si, bx
 		// 6.2 plot rhs pixel
-		add     di, bx
-		and		es:[di], dh						            ; mask rhs pixel
-		or 		es:[di], dl						            ; or rhs 'colour'
+		and		es:[di + bx], dh						    ; mask rhs pixel
+		or 		es:[di + bx], dl						    ; or rhs 'colour'
+		xchg    si, bx
 		add 	bp, 2 										; next line
 		loop 	L1											; repeat for height
 		pop bp												; restore BP so __asm can exit properly
