@@ -1,4 +1,4 @@
-#include "hga_bresenham_line.h" 
+#include "hga_bresenham_line.h"
 
 void hga_bresenham_line(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint8_t colour) {
     __asm {
@@ -6,15 +6,15 @@ void hga_bresenham_line(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_
 	    // 1. set up VRAM segment in ES
 	    mov   	ax, vram_segment
 		mov   	es, ax
-        // 
-        mov     cx, x2 
-        sub     cx, x1                            ; CX is delta_x 
-        mov     si, y2 
-        sub     si, y1                            ; SI is delta_y 
-        mov     dx, bx                            ; DX is decision variable 
+        //
+        mov     cx, x2
+        sub     cx, x1                            ; CX is delta_x
+        mov     si, y2
+        sub     si, y1                            ; SI is delta_y
+        mov     dx, bx                            ; DX is decision variable
         shl     dx,  1                            ; 2 * delta_y
-        sub     dx, cx                            ; 2 * delta_y - delta_x 
-        
+        sub     dx, cx                            ; 2 * delta_y - delta_x
+    }
 }
 
 /*
@@ -51,7 +51,7 @@ plotLineLow(x0, y0, x1, y1)
         else
             D = D + 2*dy
         end if
- 
+
 plotLineHigh(x0, y0, x1, y1)
     dx = x1 - x0
     dy = y1 - y0

@@ -11,8 +11,8 @@
 #include "../HGA/hga_display_buffer.h"
 #include "../HGA/hga_colours.h"
 #include "../HGA/hga_rectangle.h"
-
-#include "../HGA/hga_line.h"
+#include "../HGA/hga_filled_rectangle.h"
+#include "../HGA/hga_fast_line.h"
 
 
 #define ERR_GRAPHICS        "ERROR: No valid graphics adapter found!\n"
@@ -38,7 +38,7 @@ int rectangles(int argc, char** argv) {
     //
     getchar();
 
-    hga_rectangle(HGA_BUFFER_1, 200, 100, 100, 100, HGA_WHITE);
+    hga_filled_rectangle(HGA_BUFFER_1, 200, 100, 100, 100, HGA_WHITE);
     hga_rectangle(HGA_BUFFER_1, 10, 1, 14, 14, HGA_WHITE);
     hga_rectangle(HGA_BUFFER_1, 1, 6, 4, 4, HGA_WHITE);
 

@@ -1,4 +1,4 @@
-#include "hga_line.h"
+#include "hga_fast_line.h"
 
 #include "hga_table_lookup_y.h"
 
@@ -120,4 +120,3 @@ L0:	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
 		loop 	L0                                          ; for line length
 	}
 }
-

@@ -1,6 +1,8 @@
 #ifndef HGA_BRESENHAM_LINE_H
 #define HGA_BRESENHAM_LINE_H
 
+#include <stdint.h>
+
 /**
 * @url https://zingl.github.io/bresenham.html
 * @note ABSOLUTELY NO BOUNDS CHECKING!

@@ -10,7 +10,7 @@
 #include "../HGA/hga_video_mode.h"
 #include "../HGA/hga_display_buffer.h"
 #include "../HGA/hga_colours.h"
-#include "../HGA/hga_line.h"
+#include "../HGA/hga_fast_line.h"
 
 #define ERR_GRAPHICS        "ERROR: No valid graphics adapter found!\n"
 #define ERR_GRAPHICS_INFO   "ERROR INFO: This version of %s requires an Hercules Graphics Adapter.\n"
