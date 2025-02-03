@@ -4,7 +4,7 @@
 void hga_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t colour) {
     __asm {
 		.8086
-
+		// performance optimized rectangle drawing
 		// draw horizontal lines
 		// 1. set up VRAM segment in ES
 		mov   	ax, vram_segment
@@ -108,7 +108,6 @@ J0:     // 7.3.0 special case same byte (saves 48 clock cycles on 8086 line leng
 		xchg    di, si                                      ; swap lines
 		and     es:[di + bx], dl
 		or      es:[di + bx], al
-
 VERT:   // draw verticle lines - use all the registers!
 		// 1. setup registers
 		mov   	ah, 00000001                                ; AH lhs (proto)mask
