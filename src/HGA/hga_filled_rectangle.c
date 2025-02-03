@@ -99,7 +99,7 @@ J0:     // 6.3.0 special case lhs & rhs share same byte
 		// 6.3.3 look up row and colour byte pixels
 L0:		mov 	di, HGA_TABLE_Y_LOOKUP[si]                  ; lookup y offset
 		//and     es:[di + bx], dl                            ; mask out target bits
-		or      es:[di + bx], 255                            ; colour target bits
+		or      es:[di + bx], dl                           ; colour target bits
 		add     si, 2                                       ; next row
 		loop 	L0											; repeat for height
 END:
