@@ -38,7 +38,7 @@ int rectangles(int argc, char** argv) {
     //
     getchar();
 
-    hga_hline(HGA_BUFFER_1, 200, 98, 200 + 100, 98 + 100, HGA_WHITE);
+    /*hga_hline(HGA_BUFFER_1, 200, 98, 200 + 100, 98 + 100, HGA_WHITE);
     hga_rectangle(HGA_BUFFER_1, 200, 100, 100, 100, HGA_WHITE);
     hga_hline(HGA_BUFFER_1, 210, 108, 210 + 100, 108 + 100, HGA_WHITE);
     hga_rectangle(HGA_BUFFER_1, 210, 110, 100, 100, HGA_WHITE);
@@ -53,27 +53,26 @@ int rectangles(int argc, char** argv) {
     hga_hline(HGA_BUFFER_1, 260, 158, 260 + 100, 158 + 100, HGA_WHITE);
     hga_rectangle(HGA_BUFFER_1, 260, 160, 100, 100, HGA_WHITE);
     hga_hline(HGA_BUFFER_1, 270, 168, 270 + 100, 168 + 100, HGA_WHITE);
-    hga_rectangle(HGA_BUFFER_1, 270, 170, 100, 100, HGA_WHITE);
+    */
+    hga_filled_rectangle(HGA_BUFFER_1, 270, 170, 100, 100, HGA_WHITE);
 
-    hga_rectangle(HGA_BUFFER_1, 110, 50, 14, 14, HGA_WHITE);
-    hga_rectangle(HGA_BUFFER_1, 120, 51, 14, 14, HGA_WHITE);
-    hga_rectangle(HGA_BUFFER_1, 130, 52, 14, 14, HGA_WHITE);
-    hga_rectangle(HGA_BUFFER_1, 140, 53, 14, 14, HGA_WHITE);
-    hga_rectangle(HGA_BUFFER_1, 150, 54, 14, 14, HGA_WHITE);
-    hga_rectangle(HGA_BUFFER_1, 160, 55, 14, 14, HGA_WHITE);
-    hga_rectangle(HGA_BUFFER_1, 170, 56, 14, 14, HGA_WHITE);
-    hga_rectangle(HGA_BUFFER_1, 180, 57, 14, 14, HGA_WHITE);
+    //hga_rectangle(HGA_BUFFER_1, 110, 50, 14, 14, HGA_WHITE);
+    //hga_rectangle(HGA_BUFFER_1, 120, 51, 14, 14, HGA_WHITE);
+    //hga_rectangle(HGA_BUFFER_1, 130, 52, 14, 14, HGA_WHITE);
+    //hga_rectangle(HGA_BUFFER_1, 140, 53, 14, 14, HGA_WHITE);
+    //hga_rectangle(HGA_BUFFER_1, 150, 54, 14, 14, HGA_WHITE);
+    //hga_rectangle(HGA_BUFFER_1, 160, 55, 14, 14, HGA_WHITE);
+    //hga_rectangle(HGA_BUFFER_1, 170, 56, 14, 14, HGA_WHITE);
+    hga_filled_rectangle(HGA_BUFFER_1, 180, 57, 14, 14, HGA_WHITE);
 
-    hga_rectangle(HGA_BUFFER_1, 51, 26, 4, 4, HGA_WHITE);
-    hga_rectangle(HGA_BUFFER_1, 52, 31, 4, 4, HGA_WHITE);
-    hga_rectangle(HGA_BUFFER_1, 53, 36, 4, 4, HGA_WHITE);
-    hga_rectangle(HGA_BUFFER_1, 54, 41, 4, 4, HGA_WHITE);
-    hga_rectangle(HGA_BUFFER_1, 55, 46, 4, 4, HGA_WHITE);
-    hga_rectangle(HGA_BUFFER_1, 56, 51, 4, 4, HGA_WHITE);
-    hga_rectangle(HGA_BUFFER_1, 57, 56, 4, 4, HGA_WHITE);
+    //hga_rectangle(HGA_BUFFER_1, 51, 26, 4, 4, HGA_WHITE);
+    //hga_rectangle(HGA_BUFFER_1, 52, 31, 4, 4, HGA_WHITE);
+    //hga_rectangle(HGA_BUFFER_1, 53, 36, 4, 4, HGA_WHITE);
+    //hga_rectangle(HGA_BUFFER_1, 54, 41, 4, 4, HGA_WHITE);
+    //hga_rectangle(HGA_BUFFER_1, 55, 46, 4, 4, HGA_WHITE);
+    //hga_rectangle(HGA_BUFFER_1, 56, 51, 4, 4, HGA_WHITE);
+    //hga_rectangle(HGA_BUFFER_1, 57, 56, 4, 4, HGA_WHITE);
     hga_filled_rectangle(HGA_BUFFER_1, 58, 61, 4, 4, HGA_WHITE);
-
-
 
     // wait for ENTER key and switch back to text mode
     getchar();
