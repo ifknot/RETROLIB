@@ -76,11 +76,17 @@ NC0:	// 7.1.4 remaining word(s) ax 'colour'
 J1:		// 7.2.0 special case same word (saves 48 clock cycles on 8086 line lengths 2 - 15)
         not     dx                                           ; convert proto-mask to mask word
         // 7.2.1 colour the shared lhs:rhs word
-        mov     si, y
-		shl     si, 1
-		mov     di, HGA_TABLE_Y_LOOKUP[si]
+        mov     cx, h
+        dec     cx
+		push    bp
+		mov     bp, y
+		shl     bp, 1
+L1:		mov     di, HGA_TABLE_Y_LOOKUP[bp]
         and     es:[di + bx], dx                            ; mask out target word 	- 16 + EA(8)
 		or      es:[di + bx], ax                            ; colour target word	- 16 + EA(8)
+		add     bp, 2
+		loop    L1
+		pop     bp
 		jmp 	END
 J0:     // 7.3.0 special case same byte (saves 48 clock cycles on 8086 line lengths 0 - 7)
 		and     dl, dh                                      ; combine proto-mask into dl
