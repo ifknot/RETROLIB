@@ -9,9 +9,9 @@ void hga_filled_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_
 		mov   	ax, vram_segment
 		mov   	es, ax
 		// 2. lookup y and setup ES:DI point to target row
-		mov 	bx, y										; BX load y1
-	    shl     bx, 1                                       ; convert BX word pointer
-		mov   	di, HGA_TABLE_Y_LOOKUP[bx]					; lookup y offset
+		//mov 	bx, y										; BX load y1
+	    //shl     bx, 1                                       ; convert BX word pointer
+		//mov   	di, HGA_TABLE_Y_LOOKUP[si]					; lookup y offset
 		// 3. set up registers
 		mov 	bx, x										; BX load x
 		mov     ax, bx                                      ; copy x
@@ -48,6 +48,9 @@ Z0:	    jcxz    J0                                          ; lhs and rhs share 
         // 7.1.0 general case
 		not 	dx											; convert proto-mask to mask word
 		// 7.1.1 colour lhs and rhs line
+		mov     si, y
+		shl     si, 1
+		mov     di, HGA_TABLE_Y_LOOKUP[si]
 		add 	di, bx										; have ES:DI point to lhs
 		and     es:[di], dl                            		; mask out target bits 	- 16 + EA(8)
 		or      es:[di], al                            		; colour target bits	- 16 + EA(8)
@@ -72,7 +75,10 @@ NC0:	// 7.1.4 remaining word(s) ax 'colour'
         jmp 	END
 J1:		// 7.2.0 special case same word (saves 48 clock cycles on 8086 line lengths 2 - 15)
         not     dx                                           ; convert proto-mask to mask word
-        // 7.2.1 colour the shared lhs:rhs word                                       Clock Cycles
+        // 7.2.1 colour the shared lhs:rhs word
+        mov     si, y
+		shl     si, 1
+		mov     di, HGA_TABLE_Y_LOOKUP[si]
         and     es:[di + bx], dx                            ; mask out target word 	- 16 + EA(8)
 		or      es:[di + bx], ax                            ; colour target word	- 16 + EA(8)
 		jmp 	END
@@ -80,7 +86,10 @@ J0:     // 7.3.0 special case same byte (saves 48 clock cycles on 8086 line leng
 		and     dl, dh                                      ; combine proto-mask into dl
 		not     dl		                                    ; convert proto-mask to mask
 		and     al, ah                                      ; combine 'colour' bits into al
-        // 7.3.1 colour the combined lhs&rhs byte										Clock Cycles
+        // 7.3.1 colour the combined lhs&rhs byte
+        mov     si, y
+		shl     si, 1
+		mov     di, HGA_TABLE_Y_LOOKUP[si]
 		and     es:[di + bx], dl                            ; mask out target bits 	- 16 + EA(8)
 		or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)
 END:
