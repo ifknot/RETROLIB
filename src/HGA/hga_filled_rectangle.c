@@ -60,6 +60,7 @@ Z0:	    jcxz    J0                                          ; lhs and rhs share 
 		or      es:[di + bx], ah                            ; colour target bits	- 16 + EA(8)
 		// 7.1.2 work out fill 'colour'
 		mov 	al, colour
+		push    bp
 		mov 	ah, al
 		test 	al, al
 		jz 		Z1
@@ -86,7 +87,6 @@ L1:		mov     di, HGA_TABLE_Y_LOOKUP[bp]
 		or      es:[di + bx], ax                            ; colour target word	- 16 + EA(8)
 		add     bp, 2
 		loop    L1
-		pop     bp
 		jmp 	END
 J0:     // 7.3.0 special case same byte (saves 48 clock cycles on 8086 line lengths 0 - 7)
 		and     dl, dh                                      ; combine proto-mask into dl
@@ -103,7 +103,6 @@ L0:		mov     di, HGA_TABLE_Y_LOOKUP[bp]
 		or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)
 		add     bp, 2
 		loop    L0
-		pop     bp
-END:
+END:    pop     bp
 	}
 }
