@@ -87,11 +87,17 @@ J0:     // 7.3.0 special case same byte (saves 48 clock cycles on 8086 line leng
 		not     dl		                                    ; convert proto-mask to mask
 		and     al, ah                                      ; combine 'colour' bits into al
         // 7.3.1 colour the combined lhs&rhs byte
-        mov     si, y
-		shl     si, 1
-		mov     di, HGA_TABLE_Y_LOOKUP[si]
+        mov     cx, h
+        dec     cx
+		push    bp
+		mov     bp, y
+		shl     bp, 1
+L0:		mov     di, HGA_TABLE_Y_LOOKUP[bp]
 		and     es:[di + bx], dl                            ; mask out target bits 	- 16 + EA(8)
 		or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)
+		add     bp, 2
+		loop    L0
+		pop     bp
 END:
 	}
 }
