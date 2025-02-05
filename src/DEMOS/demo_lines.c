@@ -17,7 +17,7 @@
 #define INFO_ADAPTER        "INFO: Adapter Type = %s\n"
 #define PRESS_ENTER         "Press <Enter>"
 
-int demo(int argc, char** argv) {
+int lines(int argc, char** argv) {
     // 1. confirm appropriate graphics adapter present
     uint8_t adapter_type = hga_detect_adapter();
     if (adapter_type < HW_VIDEO_ADAPTER_HGA) {
