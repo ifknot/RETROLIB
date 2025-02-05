@@ -5,6 +5,7 @@
 void hga_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint8_t colour) {
 	__asm {
 		.8086
+		cld                                                 ; clear direction flag
 	    // 1. set up VRAM segment in ES
 		mov   	ax, vram_segment
 		mov   	es, ax
@@ -56,7 +57,6 @@ WHT:    jcxz    J0                                          ; lhs and rhs share 
 		// fill 'colour'
 		mov     ax, 0FFFFh                                   ; AX white
         // 7.1.3 handle odd or even line lengths
-		cld                                                  ; clear direction flag
 		shr     cx, 1		                                 ; number of words to fill, lsb -> carry flag
 		jnc     NC1                                          ; even so no byte to fill
 		stosb	                                             ; odd do one byte al 'colour'
@@ -76,7 +76,6 @@ BLK:	jcxz    J0                                          ; lhs and rhs share sam
 		and     es:[di + bx], dh                            ; mask out target bits 	- 16 + EA(8)
 		or      es:[di + bx], ah                            ; colour target bits	- 16 + EA(8)
 		mov     ax, 0                                       ; AX black
-		cld                                                 ; clear direction flag
 		shr     cx, 1		                                ; number of words to fill, lsb -> carry flag
 		jnc     NC0                                         ; even so no byte to fill
 		stosb	                                            ; odd do one byte al 'colour'
