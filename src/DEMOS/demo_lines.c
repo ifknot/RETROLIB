@@ -112,6 +112,7 @@ int lines(int argc, char** argv) {
         k+=16;
     }
     */
+    /*
     // 9. draw white lines length over mulitple bytes
     int k = 8;
     for(int i = 0; i < 45; ++i) {
@@ -126,6 +127,28 @@ int lines(int argc, char** argv) {
     for(int i = 0; i < 45; ++i) {
         hga_hline(HGA_BUFFER_1, 0, i + 10, k + 15, 0, HGA_BLACK);
         k+=8;
+    }
+    */
+    // 11. draw white lines length over mulitple bytes
+    int x = HGA_SCREEN_X_MAX / 2;
+    int y = 10;
+    int w = 1;
+    for(int i = 0; i < 150; ++i) {
+        hga_hline(HGA_BUFFER_1, x - (w / 2), y, x + w, y, HGA_WHITE);
+        w += 2;
+        y += 2;
+    }
+    // 12. draw black lines length over mulitple bytes
+    getchar();
+    // 12. draw black lines length over mulitple bytes
+    y = 10;
+    w = 1;
+    hga_fill_vram_buffer(HGA_BUFFER_1, 0xFF);
+    getchar();
+    for(int i = 0; i < 150; ++i) {
+        hga_hline(HGA_BUFFER_1, x - (w / 2), y, x + w, y, HGA_BLACK);
+        w += 2;
+        y += 2;
     }
     //  wait for ENTER key and switch back to text mode
     getchar();

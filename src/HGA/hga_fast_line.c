@@ -38,9 +38,9 @@ void hga_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2, uin
 		mov 	al, colour
 		mov 	ah, al
 		test 	al, al
-		jz 		Z0
+		jz 		BLK                                         ; branching to hard code 'colour' saves a few cycle
 		mov     ax, dx                                      ; proto-mask is white bits to 'colour'
-Z0:	    jcxz    J0                                          ; lhs and rhs share same byte?
+WHT:    jcxz    J0                                          ; lhs and rhs share same byte?
         dec     cx
         jcxz    J1                                          ; lhs and rhs share same word?
         // 7.1.0 general case
@@ -53,23 +53,38 @@ Z0:	    jcxz    J0                                          ; lhs and rhs share 
 		inc 	di											; next byte
 		and     es:[di + bx], dh                            ; mask out target bits 	- 16 + EA(8)
 		or      es:[di + bx], ah                            ; colour target bits	- 16 + EA(8)
-		// 7.1.2 work out fill 'colour'
-		mov 	al, colour
-		mov 	ah, al
-		test 	al, al
-		jz 		Z1
+		// fill 'colour'
 		mov     ax, 0FFFFh                                   ; AX white
-Z1:     // 7.1.3 handle odd or even line lengths
+        // 7.1.3 handle odd or even line lengths
 		cld                                                  ; clear direction flag
 		shr     cx, 1		                                 ; number of words to fill, lsb -> carry flag
-		jnc     NC0                                          ; even so no byte to fill
+		jnc     NC1                                          ; even so no byte to fill
 		stosb	                                             ; odd do one byte al 'colour'
 		jcxz    END
-NC0:	// 7.1.4 remaining word(s) ax 'colour'
+NC1:	// 7.1.4 remaining word(s) ax 'colour'
 		rep     stosw		                                 ; CX is checked for !=0 before even the first step
         jmp 	END
+BLK:	jcxz    J0                                          ; lhs and rhs share same byte?
+        dec     cx
+        jcxz    J1                                  	    ; lhs and rhs share same word?
+		not 	dx										 	; convert proto-mask to mask word
+		add 	di, bx										; have ES:DI point to lhs
+		and     es:[di], dl                            		; mask out target bits 	- 16 + EA(8)
+		or      es:[di], al                            		; colour target bits	- 16 + EA(8)
+		mov 	bx, cx										; rhs offset = length
+		inc 	di											; next byte
+		and     es:[di + bx], dh                            ; mask out target bits 	- 16 + EA(8)
+		or      es:[di + bx], ah                            ; colour target bits	- 16 + EA(8)
+		mov     ax, 0                                       ; AX black
+		cld                                                 ; clear direction flag
+		shr     cx, 1		                                ; number of words to fill, lsb -> carry flag
+		jnc     NC0                                         ; even so no byte to fill
+		stosb	                                            ; odd do one byte al 'colour'
+		jcxz    END
+NC0:	rep     stosw		                                ; CX is checked for !=0 before even the first step
+        jmp 	END
 J1:		// 7.2.0 special case same word (saves 48 clock cycles on 8086 line lengths 2 - 15)
-        not     dx                                           ; convert proto-mask to mask word
+        not     dx                                          ; convert proto-mask to mask word
         // 7.2.1 colour the shared lhs:rhs word                                       Clock Cycles
         and     es:[di + bx], dx                            ; mask out target word 	- 16 + EA(8)
 		or      es:[di + bx], ax                            ; colour target word	- 16 + EA(8)
