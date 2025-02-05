@@ -28,10 +28,7 @@ void hga_filled_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_
 		sub 	cx, bx										; CX line length (bytes)
 		mov 	si, y1										; SI load y1
 	    shl     si, 1                                       ; convert SI word pointer
-		call    LINE
-		jmp     DONE
-
-LINE:	mov   	di, HGA_TABLE_Y_LOOKUP[si]					; lookup y offset
+		mov   	di, HGA_TABLE_Y_LOOKUP[si]					; lookup y offset
         mov 	al, colour
 		mov 	ah, al
 		test 	al, al
