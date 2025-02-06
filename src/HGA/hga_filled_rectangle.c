@@ -34,6 +34,7 @@ void hga_filled_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_
 		test 	al, al
 		jz 		BLK                                         ; branching to hard code 'colour' saves a few cycle
 		mov     ax, dx                                      ; proto-mask is white bits to 'colour'
+		
 WHT:    jcxz    J0                                          ; lhs and rhs share same byte?
         dec     cx
         jcxz    J1                                          ; lhs and rhs share same word?
@@ -51,7 +52,9 @@ WHT:    jcxz    J0                                          ; lhs and rhs share 
 		stosb	                                             ; odd do one byte al 'colour'
 		jcxz    END
 NC1:	rep     stosw		                                 ; CX is checked for !=0 before even the first step
+		loop 	WHT
         jmp 	END
+	
 BLK:	jcxz    J0
         dec     cx
         jcxz    J1                                  	    ; lhs and rhs share same word?
@@ -69,17 +72,21 @@ BLK:	jcxz    J0
 		stosb	                                            ; odd do one byte al 'colour'
 		jcxz    END
 NC0:	rep     stosw		                                ; CX is checked for !=0 before even the first step
+
+		loop 	BLK
+	
         jmp 	END
+	
 J1:	    not     dx                                          ; convert proto-mask to mask word
         and     es:[di + bx], dx                            ; mask out target word 	- 16 + EA(8)
 		or      es:[di + bx], ax                            ; colour target word	- 16 + EA(8)
 		jmp 	END
+	
 J0:     and     dl, dh                                      ; combine proto-mask into dl
 		not     dl		                                    ; convert proto-mask to mask
 		and     al, ah                                      ; combine 'colour' bits into al
 		and     es:[di + bx], dl                            ; mask out target bits 	- 16 + EA(8)
-		or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)
-END:    ret
+		or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)   
 
-DONE:
+END:
 }
