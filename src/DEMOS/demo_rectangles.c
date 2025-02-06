@@ -52,8 +52,9 @@ int rectangles(int argc, char** argv) {
     hga_rectangle(HGA_BUFFER_1, 250, 150, 100, 100, HGA_WHITE);
     hga_hline(HGA_BUFFER_1, 260, 158, 260 + 100, 158 + 100, HGA_WHITE);
     hga_rectangle(HGA_BUFFER_1, 260, 160, 100, 100, HGA_WHITE);
-    hga_hline(HGA_BUFFER_1, 270, 168, 270 + 100, 168 + 100, HGA_WHITE);
     */
+    hga_hline(HGA_BUFFER_1, 270, 168, 270 + 100, 168 + 100, HGA_WHITE);
+    hga_vline(HGA_BUFFER_1, 268, 170, 268 + 100, 170 + 100, HGA_WHITE);
     hga_filled_rectangle(HGA_BUFFER_1, 270, 170, 100, 100, HGA_WHITE);
 
     //hga_rectangle(HGA_BUFFER_1, 110, 50, 14, 14, HGA_WHITE);

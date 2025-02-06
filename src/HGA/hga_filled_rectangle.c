@@ -22,7 +22,7 @@ void hga_filled_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_
 		and 	cx, 7h			                           	; CX is x2 mod 8
 		xor 	cx, 7h										; convert to bits to shift left
 		shl 	dh,cl 										; shift rhs proto mask to ending pixel
-		// reduce x(1) and x(2) to byte pointers 
+		// reduce x(1) and x(2) to byte pointers
 		shr		bx, 1			                           	; calculate column byte x1 / 8
 	    shr		bx, 1			                            ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
 	    shr		bx, 1
@@ -33,6 +33,7 @@ void hga_filled_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_
 		mov 	cx, ax
 		sub 	cx, bx										; CX line length (bytes)
 		mov 	si, cx										; SI copy of width
+		dec     si                                          ; zero base width
         mov 	al, colour									; AL will select colour path
 		// select hard coded colour path of exec
 		test 	al, al
@@ -42,7 +43,7 @@ void hga_filled_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_
 WHT:	jcxz    J0                                          ; lhs and rhs share same byte?
         dec     cx
         jcxz    J1                                          ; lhs and rhs share same word?
-        not 	dx											; convert proto-mask to mask word	
+        not 	dx											; convert proto-mask to mask word
 		// white pixel loop registers
 		mov 	cx, h										; height loop
 		push 	bp 											; preserve BP for __asm
@@ -55,35 +56,39 @@ L1:		push 	cx											; store height loop counter
 		add 	di, bx										; have ES:DI point to lhs
 		and     es:[di], dl                            		; mask out target bits 	- 16 + EA(8)
 		or      es:[di], al                            		; colour target bits	- 16 + EA(8)
-		mov 	bx, cx										; rhs offset = length
 		inc 	di											; next byte
-		and     es:[di + bx], dh                            ; mask out target bits 	- 16 + EA(8)
-		or      es:[di + bx], ah                            ; colour target bits	- 16 + EA(8)
 		// set up for string ops
+		push    ax
 		mov     ax, 0FFFFh                                  ; AX white
 		shr     cx, 1		                                ; number of words to fill, lsb -> carry flag
 		jnc     NC1                                         ; even so no byte to fill
 		stosb	                                            ; odd do one byte al 'colour'
 		jcxz    NXT											; only 1 byte width
 NC1:	rep     stosw		                                ; CX is checked for !=0 before even the first step
-NXT		add 	bp, 2										; next row
-		pop 	cx											; recover height loop counter 
-		//loop 	L1
+        pop     ax
+        and     es:[di], dh                                 ; mask out target bits 	- 16 + EA(8)
+		or      es:[di], ah                                 ; colour target bits	- 16 + EA(8)
+NXT:	add 	bp, 2										; next row
+		pop 	cx											; recover height loop counter
+		loop 	L1
         jmp 	END
-	
+
 BLK:	mov     ax, 0                                 		; AX black
 
-		// shared word special case 
-J1:	    not     dx                                          ; convert proto-mask to mask word
+		// shared word special case
+J1:	    push    bp
+        not     dx                                          ; convert proto-mask to mask word
         and     es:[di + bx], dx                            ; mask out target word 	- 16 + EA(8)
 		or      es:[di + bx], ax                            ; colour target word	- 16 + EA(8)
 		jmp 	END
 		// shared byte special case
-J0:     and     dl, dh                                      ; combine proto-mask into dl
+J0:     push    bp
+        and     dl, dh                                      ; combine proto-mask into dl
 		not     dl		                                    ; convert proto-mask to mask
 		and     al, ah                                      ; combine 'colour' bits into al
 		and     es:[di + bx], dl                            ; mask out target bits 	- 16 + EA(8)
-		or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)   
+		or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)
 
-END:	pop 	BP
+END:	pop 	bp
+    }
 }

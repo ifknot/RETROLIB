@@ -1,8 +1,8 @@
 #include <stdio.h>
 
 //#include "DEMOS/pixelate.h"
-#include "DEMOS/demo_lines.h"
-//#include "DEMOS/demo_rectangles.h"
+//#include "DEMOS/demo_lines.h"
+#include "DEMOS/demo_rectangles.h"
 
 int main(int argc, char** argv) {
 
@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
 #endif
 
 	//return pixelate(argc, argv);
-	return lines(argc, argv);
-	//return rectangles(argc, argv);
+	//return lines(argc, argv);
+	return rectangles(argc, argv);
 
 }
