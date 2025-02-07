@@ -58,16 +58,18 @@ L1:		push 	cx											; store height loop counter
 		or      es:[di], al                            		; colour target bits	- 16 + EA(8)
 		inc 	di											; next byte
 		// set up for string ops
-		push    ax
+		//push    ax											; preserve rhs 
 		mov     ax, 0FFFFh                                  ; AX white
 		shr     cx, 1		                                ; number of words to fill, lsb -> carry flag
 		jnc     NC1                                         ; even so no byte to fill
+		// string ops
 		stosb	                                            ; odd do one byte al 'colour'
 		jcxz    NXT											; only 1 byte width
 NC1:	rep     stosw		                                ; CX is checked for !=0 before even the first step
-        pop     ax
+        //pop     ax
         and     es:[di], dh                                 ; mask out target bits 	- 16 + EA(8)
-		or      es:[di], ah                                 ; colour target bits	- 16 + EA(8)
+		not 	dh
+		or      es:[di], dh                                 ; colour target bits	- 16 + EA(8)
 NXT:	add 	bp, 2										; next row
 		pop 	cx											; recover height loop counter
 		loop 	L1
