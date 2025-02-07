@@ -70,11 +70,9 @@ BLK:	jcxz    J0                                          ; lhs and rhs share sam
 		not 	dx										 	; convert proto-mask to mask word
 		add 	di, bx										; have ES:DI point to lhs
 		and     es:[di], dl                            		; mask out target bits 	- 16 + EA(8)
-		or      es:[di], al                            		; colour target bits	- 16 + EA(8)
 		mov 	bx, cx										; rhs offset = length
 		inc 	di											; next byte
 		and     es:[di + bx], dh                            ; mask out target bits 	- 16 + EA(8)
-		or      es:[di + bx], ah                            ; colour target bits	- 16 + EA(8)
 		mov     ax, 0                                       ; AX black
 		shr     cx, 1		                                ; number of words to fill, lsb -> carry flag
 		jnc     NC0                                         ; even so no byte to fill
