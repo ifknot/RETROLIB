@@ -21,7 +21,7 @@ Check out the [Wiki](https://github.com/ifknot/RETROLIB/wiki) for details on set
 ---
 - [ ] code as a creative medium
   - [ ] demo buffer png anim to git readme
-  - [ ] demo Mendelbrot fixed point
+  - [ ] demo Mandelbrot fixed point
     - [ ] hga
     - [ ] incolor
     - [ ] cga
