@@ -37,7 +37,7 @@ void hga_filled_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_
 		// select hard coded colour path of exec
 		mov 	al, colour									; AL will select colour path
 		test 	al, al
-		jz 		BLK                                         ; branching to hard code 'colour' 
+		jz 		BLK                                         ; branching to hard code 'colour'
 		// white pixel special case seletion
 WHT:	mov 	ax, dx										; white pixels are same as proto-mask
 		jcxz    J0                                          ; lhs and rhs share same byte?
@@ -56,32 +56,35 @@ L1:		push 	cx											; store height loop counter
 		and     es:[di], dl                            		; mask out target bits 	- 16 + EA(8)
 		or      es:[di], al                                 ; colour target bits	- 16 + EA(8)
 		inc 	di											; next byte
+		add     di, si                                      ; extend DI to rhs
+		and     es:[di], dh                                 ; mask out target bits 	- 16 + EA(8)
+		or      es:[di], ah                                 ; colour target bits	- 16 + EA(8)
+		sub     di, si                                      ; restore DI to lhs
 		// set up for string ops
+		push    ax                                          ; preserve rhs white bits
 		mov     ax, 0FFFFh                                  ; AX white
 		mov 	cx, si										; CX = byte width loop counter
 		shr     cx, 1		                                ; CX = word width loop counter, lsb -> carry flag
 		jnc     NC1                                         ; even so no byte to fill
 		// string ops
 		stosb	                                            ; odd do one byte al 'colour'
-		jcxz    NXT											; only 1 byte width
+		jcxz    NXT                                         ; only 1 byte width
 NC1:	rep     stosw		                                ; CX is checked for !=0 before even the first step
-        // DI ptr aligned for rhs line
-        and     es:[di], dh                                 ; mask out target bits 	- 16 + EA(8)
-		not 	dh											; AX has been reused by string ops
-		or      es:[di], dh                                 ; colour target bits	- 16 + EA(8)
 NXT:	add 	bp, 2										; next row
-		pop 	cx											; recover height loop counter
+		pop     ax
+        pop 	cx											; recover height loop counter
 		loop 	L1
+		NC0:	rep     stosw
         jmp 	END
 
-BLK:	
+BLK:
 
 		// shared word special case
 J1:	    mov 	cx, h										; height loop
 		not     dx                                          ; convert proto-mask to mask word
 		push 	bp 											; preserve BP for __asm
 		mov 	bp, y										; BP load y1
-	    shl     bp, 1                                       ; convert BP word pointer     
+	    shl     bp, 1                                       ; convert BP word pointer
 LJ1:    mov   	di, HGA_TABLE_Y_LOOKUP[bp]					; lookup y offset
 		and     es:[di + bx], dx                            ; mask out target word 	- 16 + EA(8)
 		or      es:[di + bx], ax                            ; colour target word	- 16 + EA(8)

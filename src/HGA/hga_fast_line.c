@@ -69,10 +69,10 @@ BLK:	jcxz    J0                                          ; lhs and rhs share sam
         jcxz    J1                                  	    ; lhs and rhs share same word?
 		not 	dx										 	; convert proto-mask to mask word
 		add 	di, bx										; have ES:DI point to lhs
-		and     es:[di], dl                            		; mask out target bits 	- 16 + EA(8)
+		and     es:[di], dl                            		; mask out black bits
 		mov 	bx, cx										; rhs offset = length
 		inc 	di											; next byte
-		and     es:[di + bx], dh                            ; mask out target bits 	- 16 + EA(8)
+		and     es:[di + bx], dh                            ; mask out black bits
 		mov     ax, 0                                       ; AX black
 		shr     cx, 1		                                ; number of words to fill, lsb -> carry flag
 		jnc     NC0                                         ; even so no byte to fill

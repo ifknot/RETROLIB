@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 //#include "DEMOS/pixelate.h"
+
 //#include "DEMOS/demo_lines.h"
 #include "DEMOS/demo_rectangles.h"
 

@@ -74,7 +74,15 @@ int rectangles(int argc, char** argv) {
     //hga_rectangle(HGA_BUFFER_1, 56, 51, 4, 4, HGA_WHITE);
     //hga_rectangle(HGA_BUFFER_1, 57, 56, 4, 4, HGA_WHITE);
     hga_filled_rectangle(HGA_BUFFER_1, 58, 61, 4, 4, HGA_WHITE);
-
+    // 12. draw black rectangles
+    getchar();
+    hga_fill_vram_buffer(HGA_BUFFER_1, 0xFF);
+    getchar();
+    hga_hline(HGA_BUFFER_1, 270, 168, 270 + 100, 168 + 100, HGA_BLACK);
+    hga_vline(HGA_BUFFER_1, 268, 170, 268 + 100, 170 + 100, HGA_BLACK);
+    hga_filled_rectangle(HGA_BUFFER_1, 270, 170, 100, 100, HGA_BLACK);
+    hga_filled_rectangle(HGA_BUFFER_1, 1, 10, 14, 14, HGA_BLACK);
+    hga_filled_rectangle(HGA_BUFFER_1, 58, 61, 4, 4, HGA_BLACK);
     // wait for ENTER key and switch back to text mode
     getchar();
     hga_text_mode();
