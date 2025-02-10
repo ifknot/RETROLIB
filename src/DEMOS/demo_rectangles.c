@@ -76,7 +76,7 @@ int rectangles(int argc, char** argv) {
     hga_filled_rectangle(HGA_BUFFER_1, 58, 61, 4, 4, HGA_WHITE);
     // 12. draw black rectangles
     getchar();
-    hga_fill_vram_buffer(HGA_BUFFER_1, 0xFF);
+    hga_fill_vram_buffer(HGA_BUFFER_1, 0xAA);
     getchar();
     hga_hline(HGA_BUFFER_1, 270, 168, 270 + 100, 168 + 100, HGA_BLACK);
     hga_vline(HGA_BUFFER_1, 268, 170, 268 + 100, 170 + 100, HGA_BLACK);
