@@ -22,7 +22,6 @@ void hga_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_t w, ui
 		mov 	bx, x										; BX load x
 		mov 	ax, bx 										; AX copy x
 		add     ax, w                                       ; add width
-		dec     ax                                          ; AX is defacto x2
         // 4. build lsh & rsh proto-masks (would a look up table be quicker?)
         mov 	dx, 0FFFFh 									; DL lhs DH rhs proto-masks (little endian)
 		mov 	cx, bx										; copy x1
@@ -116,7 +115,6 @@ VERT:   // draw verticle lines - use all the registers!
 		mov		bx, x			                           	; BX load x
 		mov     si, bx                                      ; SI copy x
 		add     si, w                                       ; add width
-		dec     si                                          ; SI is defacto x2
         // 2.0 setup lhs pixel and mask
         mov		cx, bx			                           	; CX copy of x1
         and		cx, 7h			                           	; mask off 0111 lower bits i.e.mod 8 (thanks powers of 2)										; rotate mask bit by x mod 8
