@@ -11,8 +11,7 @@ void hga_filled_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_
 		mov   	es, ax
 		mov 	bx, x										; BX load x(1)
 		mov 	ax, bx										; AX = x
-		add     ax, w 										; AX = x + w i.e x(2)
-		//dec 	ax											; zero base width
+		add     ax, w 										; AX = x + w
 		// prepare lhs and rhs pixels and mask
 		mov 	dx, 0FFFFh 									; DL lhs DH rhs proto-masks (little endian)
 		mov 	cx, bx										; copy x1
@@ -38,22 +37,83 @@ void hga_filled_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_
 		mov 	al, colour									; AL will select colour path
 		mov     ah, al
 		test 	al, al
-		jz      JZ0                                         ; black 'colour' leave AX = 0
+		jz      BLK                                         ; black 'colour' leave AX = 0
 		mov 	ax, dx										; white pixels are same as proto-mask
-		// special case selection
-JZ0:	jcxz    BJ0                                          ; lhs and rhs share same byte?
+		jmp     WHT
+		// black special case selection
+BLK:	jcxz    BJ0                                         ; lhs and rhs share same byte?
 		dec     cx
-        jcxz    J1                                          ; lhs and rhs share same word?
+        jcxz    BJ1                                         ; lhs and rhs share same word?
         not 	dx											; convert proto-mask to mask word
-		// general case
+		// black general case
 		mov 	cx, h										; height loop
-		test    ax, ax
-		jz      BLK
+		push 	bp 											; preserve BP for __asm
+		mov 	bp, y										; BP load y1
+	    shl     bp, 1                                       ; convert BP word pointer
+		// black pixel loop
+BPIX:	push 	cx											; store height loop counter
+		mov   	di, HGA_TABLE_Y_LOOKUP[bp]					; lookup y offset
+		add 	di, bx										; DI + x i.e. have ES:DI point to lhs
+		and     es:[di], dl                           		; mask out target bits 	- 16 + EA(8)
+		//or      es:[di], al                                 ; colour target bits	- 16 + EA(8)
+		inc 	di											; next byte
+		add     di, si                                      ; extend DI to rhs
+		and     es:[di], dh                                 ; mask out target bits 	- 16 + EA(8)
+		//or      es:[di], ah                                 ; colour target bits	- 16 + EA(8)
+		sub     di, si                                      ; restore DI to lhs
+		// set up for string ops
+		//push    ax                                          ; preserve rhs white bits
+		//mov     ax, 0FFFFh                                  ; AX white
+		mov 	cx, si										; CX = byte width loop counter
+		shr     cx, 1		                                ; CX = word width loop counter, lsb -> carry flag
+		jnc     BNC                                         ; even so no byte to fill
+		// string ops
+		stosb	                                            ; odd do one byte al 'colour'
+		jcxz    BNXT                                        ; only 1 byte width
+BNC:	rep     stosw		                                ; CX is checked for !=0 before even the first step
+BNXT:	add 	bp, 2										; next row
+		//pop     ax
+        pop 	cx											; recover height loop counter
+		loop 	BPIX
+        jmp 	END
+        // shared word special case
+BJ1:	mov 	cx, h										; height loop
+		not     dx                                          ; convert proto-mask to mask word
+		push 	bp 											; preserve BP for __asm
+		mov 	bp, y										; BP load y1
+	    shl     bp, 1                                       ; convert BP word pointer
+BL1:    mov   	di, HGA_TABLE_Y_LOOKUP[bp]					; lookup y offset
+		and     es:[di + bx], dx                            ; mask out target word 	- 16 + EA(8)
+		//or      es:[di + bx], ax                            ; colour target word	- 16 + EA(8)
+		add 	bp, 2										; next row
+		loop 	BL1
+		jmp 	END
+		// shared byte special case
+BJ0:    mov 	cx, h										; height loop
+		and     dl, dh                                      ; combine proto-mask into dl
+		not     dl		                                    ; convert proto-mask to mask
+		//and     al, ah                                      ; combine 'colour' bits into al
+		push 	bp 											; preserve BP for __asm
+		mov 	bp, y										; BP load y1
+	    shl     bp, 1                                       ; convert BP word pointer
+BL0:    mov   	di, HGA_TABLE_Y_LOOKUP[bp]					; lookup y offset
+		and     es:[di + bx], dl                            ; mask out target bits 	- 16 + EA(8)
+		//or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)
+		add 	bp, 2										; next row
+		loop 	BL0
+		jmp     END
+        // white special case selection
+WHT:	jcxz    WJ0                                         ; lhs and rhs share same byte?
+        dec     cx
+        jcxz    WJ1                                         ; lhs and rhs share same word?
+        not 	dx											; convert proto-mask to mask word
+        // white general case
+		mov 	cx, h										; height loop
 		push 	bp 											; preserve BP for __asm
 		mov 	bp, y										; BP load y1
 	    shl     bp, 1                                       ; convert BP word pointer
 		// white pixel loop
-L1:		push 	cx											; store height loop counter
+WPIX:	push 	cx											; store height loop counter
 		mov   	di, HGA_TABLE_Y_LOOKUP[bp]					; lookup y offset
 		add 	di, bx										; DI + x i.e. have ES:DI point to lhs
 		and     es:[di], dl                           		; mask out target bits 	- 16 + EA(8)
@@ -68,62 +128,41 @@ L1:		push 	cx											; store height loop counter
 		mov     ax, 0FFFFh                                  ; AX white
 		mov 	cx, si										; CX = byte width loop counter
 		shr     cx, 1		                                ; CX = word width loop counter, lsb -> carry flag
-		jnc     NC1                                         ; even so no byte to fill
+		jnc     WNC                                         ; even so no byte to fill
 		// string ops
 		stosb	                                            ; odd do one byte al 'colour'
-		jcxz    NXW                                         ; only 1 byte width
-NC1:	rep     stosw		                                ; CX is checked for !=0 before even the first step
-NXW:	add 	bp, 2										; next row
-		pop     ax
+		jcxz    WNXT                                        ; only 1 byte width
+WNC:	rep     stosw		                                ; CX is checked for !=0 before even the first step
+WNXT:	add 	bp, 2										; next row
+	    pop     ax
         pop 	cx											; recover height loop counter
-		loop 	L1
-        jmp 	END
-BLK:    // black pixel loop
-L0:		push 	cx											; store height loop counter
-		mov   	di, HGA_TABLE_Y_LOOKUP[bp]					; lookup y offset
-		add 	di, bx										; DI + x i.e. have ES:DI point to lhs
-		and     es:[di], dl                           		; mask out target bits 	- 16 + EA(8)
-		inc 	di											; next byte
-		add     di, si                                      ; extend DI to rhs
-		and     es:[di], dh                                 ; mask out target bits 	- 16 + EA(8)
-		sub     di, si                                      ; restore DI to lhs
-		// set up for string ops
-		mov 	cx, si										; CX = byte width loop counter
-		shr     cx, 1		                                ; CX = word width loop counter, lsb -> carry flag
-		jnc     NC0                                         ; even so no byte to fill
-		// string ops
-		stosb	                                            ; odd do one byte al 'colour'
-		jcxz    NXB                                         ; only 1 byte width
-NC0:	rep     stosw		                                ; CX is checked for !=0 before even the first step
-NXB:	add 	bp, 2										; next row
-        pop 	cx											; recover height loop counter
-		loop 	L0
+		loop 	WPIX
         jmp 	END
         // shared word special case
-J1:	    mov 	cx, h										; height loop
+WJ1:	mov 	cx, h										; height loop
 		not     dx                                          ; convert proto-mask to mask word
 		push 	bp 											; preserve BP for __asm
 		mov 	bp, y										; BP load y1
 	    shl     bp, 1                                       ; convert BP word pointer
-LJ1:    mov   	di, HGA_TABLE_Y_LOOKUP[bp]					; lookup y offset
+WL1:    mov   	di, HGA_TABLE_Y_LOOKUP[bp]					; lookup y offset
 		and     es:[di + bx], dx                            ; mask out target word 	- 16 + EA(8)
 		or      es:[di + bx], ax                            ; colour target word	- 16 + EA(8)
 		add 	bp, 2										; next row
-		loop 	LJ1
+		loop 	WL1
 		jmp 	END
 		// shared byte special case
-J0:    	mov 	cx, h										; height loop
+WJ0:    mov 	cx, h										; height loop
 		and     dl, dh                                      ; combine proto-mask into dl
 		not     dl		                                    ; convert proto-mask to mask
 		and     al, ah                                      ; combine 'colour' bits into al
 		push 	bp 											; preserve BP for __asm
 		mov 	bp, y										; BP load y1
 	    shl     bp, 1                                       ; convert BP word pointer
-LJ0:    mov   	di, HGA_TABLE_Y_LOOKUP[bp]					; lookup y offset
+WL0:    mov   	di, HGA_TABLE_Y_LOOKUP[bp]					; lookup y offset
 		and     es:[di + bx], dl                            ; mask out target bits 	- 16 + EA(8)
 		or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)
 		add 	bp, 2										; next row
-		loop 	LJ0
+		loop 	WL0
 END:	pop 	bp											; restore BP for graceful function exit
     }
 }
