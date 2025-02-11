@@ -19,6 +19,8 @@
 #define HGA_BYTES_PER_SCREEN  31320              // 90 bytes per line x 348 lines
 #define HGA_WORDS_PER_SCREEN  16384
 #define HGA_CHARS_PER_SCREEN  2000
+#define HGA_BYTES_PER_BANK    HGA_BYTES_PER_SCREEN / 4
+#define HGA_WORDS_PER_BANK    HGA_WORDS_PER_SCREEN / 4
 
 #define HGA_BUFFER_0        0xB000
 #define HGA_BUFFER_1        0xB800

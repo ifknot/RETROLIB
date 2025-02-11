@@ -77,6 +77,7 @@ int rectangles(int argc, char** argv) {
     // 12. draw black rectangles
     getchar();
     hga_fill_vram_buffer(HGA_BUFFER_1, 0xFF);
+    //hga_knit_vram_buffer(HGA_BUFFER_1, 0xAA, 0x55); // dithered gray
     getchar();
 
     hga_hline(HGA_BUFFER_1, 200, 98, 200 + 100, 98 + 100, HGA_BLACK);

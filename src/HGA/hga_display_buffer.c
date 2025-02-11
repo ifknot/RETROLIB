@@ -78,6 +78,39 @@ void hga_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern) {
 	}
 }
 
+void hga_knit_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern_a, uint8_t byte_pattern_b) {
+    __asm {
+		.8086
+
+		// 1. setup HGA quad bank VRAM destination pointer ES:DI
+		xor 	di, di						; top left screen(0, 0)
+		mov		ax, vram_segment
+		mov		es, ax						; ES:DI point to VRAM destination
+		// 2. set up the registers
+		cld									; increment ES:DI
+		mov		al, byte_pattern_a
+		mov		ah, al						; duplicate byte pattern into AX word
+		mov     bl, byte_pattern_b
+		mov     bh, bl
+		// 3.0 fill bank 0 pattern a
+		mov     cx, HGA_WORDS_PER_BANK
+		rep     stosw
+		xchg    ax, bx
+		// 3.0 fill bank 1 pattern b
+		mov     cx, HGA_WORDS_PER_BANK
+		rep     stosw
+		xchg    ax, bx
+		// 3.0 fill bank 2 pattern a
+		mov     cx, HGA_WORDS_PER_BANK
+		rep     stosw
+		xchg    ax, bx
+		// 3.0 fill bank 3 pattern b
+		mov     cx, HGA_WORDS_PER_BANK
+		rep     stosw
+
+	}
+}
+
 void hga_scroll_up(uint16_t vram_segment, uint16_t lines) {
 	__asm {
 		.8086

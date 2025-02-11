@@ -61,6 +61,13 @@ inline uint8_t hga_read_vram_buffer(uint16_t vram_segment, uint16_t x, uint16_t 
 void hga_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern);
 
 /**
+* @brief fill the specified HGA VRAM buffer with two 8 bit byte patterns alternating byte patterns between rows
+* @details
+* @note No sanity checking! Expects vram_segment to be valid.
+*/
+void hga_knit_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern_a, uint8_t byte_pattern_b);
+
+/**
 * @brief clear the specified HGA VRAM buffer to black
 */
 inline void hga_cls(uint16_t vram_segment) {
@@ -74,7 +81,7 @@ inline void hga_cls(uint16_t vram_segment) {
 void hga_scroll_up(uint16_t vram_segment, uint16_t lines);
 
 /**
-* @breid repeat scroll up entire screen until whole screen blank
+* @breif repeat scroll up entire screen until whole screen blank
 * @note No sanity checking!
 */
 void hga_screen_scroll_up(uint16_t vram_segment);

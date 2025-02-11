@@ -3,20 +3,20 @@ Check out the [Wiki](https://github.com/ifknot/RETROLIB/wiki) for details on set
 
 ### DOING:
 ---
-- [x] hga rectangle
-  - [x] rectangle
-  - [?] dash
-- [ ] hga filled rectangle
-- [ ] math_random
-- [ ] demo rectangle recursive generative Mondrian-esque
+- [ ] hga bresenham line
+- [ ] demo lines
 - [ ] move to done
+### TODO:
 ---
-- [ ] demo hga pixelate text 
+- [ ] demo hga pixelate text
   - [ ] hga_scroll_up
   - [ ] bible
   - [ ] shakespeare
   - [ ] move to done
-### TODO:
+---
+- [ ] demo rectangle recursive generative Mondrian-esque
+  - [ ] math_random
+  - [ ] move to done
 ---
 - [ ] code as a creative medium
   - [ ] demo buffer png anim to git readme
@@ -26,7 +26,7 @@ Check out the [Wiki](https://github.com/ifknot/RETROLIB/wiki) for details on set
     - [ ] cga
   - [ ] demo Mondrian
     - [ ] incolor
-    - [ ] cga 
+    - [ ] cga
 - [ ] incolor video modes
 - [ ] hga_scroll_down
 - [ ] test file size/file pos works properly
@@ -35,16 +35,13 @@ Check out the [Wiki](https://github.com/ifknot/RETROLIB/wiki) for details on set
   - [ ] conversions
   - [ ] operators
   - [ ] trigonometry
-  - [ ] 2D vectors 
-- [ ] Q16.16 
+  - [ ] 2D vectors
+- [ ] Q16.16
 ---
 - [ ] hga pixel perf compare algos
 - [ ] Mandelbrot
   - [ ] Q10.6
-  - [ ] Q16.16 
----
-- [ ] hga bresenham line
-- [ ] demo lines
+  - [ ] Q16.16
 ---
 - [ ] hga read pixel
 ---
@@ -61,7 +58,11 @@ Check out the [Wiki](https://github.com/ifknot/RETROLIB/wiki) for details on set
 ---
 ### DONE
 ---
-- [x] hga hline  
+- [x] hga rectangle
+  - [x] rectangle
+  - [?] dash
+- [x] hga filled rectangle
+- [x] hga hline
 - [x] hga vline
 - [x] hga 2 types plot pixel
 - [x] DOSAPPS\VIDEOINF.EXE
@@ -112,4 +113,3 @@ Check out the [Wiki](https://github.com/ifknot/RETROLIB/wiki) for details on set
 
 ---
 - [ ] use bdd-for-c
-
