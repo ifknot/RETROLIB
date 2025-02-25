@@ -29,29 +29,34 @@
  */
 #include "hga_pixel.h"
 
-void hga_plot_pixel_lookup_table(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t c) {
+#include "hga_table_lookup_y.h"
+
+void hga_plot_pixel_lookup_table(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t colour) {
     __asm {
-        // 1. set up registers
-        mov     ax, vram_segment
-        mov     es, ax
-        mov     bx, x
-        mov     cl, bl                                  ; copy of x low order byte
-        mov     di, y
-        // 2. setup ES:[DI] to point to the VRAM byte containing pixel location
-        shr     bx, 1                                    ; x / 8
-        shr     bx, 1
-        shr     bx, 1
-        add     di, bx
-        // 3. setup AL = pixel bit mask, AH = pixel 'colour' (have to mask in case colour bit is 0)
+        // 1. set up VRAM segment in ES
+	    mov   	ax, vram_segment
+		mov   	es, ax
+        // 2. set up registers
+        mov     bx, y                                   ; BX is y
+        mov     ax, x                                   ; AX is x
+        mov     cx, ax                                  ; CX copy x
+        // 3. prepare mask and 'colour' bytes
         and     cx, 7                                   ; mask off 0111 lower bits ie x mod 8 (thanks powers of 2)
-        xor     cl, 7                                   ; CL = number of bits to shift left (thanks bit flip XOR)
-        mov     al, 11111110b                           ; AL = pixel mask
-        rol     al, cl                                  ; roll mask around by x mod 8
-        mov     ah, c                                   ; load ah with a single pixel at lsb (e.g. white 00000001)
-        shl     ah, cl                                  ; shift single bit along by x mod 8
-        // 4. display pixel
-        and     es:[di], al                             ; mask out the pixel bits
-        or      es:[di], ah                             ; plot point
+        xor     cx, 7                                   ; CL = number of bits to shift left (thanks bit flip XOR)
+       	mov   	dh, 00000001                            ; DH is (proto)mask byte
+		mov     dl, colour                              ; DL load 'colour'
+		shl		dx, cl			                        ; shift colour bit & proto-mask into position
+		not     dh                                      ; convert to mask
+		// 4. reduce x to column byte pointer
+		shr		ax, 1			                        ; calculate column byte x1 / 8
+	    shr		ax, 1			                        ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
+	    shr		ax, 1
+		// 5. use lookup table for offset
+	    shl     bx, 1                                   ; convert BX word pointer
+		mov   	di, HGA_TABLE_Y_LOOKUP[bx]
+		add     di, ax                                  ; ES:[DI] points to VRAM byte containing pixel location
+		and		es:[di], dh								; mask out target pixel
+		or 		es:[di], dl							    ; or in the 'colour'
     }
 }
 
