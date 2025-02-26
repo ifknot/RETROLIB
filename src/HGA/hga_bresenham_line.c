@@ -2,6 +2,9 @@
 
 #include "hga_table_lookup_y.h"
 
+/**
+* hard coded colour and octant paths of executuion for maximum performance
+*/
 void hga_bresenham_line(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t colour) {
     __asm {
 		.8086
@@ -25,11 +28,11 @@ WHITE:  mov     ax, x1                                  ; AX = x1
         mov     bx, y0                                  ; BX is y
         mov     ax, x0                                  ; AX is x
 
-        // plot pixel
-WPLOT:   push    dx                                      ; preserve corrupted registers
+        // draw white line octant 0
+WLINE0: push    dx                                      ; preserve corrupted registers
         push    cx
         push    ax
-
+        // plot pixel
         mov     cx, ax                                  ; copy of x low order byte
         and     cx, 7                                   ; mask off 0111 lower bits ie x mod 8 (thanks powers of 2)
         xor     cx, 7                                   ; CL = number of bits to shift left (thanks bit flip XOR)
@@ -45,7 +48,7 @@ WPLOT:   push    dx                                      ; preserve corrupted re
 		shr     bx, 1
 		and		es:[di], dh								; mask out target pixel
 		or 		es:[di], dl							    ; or in the 'colour'
-
+		// calulate next pixel
 		pop     ax
 		pop     cx
 		pop     dx                                      ; restore registers
@@ -61,7 +64,7 @@ WELSE:  add     dx, si                                  ; D = D + 2*dy
         jmp     END
 
         // set up registers
-BLACK:  mov     ax, x1                                  ; AX = x1
+BLINE0: mov     ax, x1                                  ; AX = x1
         sub     ax, x0                                  ; AX = dx = (x1 - x0)
         mov     si, y1                                  ; SI = y1
         sub     si, y0                                  ; SI = dy = (y1 - y0)
@@ -74,11 +77,11 @@ BLACK:  mov     ax, x1                                  ; AX = x1
         mov     bx, y0                                  ; BX is y
         mov     ax, x0                                  ; AX is x
 
-        // plot pixel
+        // draw black line octatnt 0
 BPLOT:  push    dx                                      ; preserve corrupted registers
         push    cx
         push    ax
-
+        // plot pixel
         mov     cx, ax                                  ; copy of x low order byte
         and     cx, 7                                   ; mask off 0111 lower bits ie x mod 8 (thanks powers of 2)
         xor     cx, 7                                   ; CL = number of bits to shift left (thanks bit flip XOR)
@@ -93,7 +96,7 @@ BPLOT:  push    dx                                      ; preserve corrupted reg
 		add     di, ax                                  ; ES:[DI] points to VRAM byte containing pixel location
 		shr     bx, 1
 		and		es:[di], dh								; mask out target pixel
-
+		//calculate next pixel
 		pop     ax
 		pop     cx
 		pop     dx                                      ; restore registers
