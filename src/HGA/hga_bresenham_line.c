@@ -9,20 +9,23 @@ void hga_bresenham_line(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_
 	    mov   	ax, vram_segment
 		mov   	es, ax
         // 2. set up registers
-        mov     cx, x1
-        sub     cx, x0                                 ; CX is delta_x
-        mov     si, y1
-        sub     si, y0                                 ; SI is delta_y
-        mov     dx, bx                                  ; DX is decision variable
-        shl     dx,  1                                  ; 2 * delta_y
-        sub     dx, cx                                  ; 2 * delta_y - delta
+        mov     ax, x1                                  ; AX = x1
+        sub     ax, x0                                  ; AX = dx = (x1 - x0)
+        mov     si, y1                                  ; SI = y1
+        sub     si, y0                                  ; SI = dy = (y1 - y0)
+        mov     cx, si                                  ; CX = dy
+        sub     cx, ax                                  ; CX = (dy - dx)
+        shl     si, 1                                   ; SI = (2 * dy)
+        shl     cx, 1                                   ; CX = 2 * (dy - dx)
+        mov     dx, si                                  ; D = (2 * dy)
+        sub     dx, ax                                  ; D = (2 * dy) - dx
         mov     bx, y0                                  ; BX is y
         mov     ax, x0                                  ; AX is x
-        push    bp                                      ; preserve BP for __asm
 
         // plot pixel
-        push    dx                                      ; preserve corrupted registers
+PLOT:   push    dx                                      ; preserve corrupted registers
         push    cx
+        push    bx
         push    ax
 
         mov     cx, ax                                  ; copy of x low order byte
@@ -35,18 +38,29 @@ void hga_bresenham_line(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_
 		shr		ax, 1			                        ; calculate column byte x1 / 8
 	    shr		ax, 1			                        ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
 	    shr		ax, 1
-		mov 	bp, bx									; BP load y
-	    shl     bp, 1                                   ; convert BP word pointer
-		mov   	di, HGA_TABLE_Y_LOOKUP[bp]
+	    shl     bx, 1                                   ; convert BX word pointer
+		mov   	di, HGA_TABLE_Y_LOOKUP[bx]
 		add     di, ax                                  ; ES:[DI] points to VRAM byte containing pixel location
 		and		es:[di], dh								; mask out target pixel
 		or 		es:[di], dl							    ; or in the 'colour'
 
 		pop     ax
-		pop     cx                                      ; restore registers
-		pop     dx
+		pop     bx
+		pop     cx
+		pop     dx                                      ; restore registers
 
-		pop     bp                                      ; restore BP for graceful function exit
+		// decision variable
+		cmp     dx, 0                                   ; if D > 0
+		jle     ELSE
+		inc     bx                                      ; y++
+        add     dx, cx                                  ; D = D + (2 * (dy - dx))
+
+ELSE:   add     dx, si                                  ; D = D + 2*dy
+
+NEXT:   inc     ax
+        cmp     ax, x1
+        jle     PLOT
+                              ; restore registers
     }
 }
 

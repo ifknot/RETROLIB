@@ -12,6 +12,7 @@
 #include "../HGA/hga_display_buffer.h"
 #include "../HGA/hga_colours.h"
 #include "../HGA/hga_bresenham_line.h"
+#include "../HGA/hga_rectangle.h"
 
 #define ERR_GRAPHICS        "ERROR: No valid graphics adapter found!\n"
 #define ERR_GRAPHICS_INFO   "ERROR INFO: This version of %s requires an Hercules Graphics Adapter.\n"
@@ -35,8 +36,10 @@ int bresenham(int argc, char** argv) {
     hga_cls(HGA_BUFFER_1);
     getchar();
     //
-    hga_bresenham_line(HGA_BUFFER_1, 100, 100, 200, 200, HGA_WHITE);
-
+    //hga_bresenham_line(HGA_BUFFER_1, 100, 100, 200, 200, HGA_WHITE);
+    hga_bresenham_line(HGA_BUFFER_1, 100, 100, 200, 110, HGA_WHITE);
+    getchar();
+    hga_rectangle(HGA_BUFFER_1, 100, 100, 100, 100, HGA_WHITE);
     //  wait for ENTER key and switch back to text mode
     getchar();
     hga_text_mode();
