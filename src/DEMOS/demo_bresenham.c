@@ -46,7 +46,7 @@ int bresenham(int argc, char** argv) {
     getchar();
     float angle;
     uint16_t x1, y1;
-    for (int a = 0; a < 45; a +=1) {
+    for (int a = 0; a < 360; a +=1) {
         angle = (a * 3.14159) / 180.0;
         x1 = x0 + r * cos(angle);
         y1 = y0 + r * sin(angle);
