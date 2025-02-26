@@ -2,22 +2,22 @@
 
 #include "hga_table_lookup_y.h"
 
-void hga_bresenham_line(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint8_t colour) {
+void hga_bresenham_line(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t colour) {
     __asm {
 		.8086
 	    // 1. set up VRAM segment in ES
 	    mov   	ax, vram_segment
 		mov   	es, ax
         // 2. set up registers
-        mov     cx, x2
-        sub     cx, x1                                  ; CX is delta_x
-        mov     si, y2
-        sub     si, y1                                  ; SI is delta_y
+        mov     cx, x1
+        sub     cx, x0                                 ; CX is delta_x
+        mov     si, y1
+        sub     si, y0                                 ; SI is delta_y
         mov     dx, bx                                  ; DX is decision variable
         shl     dx,  1                                  ; 2 * delta_y
         sub     dx, cx                                  ; 2 * delta_y - delta
-        mov     bx, y1                                  ; BX is y
-        mov     ax, x1                                  ; AX is x
+        mov     bx, y0                                  ; BX is y
+        mov     ax, x0                                  ; AX is x
         push    bp                                      ; preserve BP for __asm
 
         // plot pixel

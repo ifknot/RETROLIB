@@ -2,7 +2,7 @@
 
 #include "hga_table_lookup_y.h"
 
-void hga_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint8_t colour) {
+void hga_hline(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t colour) {
 	__asm {
 		.8086
 		cld                                                 ; clear direction flag
@@ -10,26 +10,26 @@ void hga_hline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2, uin
 		mov   	ax, vram_segment
 		mov   	es, ax
 		// 2. lookup y and setup ES:DI point to target row
-		mov 	bx, y1										; BX load y1
+		mov 	bx, y0										; BX load y0
 	    shl     bx, 1                                       ; convert BX word pointer
 		mov   	di, HGA_TABLE_Y_LOOKUP[bx]					; lookup y offset
 		// 3. set up registers
-		mov 	bx, x1										; BX load x1
-		mov 	ax, x2 										; AX load x2
+		mov 	bx, x0										; BX load x0
+		mov 	ax, x1 										; AX load x1
 		// 4. build lsh & rsh proto-masks
 		mov 	dx, 0FFFFh 									; DL lhs DH rhs proto-masks (little endian)
-		mov 	cx, bx										; copy x1
-		and 	cx, 7h			                           	; CX is x1 mod 8
+		mov 	cx, bx										; copy x0
+		and 	cx, 7h			                           	; CX is x0 mod 8
 		shr 	dl, cl										; shift lhs proto mask to starting pixel
-		mov 	cx, ax										; copy x2
-		and 	cx, 7h			                           	; CX is x2 mod 8
+		mov 	cx, ax										; copy x1
+		and 	cx, 7h			                           	; CX is x1 mod 8
 		xor 	cx, 7h										; convert to bits to shift left
 		shl 	dh,cl 										; shift rhs proto mask to ending pixel
-		// 5. reduce x1 and x2 to column bytes
-		shr		bx, 1			                           	; calculate column byte x1 / 8
+		// 5. reduce x0 and x1 to column bytes
+		shr		bx, 1			                           	; calculate column byte x0 / 8
 	    shr		bx, 1			                            ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
 	    shr		bx, 1
-		shr		ax, 1			                           	; calculate column byte x2 / 8
+		shr		ax, 1			                           	; calculate column byte x1 / 8
 	    shr		ax, 1
 	    shr		ax, 1
 		// 6. calculate line length in bytes
@@ -97,7 +97,7 @@ END:
 	}
 }
 
-void hga_vline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint8_t colour) {
+void hga_vline(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t colour) {
 	__asm {
 		.8086
 	    // 1. set up VRAM segment in ES
@@ -106,7 +106,7 @@ void hga_vline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2, uin
 		// 2. setup registers
 		mov   	dh, 00000001                                ; DH is (proto)mask byte
 		mov     dl, colour                                  ; DL load 'colour'
-		mov		ax, x1			                           	; AX load x
+		mov		ax, x0			                           	; AX load x
         mov		cx, ax			                           	; CX copy of x
         and		cx, 7h			                           	; mask off 0111 lower bits i.e.mod 8 (thanks powers of 2)										; rotate mask bit by x mod 8
 		xor     cx, 7h                                      ; convert to bits to shift left
@@ -118,8 +118,8 @@ void hga_vline(uint16_t vram_segment, uint16_t x1, uint16_t y1, uint16_t x2, uin
 	    shr		ax, 1			                           	; poor old 8086 only has opcodes shifts by an implicit 1 or CL
 	    shr		ax, 1
 		// 5. setup y loop and lookup pointer
-		mov 	bx, y1                                      ; BX load y1
-		mov 	cx, y2                                      ; CX load y2
+		mov 	bx, y0                                      ; BX load y0
+		mov 	cx, y1                                      ; CX load y1
 		sub 	cx, bx										; convert CX line length
         shl     bx, 1                                       ; convert BX word pointer
 		// 5. lookup y and setup ES:DI point to target byte
