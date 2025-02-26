@@ -25,6 +25,10 @@ void hga_plot_pixel_lookup_table(uint16_t vram_segment, uint16_t x, uint16_t y, 
 */
 void hga_plot_pixel_calculate(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t c);
 
+inline void hga_plot_pixel(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t c) {
+    hga_plot_pixel_calculate(vram_segment, x, y, c);
+}
+
 /**
 * @brief at screen coord (x1,y1) reads a single pixel 'point' colour value (1 bit black or white in this case)
 * @note ABSOLUTELY NO BOUNDS CHECKING!

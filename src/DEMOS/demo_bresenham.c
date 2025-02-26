@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "../HW/hw_constants_graphics.h"
 
@@ -13,6 +14,8 @@
 #include "../HGA/hga_colours.h"
 #include "../HGA/hga_bresenham_line.h"
 #include "../HGA/hga_rectangle.h"
+#include "../HGA/hga_pixel.h"
+
 
 #include "../BIOS/bios_timer_io_services.h"
 
@@ -22,9 +25,11 @@
 #define PRESS_ENTER         "Press <Enter>"
 
 int bresenham(int argc, char** argv) {
-    bios_ticks_since_midnight_t t1, t2;
-    // 1. confirm appropriate graphics adapter presenddt
+    uint16_t x0 = HGA_SCREEN_X_MAX / 2;
+    uint16_t y0 = HGA_SCREEN_Y_MAX / 2;
+    uint16_t r = 100;
     uint8_t adapter_type = hga_detect_adapter();
+    // 1. confirm appropriate graphics adapter presenddt
     if (adapter_type < HW_VIDEO_ADAPTER_HGA) {
         fprintf(stderr, ERR_GRAPHICS);
         fprintf(stderr, ERR_GRAPHICS_INFO, argv[0]);
@@ -39,32 +44,17 @@ int bresenham(int argc, char** argv) {
     // white lines
     hga_cls(HGA_BUFFER_1);
     getchar();
-    bios_read_system_clock(&t1);
-    for(int j = 0; j < 20; ++j) {
-        int y = 0;
-        for(int i = 0; i < 50; ++i) {
-            hga_bresenham_line(HGA_BUFFER_1, 100, 100, 200, 100 + y, HGA_WHITE);
-            y +=2;
-        }
+    float angle;
+    uint16_t x1, y1;
+    for (int a = 0; a < 45; a +=1) {
+        angle = (a * 3.14159) / 180.0;
+        x1 = x0 + r * cos(angle);
+        y1 = y0 + r * sin(angle);
+        hga_plot_pixel(HGA_BUFFER_1, x1, y1, HGA_WHITE);
+        hga_bresenham_line(HGA_BUFFER_1, x0, y0, x1, y1, HGA_WHITE);
     }
-    bios_read_system_clock(&t2);
-    printf("white ticks = %lu", t2 - t1);
-    hga_rectangle(HGA_BUFFER_1, 100, 100, 100, 100, HGA_WHITE);
-    getchar();
-    // black lines
-    hga_fill_vram_buffer(HGA_BUFFER_1, 0xFF);
-    getchar();
-    bios_read_system_clock(&t1);
-    for(int j = 0; j < 20; ++j) {
-        int y = 0;
-        for(int i = 0; i < 50; ++i) {
-            hga_bresenham_line(HGA_BUFFER_1, 100, 100, 200, 100 + y, HGA_BLACK);
-            y +=2;
-        }
-    }
-    bios_read_system_clock(&t2);
-    printf("black ticks = %lu", t2 - t1);
-    hga_rectangle(HGA_BUFFER_1, 100, 100, 100, 100, HGA_BLACK);
+
+
     //  wait for ENTER key and switch back to text mode
     getchar();
     hga_text_mode();

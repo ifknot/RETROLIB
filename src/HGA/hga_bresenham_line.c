@@ -31,6 +31,7 @@ WHITE:  mov     ax, x1                                  ; AX = x1
         // draw white line octant 0
 WLINE0: push    dx                                      ; preserve corrupted registers
         push    cx
+        push    bx
         push    ax
         // plot pixel
         mov     cx, ax                                  ; copy of x low order byte
@@ -45,11 +46,12 @@ WLINE0: push    dx                                      ; preserve corrupted reg
 		shl     bx, 1                                   ; convert BX word pointer
 		mov   	di, HGA_TABLE_Y_LOOKUP[bx]
 		add     di, ax                                  ; ES:[DI] points to VRAM byte containing pixel location
-		shr     bx, 1
+		//shr     bx, 1
 		and		es:[di], dh								; mask out target pixel
 		or 		es:[di], dl							    ; or in the 'colour'
 		// calulate next pixel
 		pop     ax
+		pop     bx
 		pop     cx
 		pop     dx                                      ; restore registers
 		// decision variable
@@ -57,14 +59,18 @@ WLINE0: push    dx                                      ; preserve corrupted reg
 		jle     WELSE
 		inc     bx                                      ; y++
         add     dx, cx                                  ; D = D + (2 * (dy - dx))
+        inc     ax
+        cmp     ax, x1
+        jle     WLINE0
+        jmp     END
 WELSE:  add     dx, si                                  ; D = D + 2*dy
         inc     ax
         cmp     ax, x1
-        jle     WPLOT
+        jle     WLINE0
         jmp     END
 
         // set up registers
-BLINE0: mov     ax, x1                                  ; AX = x1
+BLACK: mov     ax, x1                                  ; AX = x1
         sub     ax, x0                                  ; AX = dx = (x1 - x0)
         mov     si, y1                                  ; SI = y1
         sub     si, y0                                  ; SI = dy = (y1 - y0)
@@ -78,7 +84,7 @@ BLINE0: mov     ax, x1                                  ; AX = x1
         mov     ax, x0                                  ; AX is x
 
         // draw black line octatnt 0
-BPLOT:  push    dx                                      ; preserve corrupted registers
+BLINE0:  push    dx                                      ; preserve corrupted registers
         push    cx
         push    ax
         // plot pixel
@@ -105,10 +111,13 @@ BPLOT:  push    dx                                      ; preserve corrupted reg
 		jle     BELSE
 		inc     bx                                      ; y++
 		add     dx, cx                                  ; D = D + (2 * (dy - dx))
+		inc     ax
+        cmp     ax, x1
+        jle     BLINE0
 BELSE:  add     dx, si                                  ; D = D + 2*dy
         inc     ax
         cmp     ax, x1
-        jle     BPLOT
+        jle     BLINE0
 
 END:
 
