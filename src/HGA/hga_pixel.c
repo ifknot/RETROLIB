@@ -53,10 +53,10 @@ void hga_plot_pixel_lookup_table(uint16_t vram_segment, uint16_t x, uint16_t y, 
 	    shr		ax, 1
 		// 5. use lookup table for offset
 	    shl     bx, 1                                   ; convert BX word pointer
-		mov   	di, HGA_TABLE_Y_LOOKUP[bx]
-		add     di, ax                                  ; ES:[DI] points to VRAM byte containing pixel location
-		and		es:[di], dh								; mask out target pixel
-		or 		es:[di], dl							    ; or in the 'colour'
+		mov   	bx, HGA_TABLE_Y_LOOKUP[bx]
+		add     bx, ax                                  ; ES:[DI] points to VRAM byte containing pixel location
+		and		es:[bx], dh								; mask out target pixel
+		or 		es:[bx], dl							    ; or in the 'colour'
     }
 }
 
