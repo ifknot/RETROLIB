@@ -32,9 +32,6 @@
 *     end while
 */
 void hga_bresenham_line(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t colour) {
-
-    uint16_t _dx, _dy, _e;
-
     __asm {
 		.8086
 	    // set up VRAM segment in ES
@@ -48,19 +45,16 @@ WHITE:  // set up registers AX = x, BX = y, DX = dx, CX = dy, SI = error
         mov     dx, x1                              ; DX = x1
         sub     dx, x0                              ; DX = x1 - x0
         cmp     dx, 0                               ; DX = abs(dx)
-        jge     ABSDX                               ; jump short if dx not signed i.e. positive
-        neg     dx                                  ; it is so make positive
-ABSDX:  mov     _dx, dx
-        mov     cx, y1                              ; CX = y1
+        jge     J0                                  ; jump short if dx not signed i.e. positive
+        neg     dx                                  ; negative so make positive
+J0:     mov     cx, y1                              ; CX = y1
         sub     cx, y0                              ; CX = y1 - y0
         cmp     cx, 0
-        jge     ABSDY                               ; jump short if dy not signed i.e. positive
-        neg     cx                                 ;
-ABSDY:  neg     cx                                  ; CX = -abs(dy)
-        mov     _dy, cx
+        jge     J1                                  ; jump short if dy not signed i.e. positive
+        neg     cx                                  ; negative so make positive
+J1:     neg     cx                                  ; CX = -abs(dy)
         mov     si, dx                              ; SI = dx
         add     si, cx                              ; SI = error = dx + dy
-        mov     _e, si
         mov     ax, x0
         mov     bx, y0
         // Bresenham loop
@@ -79,6 +73,7 @@ WPIXEL: push    dx                                  ; preserve corrupted registe
 	    shr		ax, 1			                    ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
 	    shr		ax, 1
 		shl     bx, 1                               ; convert BX word pointer
+		// TODO: use BP with shr bx,1 (2 clocks) to save POP PUSH (19 cycles) in the main loop
 		mov   	bx, HGA_TABLE_Y_LOOKUP[bx]          ; BX = VRAM row offset
 		add     bx, ax                              ; ES:[BX] points to VRAM byte containing pixel location
 		and		es:[bx], dh						    ; mask out target pixel
@@ -93,13 +88,13 @@ WPIXEL: push    dx                                  ; preserve corrupted registe
 		shl     di, 1                                ; DI = e2 = 2 * error
 		// if e2 >= dy
 		cmp     di, cx                               ; ? e2 >= dy
-		jl      WCMP
+		jl      J3
 		cmp     ax, x1
 		jg      END                                  ; if x0 == x1 break
 		add     si, cx                               ; error = error + dy
 		inc     ax                                   ; x++
 		// if e2 <= dx
-WCMP:	cmp    di, dx                                ; ? e2 <= dx
+J3:	    cmp    di, dx                                ; ? e2 <= dx
         jg     WPIXEL
         cmp    bx, y1
 		jg     END                                  ; if y0 == y1 break
@@ -115,7 +110,7 @@ BLACK:
 END:
 
     }
-    printf("dx = %i dy=%i error=%i\n", _dx, _dy, _e);
+    //printf("dx = %i dy=%i error=%i\n", _dx, _dy, _e);
 }
 
 /*
