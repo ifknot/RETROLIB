@@ -2,10 +2,39 @@
 
 #include "hga_table_lookup_y.h"
 
+#include <stdio.h>
+
 /**
-* hard coded colour and octant paths of executuion for maximum performance
+* This versuion uses Bresenham's principles of integer incremental error to perform all octant line draws.
+* Balancing the positive and negative error between the x and y coordinates.
+* @url https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+*
+* plotLine(x0, y0, x1, y1)
+*     dx = abs(x1 - x0)
+*     sx = x0 < x1 ? 1 : -1
+*     dy = -abs(y1 - y0)
+*     sy = y0 < y1 ? 1 : -1
+*     error = dx + dy
+*
+*     while true
+*         plot(x0, y0)
+*         e2 = 2 * error
+*         if e2 >= dy
+*             if x0 == x1 break
+*             error = error + dy
+*             x0 = x0 + sx
+*         end if
+*         if e2 <= dx
+*             if y0 == y1 break
+*             error = error + dx
+*             y0 = y0 + sy
+*         end if
+*     end while
 */
 void hga_bresenham_line(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t colour) {
+
+    uint16_t _dx, _dy;
+
     __asm {
 		.8086
 	    // set up VRAM segment in ES
@@ -13,131 +42,36 @@ void hga_bresenham_line(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_
 		mov   	es, ax
 		// select hard code colour path
 		cmp     colour, 0
-		jz      BLACK
-        // set up registers
-WHITE:  mov     ax, x1                                  ; AX = x1
-        sub     ax, x0                                  ; AX = dx = (x1 - x0)
-        mov     si, y1                                  ; SI = y1
-        sub     si, y0                                  ; SI = dy = (y1 - y0)
-        mov     cx, si                                  ; CX = dy
-        sub     cx, ax                                  ; CX = (dy - dx)
-        shl     si, 1                                   ; SI = (2 * dy)
-        shl     cx, 1                                   ; CX = 2 * (dy - dx)
-        mov     dx, si                                  ; D = (2 * dy)
-        sub     dx, ax                                  ; D = (2 * dy) - dx
-        mov     bx, y0                                  ; BX is y
-        mov     ax, x0                                  ; AX is x
+		jnz     WHITE
+		jmp     BLACK
+WHITE:  // set up registers
+        // AX = dx
+        // BX = dy
+        // hardcoded sx = ++
+        // hardcoded sy = ++
+        mov     ax, x1                              ; AX = x1
+        sub     ax, x0                              ; AX = x1 - x0
+        jns     ABSDX                               ; jump short if dx not signed i.e. positive
+        not     ax                                  ; get absolute value if negative
+ABSDX:  mov     _dx, ax                                           ; AX = abs(x1 -x0)
+        mov     bx, y1                              ; BX = y1
+        sub     bx, y0                              ; BX = y1 - y0
+        jns     ABSDY                               ; jump short if dy not signed i.e. positive
+        not     bx                                  ; get absolute value if negative
+ABSDY:  mov     _dy, bx                                           ; BX = abs(x1 -x0)
 
-        // draw white line octant 0
-WLINE0: push    dx                                      ; preserve corrupted registers
-        push    cx
-        push    bx
-        push    ax
-        // plot pixel
-        mov     cx, ax                                  ; copy of x low order byte
-        and     cx, 7                                   ; mask off 0111 lower bits ie x mod 8 (thanks powers of 2)
-        xor     cx, 7                                   ; CL = number of bits to shift left (thanks bit flip XOR)
-		mov     dx, 101h
-		shl		dx, cl			                        ; shift colour bit & proto-mask into position
-		not     dh                                      ; convert to mask
-		shr		ax, 1			                        ; calculate column byte x1 / 8
-	    shr		ax, 1			                        ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
-	    shr		ax, 1
-		shl     bx, 1                                   ; convert BX word pointer
-		mov   	di, HGA_TABLE_Y_LOOKUP[bx]
-		add     di, ax                                  ; ES:[DI] points to VRAM byte containing pixel location
-		//shr     bx, 1
-		and		es:[di], dh								; mask out target pixel
-		or 		es:[di], dl							    ; or in the 'colour'
-		// calulate next pixel
-		pop     ax
-		pop     bx
-		pop     cx
-		pop     dx                                      ; restore registers
-		// decision variable
-		cmp     dx, 0                                   ; if D > 0
-		jle     WELSE
-		inc     bx                                      ; y++
-        add     dx, cx                                  ; D = D + (2 * (dy - dx))
-        inc     ax
-        cmp     ax, x1
-        jle     WLINE0
-        jmp     END
-WELSE:  add     dx, si                                  ; D = D + 2*dy
-        inc     ax
-        cmp     ax, x1
-        jle     WLINE0
-        jmp     END
 
-        // set up registers
-BLACK: mov     ax, x1                                  ; AX = x1
-        sub     ax, x0                                  ; AX = dx = (x1 - x0)
-        mov     si, y1                                  ; SI = y1
-        sub     si, y0                                  ; SI = dy = (y1 - y0)
-        mov     cx, si                                  ; CX = dy
-        sub     cx, ax                                  ; CX = (dy - dx)
-        shl     si, 1                                   ; SI = (2 * dy)
-        shl     cx, 1                                   ; CX = 2 * (dy - dx)
-        mov     dx, si                                  ; D = (2 * dy)
-        sub     dx, ax                                  ; D = (2 * dy) - dx
-        mov     bx, y0                                  ; BX is y
-        mov     ax, x0                                  ; AX is x
+BLACK:
 
-        // draw black line octatnt 0
-BLINE0:  push    dx                                      ; preserve corrupted registers
-        push    cx
-        push    ax
-        // plot pixel
-        mov     cx, ax                                  ; copy of x low order byte
-        and     cx, 7                                   ; mask off 0111 lower bits ie x mod 8 (thanks powers of 2)
-        xor     cx, 7                                   ; CL = number of bits to shift left (thanks bit flip XOR)
-        mov     dh, 1
-		shl		dh, cl			                        ; shift colour bit & proto-mask into position
-		not     dh                                      ; convert to mask
-		shr		ax, 1			                        ; calculate column byte x1 / 8
-	    shr		ax, 1			                        ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
-	    shr		ax, 1
-		shl     bx, 1                                   ; convert BX word pointer
-		mov   	di, HGA_TABLE_Y_LOOKUP[bx]
-		add     di, ax                                  ; ES:[DI] points to VRAM byte containing pixel location
-		shr     bx, 1
-		and		es:[di], dh								; mask out target pixel
-		//calculate next pixel
-		pop     ax
-		pop     cx
-		pop     dx                                      ; restore registers
-		// decision variable
-		cmp     dx, 0                                   ; if D > 0
-		jle     BELSE
-		inc     bx                                      ; y++
-		add     dx, cx                                  ; D = D + (2 * (dy - dx))
-		inc     ax
-        cmp     ax, x1
-        jle     BLINE0
-BELSE:  add     dx, si                                  ; D = D + 2*dy
-        inc     ax
-        cmp     ax, x1
-        jle     BLINE0
 
 END:
 
     }
+    printf("dx = %i\t dy=%i\n", _dx, _dy);
 }
 
 /*
-plotLine(x0, y0, x1, y1)
-    dx = x1 - x0
-    dy = y1 - y0
-    D = 2*dy - dx
-    y = y0
 
-    for x from x0 to x1
-        plot(x, y)
-        if D > 0
-            y = y + 1
-            D = D - 2*dx
-        end if
-        D = D + 2*dy
 
 plotLineLow(x0, y0, x1, y1)
     dx = x1 - x0
@@ -193,4 +127,152 @@ plotLine(x0, y0, x1, y1)
             plotLineHigh(x0, y0, x1, y1)
         end if
     end if
+*/
+
+/*
+
+plotLine(x0, y0, x1, y1)
+    dx = x1 - x0
+    dy = y1 - y0
+    D = 2*dy - dx
+    y = y0
+
+    for x from x0 to x1
+        plot(x, y)
+        if D > 0
+            y = y + 1
+            D = D - 2*dx
+        end if
+        D = D + 2*dy
+
+*/
+
+/*
+
+// calculate delata x 'dx' and delta y 'dy'
+WHITE:
+mov ax, y0
+cmp ax, y1
+jle  W_INC_Y_LINE
+jmp W_DEC_Y_LINE
+
+W_INC_Y_LINE: //white line increasing values of y
+// setup registers
+mov     ax, x1                                  ; AX = x1
+sub     ax, x0                                  ; AX = dx = (x1 - x0)
+
+mov     si, y1                                  ; SI = y1
+sub     si, y0                                  ; SI = dy = (y1 - y0)
+
+mov     dx, si                                  ; DX = D = dy
+add     dx, dx                                  ; D = (2 * dy)
+sub     dx, ax                                  ; D = (2 * dy) - dx
+
+mov     cx, ax                                  ; CX = dx
+add     cx, cx                                  ; CX = 2 * dx
+
+add     si, si                                  ; SI = 2 * dy
+
+mov     ax, x0                                  ; AX is x
+mov     bx, y0                                  ; BX is y
+
+// plot pixel
+WPLOT0: push    dx                                      ; preserve corrupted registers
+push    cx
+push    bx
+push    ax
+// plot pixel
+mov     cx, ax                                  ; copy of x low order byte
+and     cx, 7                                   ; mask off 0111 lower bits ie x mod 8 (thanks powers of 2)
+xor     cx, 7                                   ; CL = number of bits to shift left (thanks bit flip XOR)
+		mov     dx, 101h
+		shl		dx, cl			                        ; shift colour bit & proto-mask into position
+		not     dh                                      ; convert to mask
+		shr		ax, 1			                        ; calculate column byte x1 / 8
+	    shr		ax, 1			                        ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
+	    shr		ax, 1
+		shl     bx, 1                                   ; convert BX word pointer
+		mov   	di, HGA_TABLE_Y_LOOKUP[bx]
+		add     di, ax                                  ; ES:[DI] points to VRAM byte containing pixel location
+		and		es:[di], dh								; mask out target pixel
+		or 		es:[di], dl							    ; or in the 'colour'
+		// calulate next pixel
+		pop     ax
+		pop     bx
+		pop     cx
+		pop     dx                                      ; restore registers
+		// decision variable
+		cmp     dx, 0                                   ; if D > 0
+		jg      WELSE0
+		add     dx, si                                  ; D = D + (2 * dy)
+		inc     ax                                      ; x++
+cmp     ax, x1                                  ; x0 to x1
+jle     WPLOT0
+jmp     END
+WELSE0: sub     dx, cx                                  ; D = D - (2 * dx)
+inc     bx                                      ; y++
+inc     ax                                      ; x++
+cmp     ax, x1                                  ; x0 to x1
+jle     WPLOT0
+jmp     END
+
+W_DEC_Y_LINE: //white line decreasing values of y setup registers
+// setup registers
+mov     ax, y1                                  ; AX = y1
+sub     ax, y0                                  ; AX = dy = (y1 - y0)
+mov     si, x1                                  ; SI = x1
+sub     si, x0                                  ; SI = dx = (x1 - x0)
+mov     dx, si                                  ; DX = D = dx
+shl     dx, 1                                   ; D = (2 * dx)
+sub     dx, ax                                  ; D = (2 * dx) - dy
+mov     cx, si                                  ; CX = dx
+sub     cx, ax                                  ; CX = (dx - dy)
+shl     cx, 1                                   ; CX = 2 * (dx - dy)
+shl     si, 1                                   ; SI = 2 * dx
+
+
+mov     bx, y0                                  ; BX is y
+mov     ax, x0                                  ; AX is x
+// plot pixel
+WPLOT2: push    dx                                      ; preserve corrupted registers
+push    cx
+push    bx
+push    ax
+// plot pixel
+mov     cx, ax                                  ; copy of x low order byte
+and     cx, 7                                   ; mask off 0111 lower bits ie x mod 8 (thanks powers of 2)
+xor     cx, 7                                   ; CL = number of bits to shift left (thanks bit flip XOR)
+		mov     dx, 101h
+		shl		dx, cl			                        ; shift colour bit & proto-mask into position
+		not     dh                                      ; convert to mask
+		shr		ax, 1			                        ; calculate column byte x1 / 8
+	    shr		ax, 1			                        ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
+	    shr		ax, 1
+		shl     bx, 1                                   ; convert BX word pointer
+		mov   	di, HGA_TABLE_Y_LOOKUP[bx]
+		add     di, ax                                  ; ES:[DI] points to VRAM byte containing pixel location
+		//shr     bx, 1
+		and		es:[di], dh								; mask out target pixel
+		or 		es:[di], dl							    ; or in the 'colour'
+		// calulate next pixel
+		pop     ax
+		pop     bx
+		pop     cx
+		pop     dx                                      ; restore registers
+		// decision variable
+		cmp     dx, 0                                   ; if D > 0
+		jle     WELSE2
+		inc     ax                                      ; x++
+add     dx, cx                                  ; D = D + (2 * (dx - dy))
+dec     bx                                      ; y--
+cmp     bx, y1
+jge     WPLOT2
+jmp     END
+WELSE2: add     dx, si                                  ; D = D + 2*dx
+dec     bx                                      ; y--
+cmp     bx, y1
+jge     WPLOT2
+jmp     END
+
+
 */

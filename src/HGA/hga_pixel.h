@@ -26,7 +26,7 @@ void hga_plot_pixel_lookup_table(uint16_t vram_segment, uint16_t x, uint16_t y, 
 void hga_plot_pixel_calculate(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t c);
 
 inline void hga_plot_pixel(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t c) {
-    hga_plot_pixel_calculate(vram_segment, x, y, c);
+    hga_plot_pixel_lookup_table(vram_segment, x, y, c);
 }
 
 /**

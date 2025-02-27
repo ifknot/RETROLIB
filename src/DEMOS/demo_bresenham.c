@@ -51,10 +51,12 @@ int bresenham(int argc, char** argv) {
         x1 = x0 + r * cos(angle);
         y1 = y0 + r * sin(angle);
         hga_plot_pixel(HGA_BUFFER_1, x1, y1, HGA_WHITE);
-        hga_bresenham_line(HGA_BUFFER_1, x0, y0, x1, y1, HGA_WHITE);
+        //hga_bresenham_line(HGA_BUFFER_1, x0, y0, x1, y1, HGA_WHITE);
     }
-
-
+    hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 + 100, y0 + 100, HGA_WHITE);
+    hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 - 100, y0 + 100, HGA_WHITE);
+    hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 + 100, y0 - 100, HGA_WHITE);
+    hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 - 100, y0 - 100, HGA_WHITE);
     //  wait for ENTER key and switch back to text mode
     getchar();
     hga_text_mode();
