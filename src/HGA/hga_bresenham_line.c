@@ -49,17 +49,14 @@ WHITE:  // set up registers AX = x, BX = y, DX = dx, CX = dy, SI = error
         sub     dx, x0                              ; DX = x1 - x0
         cmp     dx, 0                               ; DX = abs(dx)
         jge     ABSDX                               ; jump short if dx not signed i.e. positive
-        not     dx                                  ; it is so make positive
-        inc     dx
+        neg     dx                                  ; it is so make positive
 ABSDX:  mov     _dx, dx
         mov     cx, y1                              ; CX = y1
         sub     cx, y0                              ; CX = y1 - y0
         cmp     cx, 0
         jge     ABSDY                               ; jump short if dy not signed i.e. positive
-        not     cx
-        inc     cx
-ABSDY:  not     cx                                  ; CX = -abs(dy)
-        inc     cx
+        neg     cx                                 ;
+ABSDY:  neg     cx                                  ; CX = -abs(dy)
         mov     _dy, cx
         mov     si, dx                              ; SI = dx
         add     si, cx                              ; SI = error = dx + dy
@@ -101,7 +98,6 @@ WPIXEL: push    dx                                  ; preserve corrupted registe
 		jg      END                                  ; if x0 == x1 break
 		add     si, cx                               ; error = error + dy
 		inc     ax                                   ; x++
-		// endi
 		// if e2 <= dx
 WCMP:	cmp    di, dx                                ; ? e2 <= dx
         jg     WPIXEL
