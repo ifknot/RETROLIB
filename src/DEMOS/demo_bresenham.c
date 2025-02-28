@@ -6,6 +6,7 @@
 #include <math.h>
 
 #include "../HW/hw_constants_graphics.h"
+#include "../BIOS/bios_tools_timer.h"
 
 #include "../HGA/hga_constants.h"
 #include "../HGA/hga_detect_adapter.h"
@@ -29,6 +30,7 @@ int bresenham(int argc, char** argv) {
     uint16_t y0 = HGA_SCREEN_Y_MAX / 2;
     uint16_t r = 100;
     uint8_t adapter_type = hga_detect_adapter();
+    bios_ticks_since_midnight_t t1, t2;
     // 1. confirm appropriate graphics adapter presenddt
     if (adapter_type < HW_VIDEO_ADAPTER_HGA) {
         fprintf(stderr, ERR_GRAPHICS);
@@ -46,24 +48,36 @@ int bresenham(int argc, char** argv) {
     getchar();
     float angle;
     uint16_t x1, y1;
-    // horizontal x++
-    hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 + 100, y0, HGA_WHITE);
-    // vertical y++
-    hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0, y0 + 100, HGA_WHITE);
-    // horizontal x--
-    hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 - 100, y0, HGA_WHITE);
-    // vertical y--
-    hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0, y0 - 100, HGA_WHITE);
 
-    // diagonal x++ y++
-    hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 + 100, y0 + 100, HGA_WHITE);
-    // diagonal x-- y++
-    hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 - 100, y0 + 100, HGA_WHITE);
-    // diagonal x++ y--
-    hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 + 100, y0 - 100, HGA_WHITE);
-    // diagonal x-- y--
-    hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 - 100, y0 - 100, HGA_WHITE);
-    getchar();
+    // performance loop
+    bios_read_system_clock(&t1);
+    for(int i = 0; i < 50; ++i) {
+        // horizontal x++
+        hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 + x0, y0, HGA_WHITE);
+        // vertical y++
+        hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0, y0 + y0, HGA_WHITE);
+        // horizontal x--
+        hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 - x0, y0, HGA_WHITE);
+        // vertical y--
+        hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0, y0 - y0, HGA_WHITE);
+    }
+    bios_read_system_clock(&t2);
+    printf("diagonal ticks=%li\n", t2 - t1);
+    // performance loop
+    bios_read_system_clock(&t1);
+    for(int i = 0; i < 50; ++i) {
+        // diagonal x++ y++
+        hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 + x0, y0 + y0, HGA_WHITE);
+        // diagonal x-- y++
+        hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 - x0, y0 + y0, HGA_WHITE);
+        // diagonal x++ y--
+        hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 + x0, y0 - y0, HGA_WHITE);
+        // diagonal x-- y--
+        hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 - x0, y0 - y0, HGA_WHITE);
+    }
+    bios_read_system_clock(&t2);
+    printf("h&v ticks=%li\n", t2 - t1);
+    //getchar();
     // 360 circle
     for (int a = 0; a < 360; a +=1) {
         angle = (a * 3.14159) / 180.0;
