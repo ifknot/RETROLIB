@@ -8,6 +8,8 @@
 * This versuion uses Bresenham's principles of integer incremental error to perform all octant line draws.
 * Balancing the positive and negative error between the x and y coordinates.
 * @url https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+* My implementation uses 4 execution pathways with hard coded inc and dec for improved performace.
+* The 4 quadrants (x++ y++), (x++, y--), (x--, y++), and (x--, y--)
 *
 * plotLine(x0, y0, x1, y1)
 *     dx = abs(x1 - x0)
@@ -32,16 +34,19 @@
 *     end while
 */
 void hga_bresenham_line(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t colour) {
+    int16_t _x, _y, _dx, _dy, _e;
     __asm {
 		.8086
+
+		mov ax, x1
+		mov bx, y1
+	    mov _x, ax
+        mov _y, bx
+
 	    // set up VRAM segment in ES
 	    mov   	ax, vram_segment
 		mov   	es, ax
-		// select hard code colour path
-		cmp     colour, 0
-		jnz     WHITE
-		jmp     BLACK
-WHITE:  // set up registers AX = x, BX = y, DX = dx, CX = dy, SI = error
+        // set up registers AX = x, BX = y, DX = dx, CX = dy, SI = error
         mov     dx, x1                              ; DX = x1
         sub     dx, x0                              ; DX = x1 - x0
         cmp     dx, 0                               ; DX = abs(dx)
@@ -57,8 +62,32 @@ J1:     neg     cx                                  ; CX = -abs(dy)
         add     si, cx                              ; SI = error = dx + dy
         mov     ax, x0
         mov     bx, y0
-        // Bresenham loop
-WPIXEL: push    dx                                  ; preserve corrupted registers
+
+        mov     _dx, dx
+        mov     _dy, cx
+        mov     _e, si
+        // select hard code colour path
+		cmp     colour, 0
+		jnz     WHITE
+		jmp     BLACK
+        // white function dispatch
+WHITE:  cmp     ax, x1
+        jl      J2                                  ; x0 < x1 so use x++
+        cmp     bx, y1
+        jg      J3                                  ; y0 > y1 so use y--
+        call    L1P                               ; x-- y++
+        jmp     END0
+J3:     call    L3P                               ; x-- y--
+        jmp     END0
+J2:     cmp     bx, y1
+        jg      J4                                  ; y0 > y1 so use y--
+        call    L0P                                 ; x++ y++
+        jmp     END0
+J4:     call    L2P                                 ; x++ y--
+        jmp     END0
+BLACK:
+        // Bresenham loop x++ y++
+L0P:    push    dx                                  ; preserve corrupted registers
         push    cx
         push    bx
         push    ax
@@ -88,29 +117,154 @@ WPIXEL: push    dx                                  ; preserve corrupted registe
 		shl     di, 1                                ; DI = e2 = 2 * error
 		// if e2 >= dy
 		cmp     di, cx                               ; ? e2 >= dy
-		jl      J3
+		jl      L0J0
 		cmp     ax, x1
-		jg      END                                  ; if x0 == x1 break
-		add     si, cx                               ; error = error + dy
+		jl      L0J1
+		ret                                          ; if x0 == x1 return
+L0J1:	add     si, cx                               ; error = error + dy
 		inc     ax                                   ; x++
 		// if e2 <= dx
-J3:	    cmp    di, dx                                ; ? e2 <= dx
-        jg     WPIXEL
+L0J0:	cmp    di, dx                                ; ? e2 <= dx
+        jg     L0P
         cmp    bx, y1
-		jg     END                                  ; if y0 == y1 break
-        add    si, dx                               ; error = error + dx
+        jl      L0J2
+		ret                                         ; if x0 == x1 return
+L0J2:   add    si, dx                               ; error = error + dx
         inc    bx                                   ; y++
-        jmp    WPIXEL
+        jmp    L0P
+
+        // Bresenham loop x-- y++
+L1P:    push    dx
+        push    cx
+        push    bx
+        push    ax
+        mov     cx, ax
+        and     cx, 7
+        xor     cx, 7
+		mov     dx, 101h
+		shl		dx, cl
+		not     dh
+		shr		ax, 1
+	    shr		ax, 1
+	    shr		ax, 1
+		shl     bx, 1
+		// TODO: use BP with shr bx,1 (2 clocks) to save POP PUSH (19 cycles) in the main loop
+		mov   	bx, HGA_TABLE_Y_LOOKUP[bx]
+		add     bx, ax
+		and		es:[bx], dh
+		or 		es:[bx], dl
+		pop     ax
+		pop     bx
+		pop     cx
+		pop     dx
+		mov     di, si
+		shl     di, 1
+		cmp     di, cx
+		jl      L1J0
+		cmp     ax, x1
+		jg      L1J1
+		ret
+L1J1:	add     si, cx
+		dec     ax                                   ; x--
+L1J0:	cmp     di, dx
+        jg      L1P
+        cmp     bx, y1
+        jl      L1J2
+        ret
+L1J2:   add     si, dx
+        inc     bx                                    ; y++
+        jmp     L1P
+
+		// Bresenham loop x++ y--
+L2P:    push    dx
+        push    cx
+        push    bx
+        push    ax
+        mov     cx, ax
+        and     cx, 7
+        xor     cx, 7
+        mov     dx, 101h
+        shl		dx, cl
+        not     dh
+        shr		ax, 1
+        shr		ax, 1
+        shr		ax, 1
+        shl     bx, 1
+        // TODO: use BP with shr bx,1 (2 clocks) to save POP PUSH (19 cycles) in the main loop
+        mov   	bx, HGA_TABLE_Y_LOOKUP[bx]
+        add     bx, ax
+        and		es:[bx], dh
+        or 		es:[bx], dl
+        pop     ax
+        pop     bx
+        pop     cx
+        pop     dx
+        mov     di, si
+		shl     di, 1
+		cmp     di, cx
+		jl      L2J0
+		cmp     ax, x1
+		jl      L2J1
+		ret
+L2J1:	add     si, cx
+        inc     ax                                   ; x++
+L2J0:	cmp     di, dx
+        jg      L2P
+        cmp     bx, y1
+        jg      L2J2
+        ret
+L2J2:   add     si, dx
+        dec     bx                                    ; y--
+        jmp     L2P
+
+        // Bresenham loop x-- y--
+L3P:    push    dx
+        push    cx
+        push    bx
+        push    ax
+        mov     cx, ax
+        and     cx, 7
+        xor     cx, 7
+        mov     dx, 101h
+        shl		dx, cl
+        not     dh
+        shr		ax, 1
+        shr		ax, 1
+        shr		ax, 1
+        shl     bx, 1
+        // TODO: use BP with shr bx,1 (2 clocks) to save POP PUSH (19 cycles) in the main loop
+        mov   	bx, HGA_TABLE_Y_LOOKUP[bx]
+        add     bx, ax
+        and		es:[bx], dh
+        or 		es:[bx], dl
+        pop     ax
+        pop     bx
+        pop     cx
+        pop     dx
+        mov     di, si
+		shl     di, 1
+		cmp     di, cx
+		jl      L3J0
+		cmp     ax, x1
+		jg      L3J1
+		ret
+L3J1:	add     si, cx
+        dec     ax                                   ; x--
+L3J0:	cmp     di, dx
+        jg      L3P
+        cmp     bx, y1
+        jg      L3J2
+        ret
+L3J2:   add     si, dx
+        dec     bx                                    ; y--
+        jmp     L3P
 
 
 
-BLACK:
-
-
-END:
+END0:
 
     }
-    //printf("dx = %i dy=%i error=%i\n", _dx, _dy, _e);
+    printf("x = %i y=%i dx=%i dy=%i e=%i\n", _x, _y, _dx, _dy, _e);
 }
 
 /*
