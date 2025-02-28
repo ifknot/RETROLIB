@@ -11,6 +11,4 @@ void hga_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_t w, ui
 
 void hga_dash_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t colour, uint8_t pattern);
 
-void hga_fill_rectangle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t colour);
-
 #endif

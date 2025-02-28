@@ -82,7 +82,7 @@ J2:     cmp     bx, y1
         jmp     END
 J4:     call    L2P                                 ; x++ y--
         jmp     END
-BLACK:
+BLACK:  jmp END
         // Bresenham loop x++ y++
 L0P:    push    dx                                  ; preserve corrupted registers
         push    cx
@@ -110,21 +110,21 @@ L0P:    push    dx                                  ; preserve corrupted registe
 		pop     dx
 		// calculate e2
 		mov     di, si
-		shl     di, 1                                ; DI = e2 = 2 * error
+		shl     di, 1                               ; DI = e2 = 2 * error
 		// if e2 >= dy
-		cmp     di, cx                               ; ? e2 >= dy
+		cmp     di, cx                              ; ? e2 >= dy
 		jl      L0J0
-		cmp     ax, x1
-		jl      L0J1
-		ret                                          ; if x0 == x1 return
-L0J1:	add     si, cx                               ; error = error + dy
+		cmp     ax, x1                              ; ? x0 == x1
+		jne     L0J1
+		ret                                         ; if x0 == x1 return
+L0J1:	add     si, cx                              ; error = error + dy
         inc     ax     ; x++
         // if e2 <= dx
-L0J0:	cmp    di, dx                                ; ? e2 <= dx
+L0J0:	cmp    di, dx                               ; ? e2 <= dx
         jg     L0P
-        cmp    bx, y1
-        jl      L0J2
-		ret                                         ; if x0 == x1 return
+        cmp    bx, y1                               ; ? y0 == y1
+        jne    L0J2
+		ret                                         ; if y0 == y1 return
 L0J2:   add    si, dx                               ; error = error + dx
         inc    bx                                   ; y++
         jmp    L0P
@@ -157,17 +157,17 @@ L1P:    push    dx
 		cmp     di, cx
 		jl      L1J0
 		cmp     ax, x1
-		jg      L1J1
+		jne     L1J1
 		ret
 L1J1:	add     si, cx
-		dec     ax                                   ; x--
+		dec     ax                                          ; x--
 L1J0:	cmp     di, dx
         jg      L1P
         cmp     bx, y1
-        jl      L1J2
+        jne     L1J2
         ret
 L1J2:   add     si, dx
-        inc     bx                                    ; y++
+        inc     bx                                          ; y++
         jmp     L1P
 
 		// Bresenham loop x++ y--
@@ -198,17 +198,17 @@ L2P:    push    dx
 		cmp     di, cx
 		jl      L2J0
 		cmp     ax, x1
-		jl      L2J1
+		jne     L2J1
 		ret
 L2J1:	add     si, cx
-        inc     ax                                   ; x++
+        inc     ax                                          ; x++
 L2J0:	cmp     di, dx
         jg      L2P
         cmp     bx, y1
-        jg      L2J2
+        jne     L2J2
         ret
 L2J2:   add     si, dx
-        dec     bx                                    ; y--
+        dec     bx                                          ; y--
         jmp     L2P
 
         // Bresenham loop x-- y--
@@ -239,21 +239,21 @@ L3P:    push    dx
 		cmp     di, cx
 		jl      L3J0
 		cmp     ax, x1
-		jg      L3J1
+		jne     L3J1
 		ret
 L3J1:	add     si, cx
-        dec     ax                                   ; x--
+        dec     ax                                          ; x--
 L3J0:	cmp     di, dx
         jg      L3P
         cmp     bx, y1
-        jg      L3J2
+        jne     L3J2
         ret
 L3J2:   add     si, dx
-        dec     bx                                    ; y--
+        dec     bx                                          ; y--
         jmp     L3P
 
         // fast horizontal line
-HLINE: cld                                                 ; clear direction flag
+HLINE: cld                                                  ; clear direction flag
 		mov 	bx, y0										; BX load y0
 	    shl     bx, 1                                       ; convert BX word pointer
 		mov   	di, HGA_TABLE_Y_LOOKUP[bx]					; lookup y offset
@@ -281,11 +281,11 @@ JG0:	mov 	dx, 0FFFFh 									; DL lhs DH rhs proto-masks (little endian)
 		mov 	al, colour
 		mov 	ah, al
 		test 	al, al
-		jz 		HBLK                                         ; branching to hard code 'colour' saves a few cycle
+		jz 		HBLK                                        ; branching to hard code 'colour' saves a few cycle
 		mov     ax, dx                                      ; proto-mask is white bits to 'colour'
-HWHT:   jcxz    HJ0                                          ; lhs and rhs share same byte?
+HWHT:   jcxz    HJ0                                         ; lhs and rhs share same byte?
         dec     cx
-        jcxz    HJ1                                          ; lhs and rhs share same word?
+        jcxz    HJ1                                         ; lhs and rhs share same word?
 		not 	dx											; convert proto-mask to mask word
 		add 	di, bx										; have ES:DI point to lhs
 		and     es:[di], dl                            		; mask out target bits 	- 16 + EA(8)
@@ -294,14 +294,14 @@ HWHT:   jcxz    HJ0                                          ; lhs and rhs share
 		inc 	di											; next byte
 		and     es:[di + bx], dh                            ; mask out target bits 	- 16 + EA(8)
 		or      es:[di + bx], ah                            ; colour target bits	- 16 + EA(8)
-		mov     ax, 0FFFFh                                   ; AX white
-		shr     cx, 1		                                 ; number of words to fill, lsb -> carry flag
-		jnc     HNC1                                          ; even so no byte to fill
-		stosb	                                             ; odd do one byte al 'colour'
+		mov     ax, 0FFFFh                                  ; AX white
+		shr     cx, 1		                                ; number of words to fill, lsb -> carry flag
+		jnc     HNC1                                        ; even so no byte to fill
+		stosb	                                            ; odd do one byte al 'colour'
 		jcxz    END
-HNC1:	rep     stosw		                                 ; CX is checked for !=0 before even the first step
+HNC1:	rep     stosw		                                ; CX is checked for !=0 before even the first step
         jmp 	END
-HBLK:	jcxz    HJ0                                          ; lhs and rhs share same byte?
+HBLK:	jcxz    HJ0                                         ; lhs and rhs share same byte?
         dec     cx
         jcxz    HJ1                                  	    ; lhs and rhs share same word?
 		not 	dx										 	; convert proto-mask to mask word
@@ -312,7 +312,7 @@ HBLK:	jcxz    HJ0                                          ; lhs and rhs share s
 		and     es:[di + bx], dh                            ; mask out black bits
 		mov     ax, 0                                       ; AX black
 		shr     cx, 1		                                ; number of words to fill, lsb -> carry flag
-		jnc     HNC0                                         ; even so no byte to fill
+		jnc     HNC0                                        ; even so no byte to fill
 		stosb	                                            ; odd do one byte al 'colour'
 		jcxz    END
 HNC0:	rep     stosw		                                ; CX is checked for !=0 before even the first step
@@ -352,7 +352,7 @@ VL0:	mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
 		add 	bx, 2 										; next line
 		and		es:[di], dh								    ; mask out target pixel
 		or 		es:[di], dl									; or in the 'colour'
-		loop 	VL0                                          ; for line length
+		loop 	VL0                                         ; for line length
 		ret
 END:
     }

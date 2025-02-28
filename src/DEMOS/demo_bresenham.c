@@ -48,10 +48,9 @@ int bresenham(int argc, char** argv) {
     getchar();
     float angle;
     uint16_t x1, y1;
-
     // performance loop
     bios_read_system_clock(&t1);
-    for(int i = 0; i < 50; ++i) {
+    for(int i = 0; i < 0; ++i) {
         // horizontal x++
         hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 + x0, y0, HGA_WHITE);
         // vertical y++
@@ -65,7 +64,7 @@ int bresenham(int argc, char** argv) {
     printf("horiz & vert ticks=%li\n", t2 - t1);
     // performance loop
     bios_read_system_clock(&t1);
-    for(int i = 0; i < 50; ++i) {
+    for(int i = 0; i < 0; ++i) {
         // diagonal x++ y++
         hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 + x0, y0 + y0, HGA_WHITE);
         // diagonal x-- y++
@@ -83,8 +82,43 @@ int bresenham(int argc, char** argv) {
         angle = (a * 3.14159) / 180.0;
         x1 = x0 + r * cos(angle);
         y1 = y0 + r * sin(angle);
-        hga_plot_pixel(HGA_BUFFER_1, x1, y1, HGA_WHITE);
+        //hga_plot_pixel(HGA_BUFFER_1, x1, y1, HGA_WHITE);
         hga_bresenham_line(HGA_BUFFER_1, x0, y0, x1, y1, HGA_WHITE);
+    }
+    // black lines
+    hga_fill_vram_buffer(HGA_BUFFER_1, 0xFF);
+    getchar();
+
+    for(int i = 0; i < 0; ++i) {
+        // horizontal x++
+        hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 + x0, y0, HGA_BLACK);
+        // vertical y++
+        hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0, y0 + y0, HGA_BLACK);
+        // horizontal x--
+        hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 - x0, y0, HGA_BLACK);
+        // vertical y--
+        hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0, y0 - y0, HGA_BLACK);
+    }
+
+    for(int i = 0; i < 0; ++i) {
+        // diagonal x++ y++
+        hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 + x0, y0 + y0, HGA_BLACK);
+        // diagonal x-- y++
+        hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 - x0, y0 + y0, HGA_BLACK);
+        // diagonal x++ y--
+        hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 + x0, y0 - y0, HGA_BLACK);
+        // diagonal x-- y--
+        hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 - x0, y0 - y0, HGA_BLACK);
+    }
+
+    //getchar();
+    // 360 circle
+    for (int a = 0; a < 360; a +=1) {
+        angle = (a * 3.14159) / 180.0;
+        x1 = x0 + r * cos(angle);
+        y1 = y0 + r * sin(angle);
+        //hga_plot_pixel(HGA_BUFFER_1, x1, y1, HGA_BLACK);
+        hga_bresenham_line(HGA_BUFFER_1, x0, y0, x1, y1, HGA_BLACK);
     }
     //  wait for ENTER key and switch back to text mode
     getchar();

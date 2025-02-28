@@ -3,9 +3,11 @@ Check out the [Wiki](https://github.com/ifknot/RETROLIB/wiki) for details on set
 
 ### DOING:
 ---
-- [ ] hga bresenham line
-- [ ] demo lines
-- [ ] move to done
+- [ ] bresenham line
+  - [ ] white pixels
+  - [ ] optimise
+  - [ ] black pixels
+- [ ] hga pixel perf compare algos
 ### TODO:
 ---
 - [ ] demo hga pixelate text
@@ -36,9 +38,8 @@ Check out the [Wiki](https://github.com/ifknot/RETROLIB/wiki) for details on set
   - [ ] operators
   - [ ] trigonometry
   - [ ] 2D vectors
-- [ ] Q16.16
+- [?] Q16.16
 ---
-- [ ] hga pixel perf compare algos
 - [ ] Mandelbrot
   - [ ] Q10.6
   - [ ] Q16.16
@@ -54,13 +55,14 @@ Check out the [Wiki](https://github.com/ifknot/RETROLIB/wiki) for details on set
 - [ ] draw some 1 bit playing cards for a nice change
 - [ ] mouse input
 - [ ] drag and drop playing cards
-
+---
+- [?] rectangle dashed line
+- [?] pattern filled rectangle
 ---
 ### DONE
 ---
 - [x] hga rectangle
   - [x] rectangle
-  - [?] dash
 - [x] hga filled rectangle
 - [x] hga hline
 - [x] hga vline
