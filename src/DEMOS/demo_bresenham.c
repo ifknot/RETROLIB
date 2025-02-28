@@ -62,7 +62,7 @@ int bresenham(int argc, char** argv) {
         hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0, y0 - y0, HGA_WHITE);
     }
     bios_read_system_clock(&t2);
-    printf("diagonal ticks=%li\n", t2 - t1);
+    printf("horiz & vert ticks=%li\n", t2 - t1);
     // performance loop
     bios_read_system_clock(&t1);
     for(int i = 0; i < 50; ++i) {
@@ -76,7 +76,7 @@ int bresenham(int argc, char** argv) {
         hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 - x0, y0 - y0, HGA_WHITE);
     }
     bios_read_system_clock(&t2);
-    printf("h&v ticks=%li\n", t2 - t1);
+    printf("diagonal ticks=%li\n", t2 - t1);
     //getchar();
     // 360 circle
     for (int a = 0; a < 360; a +=1) {

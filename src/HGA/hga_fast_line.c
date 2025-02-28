@@ -120,15 +120,18 @@ void hga_vline(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_t x1, uin
 		// 5. setup y loop and lookup pointer
 		mov 	bx, y0                                      ; BX load y0
 		mov 	cx, y1                                      ; CX load y1
-		sub 	cx, bx										; convert CX line length
+		cmp     bx, cx                                      ; ? y0 < y1
+		jl      VJ0
+		xchg    bx, cx                                      ; swap registers ie swap x0 x1
+VJ0:	sub 	cx, bx										; convert CX line length
         shl     bx, 1                                       ; convert BX word pointer
 		// 5. lookup y and setup ES:DI point to target byte
-L0:	    mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
+VL0:	mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
 		add   	di, ax                                      ; add in x / 8
 		add 	bx, 2 										; next line
 	    // 6. colour the selected pixel
 		and		es:[di], dh								    ; mask out target pixel
 		or 		es:[di], dl									; or in the 'colour'
-		loop 	L0                                          ; for line length
+		loop 	VL0                                          ; for line length
 	}
 }
