@@ -6,9 +6,9 @@ Check out the [Wiki](https://github.com/ifknot/RETROLIB/wiki) for details on set
 ### DOING:
 ---
 - [x] hga pixel perf compare algos
-- [ ] dosbox-x capture avi
-- [ ] imagemagick convert avo to gif
-- [ ] add to github readme.md
+- [x] dosbox-x capture avi
+- [x] imagemagick convert avo to gif
+- [x] add to github readme.md| width=100
 ---
 - [ ] bresenham line
   - [x] white pixels
