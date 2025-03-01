@@ -1,6 +1,8 @@
 # RETROLIB
 Check out the [Wiki](https://github.com/ifknot/RETROLIB/wiki) for details on setting up Open Watcom 2 and CMake on Linux and Mac OS X
 
+![test_gif](cloudup.com/c-tVapIKi0u)
+
 ### DOING:
 ---
 - [x] hga pixel perf compare algos
