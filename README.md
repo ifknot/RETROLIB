@@ -1,5 +1,11 @@
 # RETROLIB
+DOS Retro Computer development library designed to provide low level access to retro computer graphics hardware, audio, keyboard, mouse, joystick, fixed point and vector math.
+
+s written in C
+
 Check out the [Wiki](https://github.com/ifknot/RETROLIB/wiki) for details on setting up Open Watcom 2 and CMake on Linux and Mac OS X
+
+test gif
 
 ![test_gif](https://cldup.com/Mm6skX4QVR.gif)
 
