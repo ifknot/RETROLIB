@@ -62,9 +62,7 @@ void hga_plot_pixel_lookup_table(uint16_t vram_segment, uint16_t x, uint16_t y, 
 
 void hga_plot_pixel_calculate(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t c) {
     __asm {
-        .8086
-        pushf                                           ; preserve flags on entry
-
+        .8086                                         ; preserve flags on entry
         // 1. set up registers
         mov     bx, x
         mov     cl, bl                                  ; copy of x low order byte
@@ -77,7 +75,7 @@ void hga_plot_pixel_calculate(uint16_t vram_segment, uint16_t x, uint16_t y, uin
         rcr     bx, 1                                   ; BX = (x div 4) + 4000h * (y & 3) via CF
         shr     bx, 1                                   ; BX = (x div 8) + 2000h * (y & 3) via CF
         mov     ah, HGA_BYTES_PER_LINE
-        mul     ah                                              ; AL = (y div 4) * 90
+        mul     ah                                      ; AL = (y div 4) * 90
         add     bx, ax                                  ; 2000h * (y & 3) + (x div 8) + ((y div 4) * 90)
         // 3. setup ES:[BX] to point to the VRAM byte containing pixel location
         mov     ax, vram_segment
@@ -92,8 +90,6 @@ void hga_plot_pixel_calculate(uint16_t vram_segment, uint16_t x, uint16_t y, uin
         // 5. display pixel
         and     es:[bx], al                             ; mask out the pixel bits
         or      es:[bx], ah                             ; plot point
-
-        popf                                            ; restore flags on exit
     }
 }
 

@@ -3,11 +3,13 @@ Check out the [Wiki](https://github.com/ifknot/RETROLIB/wiki) for details on set
 
 ### DOING:
 ---
-- [ ] bresenham line
-  - [ ] white pixels
-  - [ ] optimise
-  - [ ] black pixels
 - [ ] hga pixel perf compare algos
+- [ ]
+---
+- [ ] bresenham line
+  - [x] white pixels
+  - [x] optimise
+  - [ ] black pixels
 ### TODO:
 ---
 - [ ] demo hga pixelate text

@@ -7,6 +7,7 @@
 
 #include "../HW/hw_constants_graphics.h"
 #include "../BIOS/bios_tools_timer.h"
+#include "../BIOS/bios_timer_io_services.h"
 
 #include "../HGA/hga_constants.h"
 #include "../HGA/hga_detect_adapter.h"
@@ -17,8 +18,6 @@
 #include "../HGA/hga_rectangle.h"
 #include "../HGA/hga_pixel.h"
 
-
-#include "../BIOS/bios_timer_io_services.h"
 
 #define ERR_GRAPHICS        "ERROR: No valid graphics adapter found!\n"
 #define ERR_GRAPHICS_INFO   "ERROR INFO: This version of %s requires an Hercules Graphics Adapter.\n"
