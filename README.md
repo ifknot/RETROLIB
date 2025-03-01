@@ -14,7 +14,7 @@ test gif
 - [x] hga pixel perf compare algos
 - [x] dosbox-x capture avi
 - [x] imagemagick convert avo to gif
-- [x] add to github readme.md| width=100
+- [x] add to github readme.md
 ---
 - [ ] bresenham line
   - [x] white pixels
