@@ -1,12 +1,20 @@
 # RETROLIB
-Check out the [Wiki](https://github.com/ifknot/RETROLIB/wiki) for details on setting up Open Watcom 2 and CMake on Linux and Mac OS X
+DOS Retro Computer development library designed to provide low level access to retro computer graphics hardware, audio, keyboard, mouse, joystick, fixed point and vector math.
+
+RETROLIB is written in C(99) and 8086 assembly language using the [Zed Editor](https://zed.dev/) with the [Open Watcom 2](https://open-watcom.github.io/) Compiler and tested with [Doxbox-X](https://dosbox-x.com/) and [EMU86](https://gcallah.github.io/Emu86/index.html).
+
+Check out the [Wiki](https://github.com/ifknot/RETROLIB/wiki) for details on setting up Open Watcom 2 and CMake on Linux and Mac OS X.
+
+test gif
+
+![test_gif](https://cldup.com/Mm6skX4QVR.gif)
 
 ### DOING:
 ---
 - [x] hga pixel perf compare algos
-- [ ] dosbox-x capture avi
-- [ ] imagemagick convert avo to gif
-- [ ] add to github readme.md
+- [x] dosbox-x capture avi
+- [x] imagemagick convert avo to gif
+- [x] add to github readme.md
 ---
 - [ ] bresenham line
   - [x] white pixels
