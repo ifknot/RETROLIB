@@ -248,7 +248,7 @@ L3P:    push    dx
 		ret
 L3J1:	add     si, cx
         dec     ax                                          ; x--
-L3J0:	cmp     di, dx
+L3J0: 	cmp     di, dx
         jg      L3P
         cmp     bx, y1
         jne     L3J2
@@ -256,8 +256,6 @@ L3J0:	cmp     di, dx
 L3J2:   add     si, dx
         dec     bx                                          ; y--
         jmp     L3P
-
-BLACK: // TODO
 
         // fast horizontal line
 HLINE: cld                                                  ; clear direction flag
