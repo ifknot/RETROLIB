@@ -7,7 +7,10 @@
 /**
 * This version uses Bresenham's principles of integer incremental error to perform all octant line draws.
 * Balancing the positive and negative error between the x and y coordinates.
+*
 * @url https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+* @url https://zingl.github.io/bresenham.html
+*
 * Performance gains can be made be de-generalizing the algorithm into hard-coded execution paths at the expense of increased memory footprint:
 * + My implementation uses 4 execution pathways with hard coded inc and dec for improved diagonal performace 7.5% faster.
 * + Further, splitting the code into specific colour sections gains 17% faster.
@@ -65,7 +68,7 @@ J1:     neg     cx                                  ; CX = -abs(dy)
         add     si, cx                              ; SI = error = dx + dy
         mov     ax, x0
         mov     bx, y0
-        // select hard code colour path
+        // select diagonal lines hard code colour path
 		cmp     colour, 0
 		jnz     WHITE
 		jmp     BLACK
@@ -253,6 +256,8 @@ L3J0:	cmp     di, dx
 L3J2:   add     si, dx
         dec     bx                                          ; y--
         jmp     L3P
+
+BLACK: // TODO
 
         // fast horizontal line
 HLINE: cld                                                  ; clear direction flag

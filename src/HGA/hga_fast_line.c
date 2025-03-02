@@ -2,6 +2,14 @@
 
 #include "hga_table_lookup_y.h"
 
+/**
+* The 8086 being somewhat limited in registers (AX, BX, BC, DX, SI, DI and, at a push BP) then perfoamnce gains can
+* be made at the expense of memory footprint by having hardcoded execution paths for potential 'fixed' variables.
+* In this case, colour.
+* This strategy of "de-generalizing" algorthims for specific processor limitations is important when programming
+* for retro computers with very limited performance, by modern standards, such as the IBM - being some 20,000 times
+* slower than this iMac.
+*/
 void hga_hline(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t colour) {
 	__asm {
 		.8086
@@ -39,7 +47,7 @@ void hga_hline(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_t x1, uin
 		mov 	al, colour
 		mov 	ah, al
 		test 	al, al
-		jz 		BLK                                         ; branching to hard code 'colour' saves a few cycle
+		jz 		BLK                                         ; branching to hard code 'colour' saves a few cycles
 		mov     ax, dx                                      ; proto-mask is white bits to 'colour'
 WHT:    jcxz    J0                                          ; lhs and rhs share same byte?
         dec     cx
