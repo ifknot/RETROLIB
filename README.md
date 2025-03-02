@@ -11,10 +11,8 @@ test gif
 
 ### DOING:
 ---
-- [x] hga pixel perf compare algos
-- [x] dosbox-x capture avi
-- [x] imagemagick convert avo to gif
-- [x] add to github readme.md
+- [ ] hga circle
+- [ ] demo circle
 ---
 - [ ] bresenham line
   - [x] white pixels
@@ -58,9 +56,6 @@ test gif
 ---
 - [ ] hga read pixel
 ---
-- [ ] hga circle (unroll loop)
-- [ ] demo circle
----
 - [ ] hga byte aligned block transfer
 - [ ] demo byte_aligned_blt
 ---
@@ -73,6 +68,11 @@ test gif
 ---
 ### DONE
 ---
+---
+- [x] hga pixel perf compare algos
+- [x] dosbox-x capture avi
+- [x] imagemagick convert avo to gif
+- [x] add to github readme.md
 - [x] hga rectangle
   - [x] rectangle
 - [x] hga filled rectangle
