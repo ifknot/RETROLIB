@@ -35,6 +35,7 @@ void hga_jesko_circle(uint16_t vram_segment, uint16_t mx, uint16_t my, uint16_t 
 	    mov    ax, vram_segment
 		mov    es, ax
 		xor    cx, cx
+		// select optimized execution path depending on colour (this saves and expensive memory move every pixel)
 		mov    cl, colour
 		jcxz   BLACK
 		jmp    WHITE
