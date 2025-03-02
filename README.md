@@ -11,8 +11,8 @@ test gif
 
 ### DOING:
 ---
-- [ ] hga circle
-- [ ] demo circle
+- [x] hga circle
+- [x] demo circle
 ---
 - [ ] bresenham line
   - [x] white pixels
