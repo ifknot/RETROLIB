@@ -34,8 +34,15 @@ int circles(int argc, char** argv) {
     hga_cls(HGA_BUFFER_1);
     //
     getchar();
-    hga_jesko_circle(HGA_BUFFER_1, 360, 174, 100);
-
+    for(uint16_t r = 0; r < 170; r += 2) {
+        hga_jesko_circle(HGA_BUFFER_1, 360, 174, r, HGA_WHITE);
+    }
+    getchar();
+    hga_fill_vram_buffer(HGA_BUFFER_1, 255);
+    getchar();
+    for(uint16_t r = 0; r < 170; r += 2) {
+        hga_jesko_circle(HGA_BUFFER_1, 360, 174, r, HGA_BLACK);
+    }
     //  wait for ENTER key and switch back to text mode
     getchar();
     hga_text_mode();

@@ -6,7 +6,7 @@
 /**
 * @url https://schwarzers.com/algorithms/
 */
-void hga_jesko_circle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_t r);
+void hga_jesko_circle(uint16_t vram_segment, uint16_t x, uint16_t y, uint16_t r, uint8_t colour);
 
 #endif
 
