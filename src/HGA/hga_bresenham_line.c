@@ -92,13 +92,14 @@ BLACK:  jmp END
 L0P:    push    dx                                  ; preserve corrupted registers
         push    cx
         push    bx
-        push    ax
-        // plot pixel
+        push    ax									; (15 cycles) 8086
+        // plot pixel NB embedding the plot pixel code saves call (23 - 36)  + ret (20 - 34) cycles 8086 *every* pixel plotted.§
         mov     cx, ax                              ; copy of x low order byte
         and     cx, 7                               ; mask off 0111 lower bits ie x mod 8 (thanks powers of 2)
         xor     cx, 7                               ; CL = number of bits to shift left (thanks bit flip XOR)
 		mov     dx, 101h                            ; DX = 0000000100000001 binary protomask DH colour DL
 		shl		dx, cl                              ; shift colour bit & proto-mask into position
+		// mov cx, ax								; copy ax (2 cycles)
 		not     dh                                  ; convert to mask
 		shr		ax, 1			                    ; calculate column byte x1 / 8
 	    shr		ax, 1			                    ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
@@ -109,7 +110,8 @@ L0P:    push    dx                                  ; preserve corrupted registe
 		and		es:[bx], dh						    ; mask out target pixel
 		or 		es:[bx], dl							; or in the 'colour'
 		// restore registers AX = x, BX = y, DX = dx, CX = dy
-		pop     ax
+		pop     ax									; (12 cycles) 8086
+		// mov ax, cx								; restore ax (2 cycles)
 		pop     bx
 		pop     cx
 		pop     dx
