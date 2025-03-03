@@ -3,10 +3,9 @@
 //#include "DEMOS/pixelate.h"
 //#include "DEMOS/demo_lines.h"
 //#include "DEMOS/demo_rectangles.h"
-//#include "DEMOS/demo_bresenham.h"
+#include "DEMOS/demo_bresenham.h"
 //#include "DEMOS/demo_pixels.h"
-
-#include "DEMOS/demo_circles.h"
+//#include "DEMOS/demo_circles.h"
 
 int main(int argc, char** argv) {
 
@@ -16,7 +15,7 @@ int main(int argc, char** argv) {
     return 0;
 #endif
 
-	return circles(argc, argv);
+	return bresenham(argc, argv);
 
 
 }

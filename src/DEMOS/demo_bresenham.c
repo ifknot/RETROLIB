@@ -28,6 +28,7 @@ int bresenham(int argc, char** argv) {
     uint16_t x0 = HGA_SCREEN_X_MAX / 2;
     uint16_t y0 = HGA_SCREEN_Y_MAX / 2;
     uint16_t r = 100;
+    int samples = 50;
     uint8_t adapter_type = hga_detect_adapter();
     bios_ticks_since_midnight_t t1, t2;
     // 1. confirm appropriate graphics adapter presenddt
@@ -47,9 +48,9 @@ int bresenham(int argc, char** argv) {
     getchar();
     float angle;
     uint16_t x1, y1;
-    // performance loop
+    // performance loop horizontal and vertical
     bios_read_system_clock(&t1);
-    for(int i = 0; i < 0; ++i) {
+    for(int i = 0; i < samples; ++i) {
         // horizontal x++
         hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 + x0, y0, HGA_WHITE);
         // vertical y++
@@ -60,10 +61,10 @@ int bresenham(int argc, char** argv) {
         hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0, y0 - y0, HGA_WHITE);
     }
     bios_read_system_clock(&t2);
-    printf("horiz & vert ticks=%li\n", t2 - t1);
-    // performance loop
+    printf("draw %i horiz & vert lines ticks=%li\n",samples * 4, t2 - t1);
+    // performance loop diagonal
     bios_read_system_clock(&t1);
-    for(int i = 0; i < 0; ++i) {
+    for(int i = 0; i < 50; ++i) {
         // diagonal x++ y++
         hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 + x0, y0 + y0, HGA_WHITE);
         // diagonal x-- y++
@@ -74,7 +75,7 @@ int bresenham(int argc, char** argv) {
         hga_bresenham_line(HGA_BUFFER_1, x0, y0, x0 - x0, y0 - y0, HGA_WHITE);
     }
     bios_read_system_clock(&t2);
-    printf("diagonal ticks=%li\n", t2 - t1);
+    printf("draw %i diagonal lines ticks=%li\n",samples * 4, t2 - t1);
     //getchar();
     // 360 circle
     for (int a = 0; a < 360; a +=1) {
@@ -84,6 +85,7 @@ int bresenham(int argc, char** argv) {
         //hga_plot_pixel(HGA_BUFFER_1, x1, y1, HGA_WHITE);
         hga_bresenham_line(HGA_BUFFER_1, x0, y0, x1, y1, HGA_WHITE);
     }
+    /*
     // black lines
     hga_fill_vram_buffer(HGA_BUFFER_1, 0xFF);
     getchar();
@@ -119,6 +121,7 @@ int bresenham(int argc, char** argv) {
         //hga_plot_pixel(HGA_BUFFER_1, x1, y1, HGA_BLACK);
         hga_bresenham_line(HGA_BUFFER_1, x0, y0, x1, y1, HGA_BLACK);
     }
+    */
     //  wait for ENTER key and switch back to text mode
     getchar();
     hga_text_mode();

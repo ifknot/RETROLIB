@@ -69,9 +69,9 @@ J1:     neg     cx                                  ; CX = -abs(dy)
         mov     ax, x0
         mov     bx, y0
         // select diagonal lines hard code colour path
-		cmp     colour, 0
-		jnz     WHITE
-		jmp     BLACK
+		//cmp     colour, 0
+		//jnz     WHITE
+		//jmp     BLACK
         // white function dispatch
 WHITE:  cmp     ax, x1
         jl      J2                                  ; x0 < x1 so use x++
@@ -90,20 +90,20 @@ J4:     call    L2P                                 ; x++ y--
 BLACK:  jmp END
         // Bresenham loop x++ y++
 L0P:    push    dx                                  ; preserve corrupted registers
-        push    cx
-        push    bx
-        push    ax									; (15 cycles) 8086
+        push    cx                                  ; (15 cycles) 8086
+        //push    bx
+        push    ax
         // plot pixel NB embedding the plot pixel code saves call (23 - 36)  + ret (20 - 34) cycles 8086 *every* pixel plotted.§
         mov     cx, ax                              ; copy of x low order byte
         and     cx, 7                               ; mask off 0111 lower bits ie x mod 8 (thanks powers of 2)
         xor     cx, 7                               ; CL = number of bits to shift left (thanks bit flip XOR)
 		mov     dx, 101h                            ; DX = 0000000100000001 binary protomask DH colour DL
 		shl		dx, cl                              ; shift colour bit & proto-mask into position
-		// mov cx, ax								; copy ax (2 cycles)
 		not     dh                                  ; convert to mask
 		shr		ax, 1			                    ; calculate column byte x1 / 8
 	    shr		ax, 1			                    ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
 	    shr		ax, 1
+		mov     cx, bx								; copy bx (2 cycles)
 		shl     bx, 1                               ; convert BX word pointer
 		mov   	bx, HGA_TABLE_Y_LOOKUP[bx]          ; BX = VRAM row offset
 		add     bx, ax                              ; ES:[BX] points to VRAM byte containing pixel location
@@ -111,10 +111,10 @@ L0P:    push    dx                                  ; preserve corrupted registe
 		or 		es:[bx], dl							; or in the 'colour'
 		// restore registers AX = x, BX = y, DX = dx, CX = dy
 		pop     ax									; (12 cycles) 8086
-		// mov ax, cx								; restore ax (2 cycles)
-		pop     bx
-		pop     cx
-		pop     dx
+		mov     bx, cx								; saves 17 - 4 cycles over push/pop ie 4% faster overall
+		//pop     bx
+		pop     cx                                  ; (15 cycles) 8086
+		pop     dx                                  ; restore corrupted registers
 		// calculate e2
 		mov     di, si
 		shl     di, 1                               ; DI = e2 = 2 * error
@@ -139,7 +139,7 @@ L0J2:   add    si, dx                               ; error = error + dx
         // Bresenham loop x-- y++
 L1P:    push    dx
         push    cx
-        push    bx
+        //push    bx
         push    ax
         mov     cx, ax
         and     cx, 7
@@ -150,13 +150,15 @@ L1P:    push    dx
 		shr		ax, 1
 	    shr		ax, 1
 	    shr		ax, 1
+		mov     cx, bx
 		shl     bx, 1
 		mov   	bx, HGA_TABLE_Y_LOOKUP[bx]
 		add     bx, ax
 		and		es:[bx], dh
 		or 		es:[bx], dl
 		pop     ax
-		pop     bx
+		mov     bx, cx
+		//pop     bx
 		pop     cx
 		pop     dx
 		mov     di, si
@@ -180,7 +182,7 @@ L1J2:   add     si, dx
 		// Bresenham loop x++ y--
 L2P:    push    dx
         push    cx
-        push    bx
+        //push    bx
         push    ax
         mov     cx, ax
         and     cx, 7
@@ -191,13 +193,15 @@ L2P:    push    dx
         shr		ax, 1
         shr		ax, 1
         shr		ax, 1
+        mov     cx, bx
         shl     bx, 1
         mov   	bx, HGA_TABLE_Y_LOOKUP[bx]
         add     bx, ax
         and		es:[bx], dh
         or 		es:[bx], dl
         pop     ax
-        pop     bx
+        mov     bx, cx
+        //pop     bx
         pop     cx
         pop     dx
         mov     di, si
@@ -221,7 +225,7 @@ L2J2:   add     si, dx
         // Bresenham loop x-- y--
 L3P:    push    dx
         push    cx
-        push    bx
+        //push    bx
         push    ax
         mov     cx, ax
         and     cx, 7
@@ -232,13 +236,15 @@ L3P:    push    dx
         shr		ax, 1
         shr		ax, 1
         shr		ax, 1
+        mov     cx, bx
         shl     bx, 1
         mov   	bx, HGA_TABLE_Y_LOOKUP[bx]
         add     bx, ax
         and		es:[bx], dh
         or 		es:[bx], dl
         pop     ax
-        pop     bx
+        mov     bx, cx
+        //pop     bx
         pop     cx
         pop     dx
         mov     di, si
