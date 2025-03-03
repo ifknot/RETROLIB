@@ -46,21 +46,19 @@ void hga_bresenham_line(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_
 	    // set up VRAM segment in ES
 	    mov   	ax, vram_segment
 		mov   	es, ax
-        // set up registers AX = x, BX = y, DX = dx, CX = dy, SI = error
+        // set up registers AX = x, BX = y, DX = dx, CX = dy, SI = error, DI = e2
         mov     dx, x1                              ; DX = x1
         sub     dx, x0                              ; DX = x1 - x0
         jnz     JNZ0                                ; x0 == x1 ?
         // select fast vertical line code path
-        call    VLINE
-        jmp     END
+        jmp    VLINE
 JNZ0:   jge     J0                                  ; jump short if dx not signed i.e. positive
         neg     dx                                  ; negative so make positive
 J0:     mov     cx, y1                              ; CX = y1
         sub     cx, y0                              ; CX = y1 - y0
         jnz     JNZ1                                ; y0 == y1 ?
         // select fast horizontal line code path
-        call    HLINE
-        jmp     END
+        jmp     HLINE
 JNZ1:   jge     J1                                  ; jump short if dy not signed i.e. positive
         neg     cx                                  ; negative so make positive
 J1:     neg     cx                                  ; CX = -abs(dy)
@@ -68,32 +66,25 @@ J1:     neg     cx                                  ; CX = -abs(dy)
         add     si, cx                              ; SI = error = dx + dy
         mov     ax, x0
         mov     bx, y0
-        // select diagonal lines hard code colour path
-		//cmp     colour, 0
+		//cmp     colour, 0                           select diagonal lines hard code colour path
 		//jnz     WHITE
 		//jmp     BLACK
-        // white function dispatch
-WHITE:  cmp     ax, x1
+		// diagonal lines dispatcher
+WHITE:  cmp     ax, x1                              ; white function dispatch
         jl      J2                                  ; x0 < x1 so use x++
         cmp     bx, y1
         jg      J3                                  ; y0 > y1 so use y--
-        call    L1P                                 ; x-- y++
-        jmp     END
-J3:     call    L3P                                 ; x-- y--
-        jmp     END
+        jmp     L1P                                 ; x-- y++
+J3:     jmp     L3P                                 ; x-- y--
 J2:     cmp     bx, y1
         jg      J4                                  ; y0 > y1 so use y--
-        call    L0P                                 ; x++ y++
-        jmp     END
-J4:     call    L2P                                 ; x++ y--
-        jmp     END
+        jmp     L0P                                 ; x++ y++
+J4:     jmp     L2P                                 ; x++ y--
 BLACK:  jmp END
-        // Bresenham loop x++ y++
+        // Bresenham loop x++ y++ NB embedding the plot pixel code saves call (23 - 36)  + ret (20 - 34) cycles 8086 *every* pixel plotted.
 L0P:    push    dx                                  ; preserve corrupted registers
         push    cx                                  ; (15 cycles) 8086
-        //push    bx
         push    ax
-        // plot pixel NB embedding the plot pixel code saves call (23 - 36)  + ret (20 - 34) cycles 8086 *every* pixel plotted.§
         mov     cx, ax                              ; copy of x low order byte
         and     cx, 7                               ; mask off 0111 lower bits ie x mod 8 (thanks powers of 2)
         xor     cx, 7                               ; CL = number of bits to shift left (thanks bit flip XOR)
@@ -103,35 +94,30 @@ L0P:    push    dx                                  ; preserve corrupted registe
 		shr		ax, 1			                    ; calculate column byte x1 / 8
 	    shr		ax, 1			                    ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
 	    shr		ax, 1
-		mov     cx, bx								; copy bx (2 cycles)
+		mov     cx, bx								; preserve bx (2 cycles)
 		shl     bx, 1                               ; convert BX word pointer
 		mov   	bx, HGA_TABLE_Y_LOOKUP[bx]          ; BX = VRAM row offset
 		add     bx, ax                              ; ES:[BX] points to VRAM byte containing pixel location
 		and		es:[bx], dh						    ; mask out target pixel
 		or 		es:[bx], dl							; or in the 'colour'
-		// restore registers AX = x, BX = y, DX = dx, CX = dy
 		pop     ax									; (12 cycles) 8086
 		mov     bx, cx								; saves 17 - 4 cycles over push/pop ie 4% faster overall
-		//pop     bx
 		pop     cx                                  ; (15 cycles) 8086
 		pop     dx                                  ; restore corrupted registers
-		// calculate e2
 		mov     di, si
 		shl     di, 1                               ; DI = e2 = 2 * error
-		// if e2 >= dy
 		cmp     di, cx                              ; ? e2 >= dy
 		jl      L0J0
 		cmp     ax, x1                              ; ? x0 == x1
 		jne     L0J1
-		ret                                         ; if x0 == x1 return
+		jmp     END                                 ; if x0 == x1 break
 L0J1:	add     si, cx                              ; error = error + dy
-        inc     ax     ; x++
-        // if e2 <= dx
+        inc     ax                                  ; x++
 L0J0:	cmp    di, dx                               ; ? e2 <= dx
         jg     L0P
         cmp    bx, y1                               ; ? y0 == y1
         jne    L0J2
-		ret                                         ; if y0 == y1 return
+		jmp    END                                  ; if y0 == y1 break
 L0J2:   add    si, dx                               ; error = error + dx
         inc    bx                                   ; y++
         jmp    L0P
@@ -139,7 +125,6 @@ L0J2:   add    si, dx                               ; error = error + dx
         // Bresenham loop x-- y++
 L1P:    push    dx
         push    cx
-        //push    bx
         push    ax
         mov     cx, ax
         and     cx, 7
@@ -158,7 +143,6 @@ L1P:    push    dx
 		or 		es:[bx], dl
 		pop     ax
 		mov     bx, cx
-		//pop     bx
 		pop     cx
 		pop     dx
 		mov     di, si
@@ -167,14 +151,14 @@ L1P:    push    dx
 		jl      L1J0
 		cmp     ax, x1
 		jne     L1J1
-		ret
+		jmp     END
 L1J1:	add     si, cx
 		dec     ax                                          ; x--
 L1J0:	cmp     di, dx
         jg      L1P
         cmp     bx, y1
         jne     L1J2
-        ret
+        jmp     END
 L1J2:   add     si, dx
         inc     bx                                          ; y++
         jmp     L1P
@@ -182,7 +166,6 @@ L1J2:   add     si, dx
 		// Bresenham loop x++ y--
 L2P:    push    dx
         push    cx
-        //push    bx
         push    ax
         mov     cx, ax
         and     cx, 7
@@ -201,7 +184,6 @@ L2P:    push    dx
         or 		es:[bx], dl
         pop     ax
         mov     bx, cx
-        //pop     bx
         pop     cx
         pop     dx
         mov     di, si
@@ -210,14 +192,14 @@ L2P:    push    dx
 		jl      L2J0
 		cmp     ax, x1
 		jne     L2J1
-		ret
+		jmp     END
 L2J1:	add     si, cx
         inc     ax                                          ; x++
 L2J0:	cmp     di, dx
         jg      L2P
         cmp     bx, y1
         jne     L2J2
-        ret
+        jmp     END
 L2J2:   add     si, dx
         dec     bx                                          ; y--
         jmp     L2P
@@ -225,7 +207,6 @@ L2J2:   add     si, dx
         // Bresenham loop x-- y--
 L3P:    push    dx
         push    cx
-        //push    bx
         push    ax
         mov     cx, ax
         and     cx, 7
@@ -244,7 +225,6 @@ L3P:    push    dx
         or 		es:[bx], dl
         pop     ax
         mov     bx, cx
-        //pop     bx
         pop     cx
         pop     dx
         mov     di, si
@@ -253,20 +233,20 @@ L3P:    push    dx
 		jl      L3J0
 		cmp     ax, x1
 		jne     L3J1
-		ret
+		jmp     END
 L3J1:	add     si, cx
         dec     ax                                          ; x--
 L3J0: 	cmp     di, dx
         jg      L3P
         cmp     bx, y1
         jne     L3J2
-        ret
+        jmp     END
 L3J2:   add     si, dx
         dec     bx                                          ; y--
         jmp     L3P
 
         // fast horizontal line
-HLINE: cld                                                  ; clear direction flag
+HLINE:  cld                                                 ; clear direction flag
 		mov 	bx, y0										; BX load y0
 	    shl     bx, 1                                       ; convert BX word pointer
 		mov   	di, HGA_TABLE_Y_LOOKUP[bx]					; lookup y offset
@@ -339,7 +319,7 @@ HJ0:    and     dl, dh                                      ; combine proto-mask
 		and     al, ah                                      ; combine 'colour' bits into al
         and     es:[di + bx], dl                            ; mask out target bits 	- 16 + EA(8)
 		or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)
-		ret
+		jmp     END
 
 		// fast vertical line
 VLINE:  mov   	dh, 00000001                                ; DH is (proto)mask byte
@@ -366,7 +346,7 @@ VL0:	mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
 		and		es:[di], dh								    ; mask out target pixel
 		or 		es:[di], dl									; or in the 'colour'
 		loop 	VL0                                         ; for line length
-		ret
+
 END:
     }
 }
