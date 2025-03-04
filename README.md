@@ -11,6 +11,8 @@ test gif
 
 ### DOING:
 ---
+- [ ] which is faster? vline or hline?
+---
 - [x] hga circle
 - [x] demo circle
 ---
