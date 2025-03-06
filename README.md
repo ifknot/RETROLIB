@@ -11,11 +11,14 @@ test gif
 
 ### DOING:
 ---
-- [ ] which is faster? vline or hline?
+- [ ] which is faster on an IBM XT?
+  - [ ] memory efficient optimised bresenham ?
+  - [ ] register efficient and speeed optimised bresenham ?
+  - [ ] hline vs vline ?
 --- 
 - [ ] InColor Mode
   - [ ] graphics mode
-   - [ ] set conditions for write
+  - [ ] set conditions for write
 + Read/Write Control Register "care-all-planes" - all planes affect the background bit mask
 + Write Mode 1 - write latch/fore
 + Mask polarity "set-if-equal"
