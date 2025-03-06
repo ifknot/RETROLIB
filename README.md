@@ -12,14 +12,27 @@ test gif
 ### DOING:
 ---
 - [ ] which is faster? vline or hline?
+--- 
+- [ ] InColor Mode
+  - [ ] graphics mode
+   - [ ] set conditions for write
++ Read/Write Control Register "care-all-planes" - all planes affect the background bit mask
++ Write Mode 1 - write latch/fore
++ Mask polarity "set-if-equal"
++ Read/Write Colour Register both foreground and background colours set to pixel plot colour
+
+  - [ ] text mode - set InColor registers back to power on mode 
 ---
 - [x] hga circle
 - [x] demo circle
+- [ ] InColor
 ---
 - [ ] bresenham line
+  - [ ] rewrite into tight octant loops only using registers 
   - [x] white pixels
   - [x] optimise
   - [ ] black pixels
+-[ ] InColor
 ### TODO:
 ---
 - [ ] demo hga pixelate text
