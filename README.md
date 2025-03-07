@@ -15,6 +15,14 @@ test gif
   - [ ] memory efficient optimised bresenham ?
   - [ ] register efficient and speeed optimised bresenham ?
   - [ ] hline vs vline ?
+---
+- [ ] bresenham line
+  - [ ] rewrite into tight octant loops only using registers 
+  - [x] white pixels
+  - [x] optimise
+  - [ ] black pixels
+  - [ ] dashed lines
+  - [ ] InColor
 --- 
 - [ ] InColor Mode
   - [ ] graphics mode
@@ -29,12 +37,7 @@ test gif
 - [x] hga circle
 - [x] demo circle
 - [ ] InColor
----
-- [ ] bresenham line
-  - [ ] rewrite into tight octant loops only using registers 
-  - [x] white pixels
-  - [x] optimise
-  - [ ] black pixels
+
 -[ ] InColor
 ### TODO:
 ---
