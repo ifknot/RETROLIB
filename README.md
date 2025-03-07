@@ -12,10 +12,15 @@ test gif
 ### DOING:
 ---
 - [ ] which is faster on an IBM XT?
+  - [ ] pixel calculate vs lookup
   - [ ] precompute 360 parametric circle values into a handy header file 
   - [ ] memory efficient optimised bresenham ?
   - [ ] register efficient and speeed optimised bresenham ?
   - [ ] hline vs vline ?
+---
+- [ ] union_point_t
+- [ ] poly_pixel
+- [ ] InColor
 ---
 - [ ] bresenham line
   - [ ] rewrite into tight octant loops only using registers 
