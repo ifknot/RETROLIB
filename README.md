@@ -21,6 +21,8 @@ test gif
 - [ ] union_point_t
 - [ ] poly_pixel
 - [ ] InColor
+- [ ] hga_bitmap_character (hga_font_constant_system)
+- [ ] hga_bitmap_string (hga_font_constant_system)
 ---
 - [ ] bresenham line
   - [ ] rewrite into tight octant loops only using registers 
