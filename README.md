@@ -22,7 +22,7 @@ test gif
 - [ ] poly_pixel
 - [ ] InColor
 - [ ] hga_bitmap_character (hga_font_constant_system)
-- [ ] hga_bitmap_string (hga_font_constant_system)
+- [ ] hga_bitmap_string (hga_font_constant_system, l-r/r-l/t-b/b-t)
 ---
 - [ ] bresenham line
   - [ ] rewrite into tight octant loops only using registers 
