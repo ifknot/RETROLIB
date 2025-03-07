@@ -12,6 +12,7 @@ test gif
 ### DOING:
 ---
 - [ ] which is faster on an IBM XT?
+  - [ ] precompute 360 parametric circle values into a handy header file 
   - [ ] memory efficient optimised bresenham ?
   - [ ] register efficient and speeed optimised bresenham ?
   - [ ] hline vs vline ?
