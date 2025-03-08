@@ -11,13 +11,46 @@ test gif
 
 ### DOING:
 ---
-- [x] hga circle
-- [x] demo circle
+- [ ] which is faster on an IBM XT?
+  - [ ] pixel calculate vs lookup
+  - [ ] precompute 360 parametric circle values into a handy header file 
+  - [ ] memory efficient optimised bresenham ?
+  - [ ] register efficient and speeed optimised bresenham ?
+  - [ ] hline vs vline ?
+---
+- [ ] union_point_t
+- [ ] poly_pixel
+- [ ] InColor
+---
+- [ ] hga_bitmap_character (hga_font_constant_system)
+- [ ] hga_bitmap_string (hga_font_constant_system, l-r/r-l/t-b/b-t)
+- [ ] hga_widget_ ...
+  - [ ] spinner
+  - [ ] progress 
 ---
 - [ ] bresenham line
+  - [ ] rewrite into tight octant loops only using registers 
   - [x] white pixels
   - [x] optimise
   - [ ] black pixels
+  - [ ] dashed lines
+  - [ ] InColor
+--- 
+- [ ] InColor Mode
+  - [ ] graphics mode
+  - [ ] set conditions for write
++ Read/Write Control Register "care-all-planes" - all planes affect the background bit mask
++ Write Mode 1 - write latch/fore
++ Mask polarity "set-if-equal"
++ Read/Write Colour Register both foreground and background colours set to pixel plot colour
+
+  - [ ] text mode - set InColor registers back to power on mode 
+---
+- [x] hga circle
+- [x] demo circle
+- [ ] InColor
+
+-[ ] InColor
 ### TODO:
 ---
 - [ ] demo hga pixelate text
