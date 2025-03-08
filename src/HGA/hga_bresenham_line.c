@@ -5,6 +5,136 @@
 #include <stdio.h>
 
 /**
+* Register optimised
+*
+plotLineLow(x0, y0, x1, y1)
+    dx = x1 - x0
+    dy = y1 - y0
+    yi = 1
+    if dy < 0
+        yi = -1
+        dy = -dy
+    end if
+    D = (2 * dy) - dx
+    y = y0
+
+    for x from x0 to x1
+        plot(x, y)
+        if D > 0
+            y = y + yi
+            D = D + (2 * (dy - dx))
+        else
+            D = D + 2*dy
+        end if
+*/
+void hga_bline0(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t colour) {
+    __asm {
+		.8086
+	    // set up VRAM segment in ES
+	    mov   	ax, vram_segment
+		mov   	es, ax
+		// set up registers AX = x, BX = y, DX = dx, CX = dy, DI = D
+		mov     dx, x1
+		sub     dx, x0                            ; dx = x1 - x0
+		mov     cx, y1
+		sub     cx, y0                            ; dy = y1 - y0
+		mov     di, cx                            ; D = dy
+		add     di, cx                            ; D = 2 * dy
+		sub     di, dx                            ; D = (2 * dy) - dx
+		mov     ax, x0                            ; x = x0
+		mov     bx, y0                            ; y = y0
+
+		cmp     cx, 0                             ; if dy < 0
+		jge     OCTANT_0
+		//neg     cx                                ; dy = -dy
+		//jmp     PLOT_1
+		jmp END
+OCTANT_0:
+        mov     si, cx                              ; SI = dy
+        sub     si, dx                              ; SI = dy - dx
+        shl     si, 1                               ; SI = 2 * (dy - dx)
+        push    bp
+        mov     bp, x1
+    	// plot(x,y)
+PLOT_0:	push    dx
+        push    cx
+        push    ax
+        mov     cx, ax
+        and     cx, 7
+        xor     cx, 7
+        mov     dx, 101h
+        shl		dx, cl
+        not     dh
+        shr		ax, 1
+        shr		ax, 1
+        shr		ax, 1
+        mov     cx, bx
+        shl     bx, 1
+        mov   	bx, HGA_TABLE_Y_LOOKUP[bx]
+        add     bx, ax
+        and		es:[bx], dh
+        or 		es:[bx], dl
+        pop     ax
+        mov     bx, cx
+        pop     cx
+        pop     dx
+
+        cmp     di, 0                               ; if D > 0
+        jle     ELSE_0
+        inc     bx                                  ; y++
+        add     di, si                              ; D = D + (2 * (dy - dx))
+
+        inc     ax
+        cmp     ax, bp
+        jne     PLOT_0
+        jmp     END
+ELSE_0:
+        add     di, cx
+        add     di, cx                              ; D = D + 2*dy
+        inc     ax
+        cmp     ax, bp
+        jne     PLOT_0
+        jmp     END
+
+OCTANT_1:
+PLOT_1:
+        xchg    ax, si
+        // plot(x,y)
+        push    dx
+        push    cx
+        push    ax
+        mov     cx, ax
+        and     cx, 7
+        xor     cx, 7
+        mov     dx, 101h
+        shl		dx, cl
+        not     dh
+        shr		ax, 1
+        shr		ax, 1
+        shr		ax, 1
+        mov     cx, bx
+        shl     bx, 1
+        mov   	bx, HGA_TABLE_Y_LOOKUP[bx]
+        add     bx, ax
+        and		es:[bx], dh
+        or 		es:[bx], dl
+        pop     ax
+        mov     bx, cx
+        pop     cx
+        pop     dx
+
+
+        cmp     ax, x1
+        jne     OCTANT_1
+
+END:    pop     bp
+    }
+
+
+
+}
+
+/**
 * This version uses Bresenham's principles of integer incremental error to perform all octant line draws.
 * Balancing the positive and negative error between the x and y coordinates.
 *
@@ -41,7 +171,7 @@
 * }
 */
 void hga_bresenham_line(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t colour) {
-    __asm {
+    __asm { // best time on IBM XT - diagonal 200 lines takes 125 bios system clock ticks
 		.8086
 	    // set up VRAM segment in ES
 	    mov   	ax, vram_segment
