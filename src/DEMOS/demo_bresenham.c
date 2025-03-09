@@ -123,7 +123,7 @@ int bresenham(int argc, char** argv) {
         yy[a] = y0 + r * sin(angle);
     }
 
-    for (int i = 0; i < 90; ++i) {
+    for (int i = 0; i < 360; ++i) {
         hga_plot_pixel(HGA_BUFFER_1, xx[i], yy[i], HGA_WHITE);
         hga_bline0(HGA_BUFFER_1, x0, y0, xx[i], yy[i], HGA_BLACK);
     }

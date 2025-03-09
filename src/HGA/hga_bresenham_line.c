@@ -53,35 +53,40 @@ end if
 		mov     dx, x1
 		sub     dx, x0                            ; dx = x1 - x0
 		mov     _dx, dx
-		mov     ax, dx                            ; copy dx
 		jge     ABS_DX
 		neg     dx                                ; ax = abs(x1 - x0)
 ABS_DX: mov     _abs_dx, dx
 		mov     cx, y1
 		sub     cx, y0                            ; dy = y1 - y0
 		mov     _dy, cx
-		mov     bx, cx                            ; copy dy
 		jge     ABS_DY
 		neg     cx                                ; bx = abs(y1 - y0)
 ABS_DY: mov     _abs_dy, cx
 
         cmp     cx, dx                            ; if abs(y1 - y0) < abs(x1 - x0)
         jge     ELSE_ABS
-        mov     dx, ax                            ; restore dx
-        mov     cx, bx                            ; restore dy
         mov     ax, x0                            ; x = x0
         cmp     ax, x1                            ; if x0 > x1
         jle     ELSE_X0_X1
         // plotLineLow(x1, y1, x0, y0)
+        xchg    ax, x1
+        mov     x0, ax
+        mov     ax, y0
+        xchg    ax, y1
+        mov     y1, ax
+// TEST THIS
         jmp END
 ELSE_X0_X1:
         // plotLineLow(x0, y0, x1, y1)
-        mov     bx, y0                            ; y = y0
         jmp     PLOT_LINE_LOW
 ELSE_ABS:
         jmp END
 
 PLOT_LINE_LOW:
+        mov     dx, x1
+        sub     dx, x0                            ; dx = x1 - x0
+        mov     cx, y1
+        sub     cx, y0                            ; dy = y1 - y0
         mov     di, cx                            ; D = dy
 		add     di, cx                            ; D = 2 * dy
 		sub     di, dx                            ; D = (2 * dy) - dx
