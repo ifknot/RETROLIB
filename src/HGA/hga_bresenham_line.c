@@ -28,17 +28,61 @@ plotLineLow(x0, y0, x1, y1)
         end if
 */
 void hga_bline0(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t colour) {
+    int16_t _dx, _dy, _abs_dx, _abs_dy;
     __asm {
 		.8086
 	    // set up VRAM segment in ES
 	    mov   	ax, vram_segment
 		mov   	es, ax
+/*
+if abs(y1 - y0) < abs(x1 - x0)
+    if x0 > x1
+        plotLineLow(x1, y1, x0, y0)
+    else
+        plotLineLow(x0, y0, x1, y1)
+    end if
+else
+    if y0 > y1
+        plotLineHigh(x1, y1, x0, y0)
+    else
+        plotLineHigh(x0, y0, x1, y1)
+    end if
+end if
+*/
 		// set up registers AX = x, BX = y, DX = dx, CX = dy, DI = D
 		mov     dx, x1
 		sub     dx, x0                            ; dx = x1 - x0
+		mov     _dx, dx
+		mov     ax, dx                            ; copy dx
+		jge     ABS_DX
+		neg     dx                                ; ax = abs(x1 - x0)
+ABS_DX: mov     _abs_dx, dx
 		mov     cx, y1
 		sub     cx, y0                            ; dy = y1 - y0
-		mov     di, cx                            ; D = dy
+		mov     _dy, cx
+		mov     bx, cx                            ; copy dy
+		jge     ABS_DY
+		neg     cx                                ; bx = abs(y1 - y0)
+ABS_DY: mov     _abs_dy, cx
+
+        cmp     cx, dx                            ; if abs(y1 - y0) < abs(x1 - x0)
+        jge     ELSE_ABS
+        mov     dx, ax                            ; restore dx
+        mov     cx, bx                            ; restore dy
+        mov     ax, x0                            ; x = x0
+        cmp     ax, x1                            ; if x0 > x1
+        jle     ELSE_X0_X1
+        // plotLineLow(x1, y1, x0, y0)
+        jmp END
+ELSE_X0_X1:
+        // plotLineLow(x0, y0, x1, y1)
+        mov     bx, y0                            ; y = y0
+        jmp     PLOT_LINE_LOW
+ELSE_ABS:
+        jmp END
+
+PLOT_LINE_LOW:
+        mov     di, cx                            ; D = dy
 		add     di, cx                            ; D = 2 * dy
 		sub     di, dx                            ; D = (2 * dy) - dx
 		mov     ax, x0                            ; x = x0
@@ -46,15 +90,13 @@ void hga_bline0(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_t x1, ui
 
 		cmp     cx, 0                             ; if dy < 0
 		jge     OCTANT_0
-		//neg     cx                                ; dy = -dy
-		//jmp     PLOT_1
-		jmp END
+		jmp     END//OCTANT_1
 OCTANT_0:
         mov     si, cx                              ; SI = dy
         sub     si, dx                              ; SI = dy - dx
         shl     si, 1                               ; SI = 2 * (dy - dx)
-        push    bp
-        mov     bp, x1
+        //push    bp
+        //mov     bp, x1
     	// plot(x,y)
 PLOT_0:	push    dx
         push    cx
@@ -85,20 +127,25 @@ PLOT_0:	push    dx
         add     di, si                              ; D = D + (2 * (dy - dx))
 
         inc     ax
-        cmp     ax, bp
+        cmp     ax, x1//bp
         jne     PLOT_0
         jmp     END
 ELSE_0:
         add     di, cx
         add     di, cx                              ; D = D + 2*dy
         inc     ax
-        cmp     ax, bp
+        cmp     ax, x1//bp
         jne     PLOT_0
         jmp     END
 
 OCTANT_1:
+        neg     cx                                  ; dy = -dy ie abs(dy)
+        mov     si, cx                              ; SI = dy
+        sub     si, dx                              ; SI = dy - dx
+        shl     si, 1                               ; SI = 2 * (dy - dx)
+        //push    bp
+        //mov     bp, x1
 PLOT_1:
-        xchg    ax, si
         // plot(x,y)
         push    dx
         push    cx
@@ -123,14 +170,29 @@ PLOT_1:
         pop     cx
         pop     dx
 
+        cmp     di, 0                               ; if D > 0
+        jle     ELSE_1
+        dec     bx                                  ; y--
+        add     di, si                              ; D = D + (2 * (dy - dx))
 
-        cmp     ax, x1
-        jne     OCTANT_1
+        inc     ax
+        cmp     ax, x1//bp
+        jne     PLOT_1
+        jmp     END
+ELSE_1:
+        add     di, cx
+        add     di, cx                              ; D = D + 2*dy
+        inc     ax
+        cmp     ax, x1//bp
+        jne     PLOT_1
+        jmp     END
 
-END:    pop     bp
+
+
+END:    //pop     bp
     }
 
-
+    printf(" (%i, %i, %i, %i)",_dx, _dy, _abs_dx, _abs_dy);
 
 }
 
