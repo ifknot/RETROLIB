@@ -75,8 +75,7 @@ ABS_DY: mov     _abs_dy, cx
         mov     ax, y0
         xchg    ax, y1
         mov     y1, ax
-// TEST THIS
-        jmp END
+        jmp     END//PLOT_LINE_LOW
 ELSE_X0_X1:
         // plotLineLow(x0, y0, x1, y1)
         jmp     PLOT_LINE_LOW
@@ -88,19 +87,19 @@ PLOT_LINE_LOW:
         sub     dx, x0                            ; dx = x1 - x0
         mov     cx, y1
         sub     cx, y0                            ; dy = y1 - y0
-        mov     di, cx                            ; D = dy
-		add     di, cx                            ; D = 2 * dy
-		sub     di, dx                            ; D = (2 * dy) - dx
 		mov     ax, x0                            ; x = x0
 		mov     bx, y0                            ; y = y0
 
 		cmp     cx, 0                             ; if dy < 0
 		jge     OCTANT_0
-		jmp     END//OCTANT_1
+		jmp     OCTANT_1
 OCTANT_0:
-        mov     si, cx                              ; SI = dy
-        sub     si, dx                              ; SI = dy - dx
-        shl     si, 1                               ; SI = 2 * (dy - dx)
+        mov     di, cx                            ; D = dy
+		add     di, cx                            ; D = 2 * dy
+		sub     di, dx                            ; D = (2 * dy) - dx
+        mov     si, cx                            ; SI = dy
+        sub     si, dx                            ; SI = dy - dx
+        shl     si, 1                             ; SI = 2 * (dy - dx)
         //push    bp
         //mov     bp, x1
     	// plot(x,y)
@@ -146,6 +145,9 @@ ELSE_0:
 
 OCTANT_1:
         neg     cx                                  ; dy = -dy ie abs(dy)
+        mov     di, cx                              ; D = dy
+		add     di, cx                              ; D = 2 * dy
+		sub     di, dx                              ; D = (2 * dy) - dx
         mov     si, cx                              ; SI = dy
         sub     si, dx                              ; SI = dy - dx
         shl     si, 1                               ; SI = 2 * (dy - dx)
