@@ -6,94 +6,52 @@
 
 /**
 * Register optimised
-*
-plotLineLow(x0, y0, x1, y1)
-    dx = x1 - x0
-    dy = y1 - y0
-    yi = 1
-    if dy < 0
-        yi = -1
-        dy = -dy
-    end if
-    D = (2 * dy) - dx
-    y = y0
-
-    for x from x0 to x1
-        plot(x, y)
-        if D > 0
-            y = y + yi
-            D = D + (2 * (dy - dx))
-        else
-            D = D + 2*dy
-        end if
 */
 void hga_bline0(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t colour) {
-    int16_t _dx, _dy, _abs_dx, _abs_dy;
     __asm {
 		.8086
 	    // set up VRAM segment in ES
 	    mov   	ax, vram_segment
 		mov   	es, ax
-/*
-if abs(y1 - y0) < abs(x1 - x0)
-    if x0 > x1
-        plotLineLow(x1, y1, x0, y0)
-    else
-        plotLineLow(x0, y0, x1, y1)
-    end if
-else
-    if y0 > y1
-        plotLineHigh(x1, y1, x0, y0)
-    else
-        plotLineHigh(x0, y0, x1, y1)
-    end if
-end if
-*/
-		// set up registers AX = x, BX = y, DX = dx, CX = dy, DI = D
+		// octant function dispatcher
 		mov     dx, x1
 		sub     dx, x0                            ; dx = x1 - x0
-		mov     _dx, dx
-		jge     ABS_DX
+		jge     J0
 		neg     dx                                ; ax = abs(x1 - x0)
-ABS_DX: mov     _abs_dx, dx
-		mov     cx, y1
+J0:     mov     cx, y1
 		sub     cx, y0                            ; dy = y1 - y0
-		mov     _dy, cx
-		jge     ABS_DY
+		jge     J1
 		neg     cx                                ; bx = abs(y1 - y0)
-ABS_DY: mov     _abs_dy, cx
-
-        cmp     cx, dx                            ; if abs(y1 - y0) < abs(x1 - x0)
-        jge     ELSE_ABS
+J1:     cmp     cx, dx                            ; if abs(y1 - y0) < abs(x1 - x0)
+        jge     J2
+        // plot octants 0, 3, 4, and 7
         mov     ax, x0                            ; x = x0
         cmp     ax, x1                            ; if x0 > x1
-        jle     ELSE_X0_X1
-        // plotLineLow(x1, y1, x0, y0)
-		mov 	ax, x0
-        xchg    ax, x1
-        mov     x0, ax
-        mov     ax, y0
-        xchg    ax, y1
-        mov     y1, ax
-        jmp     END//PLOT_LINE_LOW
-ELSE_X0_X1:
-        // plotLineLow(x0, y0, x1, y1)
-        jmp     PLOT_LINE_LOW
-ELSE_ABS:
-        jmp END
-
-PLOT_LINE_LOW:
-        mov     dx, x1
+        jle     J3
+		mov 	ax, x0                            ; (10) xchg x0, x1 the 8086 way...
+        xchg    ax, x1                            ; (17)
+        mov     x0, ax                            ; (10)
+        mov     ax, y0                            ; (10) xchg y0, y1 the 8086 way...
+        xchg    ax, y1                            ; (17)
+        mov     y0, ax                            ; (10)
+        jmp     P0                                ; plotLineLow(x1, y1, x0, y0)
+J3:     jmp     P0                                ; plotLineLow(x0, y0, x1, y1)
+        // plot octants 1, 2, 5, and 6
+        //
+        //
+J2:     jmp END                                   ; else
+        // set up registers AX = x, BX = y, DX = dx, CX = dy
+P0:     mov     dx, x1
         sub     dx, x0                            ; dx = x1 - x0
         mov     cx, y1
         sub     cx, y0                            ; dy = y1 - y0
 		mov     ax, x0                            ; x = x0
 		mov     bx, y0                            ; y = y0
-
+		// select y++ or y--
 		cmp     cx, 0                             ; if dy < 0
-		jge     OCTANT_0
-		jmp     OCTANT_1
-OCTANT_0:
+		jge     J4                                ; y++
+		jmp     J5                                ; y--
+J4:     // y++ set up registers DI = D, SI = 2 * (dy - dx)
         mov     di, cx                            ; D = dy
 		add     di, cx                            ; D = 2 * dy
 		sub     di, dx                            ; D = (2 * dy) - dx
@@ -102,8 +60,7 @@ OCTANT_0:
         shl     si, 1                             ; SI = 2 * (dy - dx)
         //push    bp
         //mov     bp, x1
-    	// plot(x,y)
-PLOT_0:	push    dx
+L0:	    push    dx                                ; plot x..x1, y++
         push    cx
         push    ax
         mov     cx, ax
@@ -125,26 +82,23 @@ PLOT_0:	push    dx
         mov     bx, cx
         pop     cx
         pop     dx
-
+        // decision variable
         cmp     di, 0                               ; if D > 0
-        jle     ELSE_0
+        jle     J6
         inc     bx                                  ; y++
         add     di, si                              ; D = D + (2 * (dy - dx))
-
-        inc     ax
-        cmp     ax, x1//bp
-        jne     PLOT_0
-        jmp     END
-ELSE_0:
-        add     di, cx
+        inc     ax                                  ; x++
+        cmp     ax, x1//bp                          ; x == x1?
+        jne     L0                                  ; loop
+        jmp     END                                 ; done
+J6:     add     di, cx
         add     di, cx                              ; D = D + 2*dy
-        inc     ax
-        cmp     ax, x1//bp
-        jne     PLOT_0
-        jmp     END
-
-OCTANT_1:
-        neg     cx                                  ; dy = -dy ie abs(dy)
+        inc     ax                                  ; x++
+        cmp     ax, x1//bp                          ; x == x1?
+        jne     L0                                  ; loop
+        jmp     END                                 ; done
+        // y-- set up registers DI = D, SI = 2 * (dy - dx)
+J5:     neg     cx                                  ; dy = -dy ie abs(dy)
         mov     di, cx                              ; D = dy
 		add     di, cx                              ; D = 2 * dy
 		sub     di, dx                              ; D = (2 * dy) - dx
@@ -153,9 +107,7 @@ OCTANT_1:
         shl     si, 1                               ; SI = 2 * (dy - dx)
         //push    bp
         //mov     bp, x1
-PLOT_1:
-        // plot(x,y)
-        push    dx
+L1:     push    dx                                  ; plot x..x1, y--
         push    cx
         push    ax
         mov     cx, ax
@@ -177,30 +129,24 @@ PLOT_1:
         mov     bx, cx
         pop     cx
         pop     dx
-
+        // decision variable
         cmp     di, 0                               ; if D > 0
-        jle     ELSE_1
+        jle     J7
         dec     bx                                  ; y--
         add     di, si                              ; D = D + (2 * (dy - dx))
-
         inc     ax
         cmp     ax, x1//bp
-        jne     PLOT_1
+        jne     L1
         jmp     END
-ELSE_1:
-        add     di, cx
+J7:     add     di, cx
         add     di, cx                              ; D = D + 2*dy
         inc     ax
         cmp     ax, x1//bp
-        jne     PLOT_1
+        jne     L1
         jmp     END
-
-
 
 END:    //pop     bp
     }
-
-    printf(" (%i, %i, %i, %i)",_dx, _dy, _abs_dx, _abs_dy);
 
 }
 
@@ -550,3 +496,59 @@ VL0:	mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
 END:
     }
 }
+
+/*
+if abs(y1 - y0) < abs(x1 - x0)
+    if x0 > x1
+        plotLineLow(x1, y1, x0, y0)
+    else
+        plotLineLow(x0, y0, x1, y1)
+    end if
+else
+    if y0 > y1
+        plotLineHigh(x1, y1, x0, y0)
+    else
+        plotLineHigh(x0, y0, x1, y1)
+    end if
+end if
+
+plotLineLow(x0, y0, x1, y1)
+    dx = x1 - x0
+    dy = y1 - y0
+    yi = 1
+    if dy < 0
+        yi = -1
+        dy = -dy
+    end if
+    D = (2 * dy) - dx
+    y = y0
+
+    for x from x0 to x1
+        plot(x, y)
+        if D > 0
+            y = y + yi
+            D = D + (2 * (dy - dx))
+        else
+            D = D + 2*dy
+        end if
+
+plotLineHigh(x0, y0, x1, y1)
+    dx = x1 - x0
+    dy = y1 - y0
+    xi = 1
+    if dx < 0
+        xi = -1
+        dx = -dx
+    end if
+    D = (2 * dx) - dy
+    x = x0
+
+    for y from y0 to y1
+        plot(x, y)
+        if D > 0
+            x = x + xi
+            D = D + (2 * (dx - dy))
+        else
+            D = D + 2*dx
+        end if
+*/
