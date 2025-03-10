@@ -69,6 +69,7 @@ ABS_DY: mov     _abs_dy, cx
         cmp     ax, x1                            ; if x0 > x1
         jle     ELSE_X0_X1
         // plotLineLow(x1, y1, x0, y0)
+		mov 	ax, x0
         xchg    ax, x1
         mov     x0, ax
         mov     ax, y0
