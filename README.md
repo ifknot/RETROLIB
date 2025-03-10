@@ -11,6 +11,14 @@ test gif
 
 ### DOING:
 ---
+- [ ] bresenham line
+  - [ ] rewrite into tight octant loops only using registers 
+  - [x] white pixels
+  - [x] optimise
+  - [ ] black pixels
+  - [ ] dashed lines
+  - [ ] InColor
+---
 - [ ] which is faster on an IBM XT?
   - [ ] pixel calculate vs lookup
   - [ ] precompute 360 parametric circle values into a handy header file 
@@ -27,14 +35,6 @@ test gif
 - [ ] hga_widget_ ...
   - [ ] spinner
   - [ ] progress 
----
-- [ ] bresenham line
-  - [ ] rewrite into tight octant loops only using registers 
-  - [x] white pixels
-  - [x] optimise
-  - [ ] black pixels
-  - [ ] dashed lines
-  - [ ] InColor
 --- 
 - [ ] InColor Mode
   - [ ] graphics mode
