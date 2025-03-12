@@ -39,7 +39,7 @@ J3:     jmp     P0                                ; plotLineLow(x0, y0, x1, y1)
         // plot octants 1, 2, 5, and 6
         //
         //
-J2:     jmp END                                   ; else
+J2:     jmp END  //jmp P1 etc                                 ; else
         // set up registers AX = x, BX = y, DX = dx, CX = dy
 P0:     mov     dx, x1
         sub     dx, x0                            ; dx = x1 - x0
