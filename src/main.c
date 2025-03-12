@@ -7,6 +7,8 @@
 //#include "DEMOS/demo_pixels.h"
 //#include "DEMOS/demo_circles.h"
 
+//#include "TESTS/test_lines.h"
+
 int main(int argc, char** argv) {
 
 #ifndef __LARGE__
@@ -17,5 +19,6 @@ int main(int argc, char** argv) {
 
 	return bresenham(argc, argv);
 
-
+	// test();
+	// return 0;
 }
