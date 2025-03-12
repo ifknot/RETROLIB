@@ -125,8 +125,14 @@ int bresenham(int argc, char** argv) {
 
     for (int i = 0; i < 360; ++i) {
         hga_plot_pixel(HGA_BUFFER_1, xx[i], yy[i], HGA_WHITE);
+        hga_bline0(HGA_BUFFER_1, x0, y0, xx[i], yy[i], HGA_WHITE);
+    }
+    /*
+    for (int i = 0; i < 360; ++i) {
+        hga_plot_pixel(HGA_BUFFER_1, xx[i], yy[i], HGA_WHITE);
         hga_bline0(HGA_BUFFER_1, x0, y0, xx[i], yy[i], HGA_BLACK);
     }
+    */
 
     //  wait for ENTER key and switch back to text mode
     getchar();
