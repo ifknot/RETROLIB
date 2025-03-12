@@ -1,4 +1,12 @@
-#include "test_lins.h"
+#include "test_lines.h"
+
+#include <stdint.h>
+
+#include "../HW/hw_constants_graphics.h"
+#include "../BIOS/bios_tools_timer.h"
+#include "../BIOS/bios_timer_io_services.h"
+
+#include "hga_constants.h"
 
 #define ERR_GRAPHICS        "ERROR: No valid graphics adapter found!\n"
 #define ERR_GRAPHICS_INFO   "ERROR INFO: This version of %s requires an Hercules Graphics Adapter.\n"
@@ -22,6 +30,20 @@ void test() {
   hga_select_display_buffer(HGA_BUFFER_1);
   hga_cls(HGA_BUFFER_1);
   getchar();
+
+  uint16_t r = HGA_SCREEN_Y_MAX / 2;
+  bios_ticks_since_midnight_t t1, t2;
+
+  // pre-calculate 360 circle
+  uint16_t xx[360];
+  uint16_t yy[360];
+  for (int a = 0; a < 360; a +=1) {
+      angle = (a * 3.14159) / 180.0;
+      xx[a] = x0 + r * cos(angle);
+      yy[a] = y0 + r * sin(angle);
+  }
+
+  // draw fan lines white then black reducing radius each step
 
   //  wait for ENTER key and switch back to text mode
 getchar();
