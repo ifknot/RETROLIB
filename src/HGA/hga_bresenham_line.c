@@ -145,6 +145,14 @@ J7:     add     di, cx
         cmp     ax, x1//bp
         jne     L1									; loop
         jmp     END									; done
+		// set up registers AX = x, BX = y, DX = dx, CX = dy
+P1 		mov     dx, x1
+        sub     dx, x0                            ; dx = x1 - x0
+        mov     cx, y1
+        sub     cx, y0                            ; dy = y1 - y0
+		mov     ax, x0                            ; x = x0
+		mov     bx, y0                            ; y = y0
+		// select x++ or x--
 
 END:    //pop     bp
     }
