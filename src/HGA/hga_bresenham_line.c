@@ -97,6 +97,7 @@ J6:     add     di, cx
         cmp     ax, x1//bp                          ; x == x1?
         jne     L0                                  ; loop
         jmp     END                                 ; done
+
         // y-- set up registers DI = D, SI = 2 * (dy - dx)
 J5:     neg     cx                                  ; dy = -dy ie abs(dy)
         mov     di, cx                              ; D = dy
@@ -136,14 +137,14 @@ L1:     push    dx                                  ; plot x..x1, y--
         add     di, si                              ; D = D + (2 * (dy - dx))
         inc     ax
         cmp     ax, x1//bp
-        jne     L1
-        jmp     END
+        jne     L1									; loop
+        jmp     END									; done
 J7:     add     di, cx
         add     di, cx                              ; D = D + 2*dy
         inc     ax
         cmp     ax, x1//bp
-        jne     L1
-        jmp     END
+        jne     L1									; loop
+        jmp     END									; done
 
 END:    //pop     bp
     }
