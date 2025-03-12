@@ -27,7 +27,7 @@
 int bresenham(int argc, char** argv) {
     uint16_t x0 = HGA_SCREEN_X_MAX / 2;
     uint16_t y0 = HGA_SCREEN_Y_MAX / 2;
-    uint16_t r = 100;
+    uint16_t r = x0 - 1;
     int samples = 50;
     uint8_t adapter_type = hga_detect_adapter();
     bios_ticks_since_midnight_t t1, t2;
