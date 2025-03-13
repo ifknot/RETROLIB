@@ -60,7 +60,9 @@ J4:     // y++ set up registers DI = D, SI = 2 * (dy - dx)
         shl     si, 1                             ; SI = 2 * (dy - dx)
         //push    bp
         //mov     bp, x1
-L0:	    push    dx                                ; plot x..x1, y++
+
+		// plot y increasing octants for x.. x1
+L0:	    push    dx                                ; loop x.. x1
         push    cx
         push    ax
         mov     cx, ax
@@ -108,7 +110,9 @@ J5:     neg     cx                                  ; dy = -dy ie abs(dy)
         shl     si, 1                               ; SI = 2 * (dy - dx)
         //push    bp
         //mov     bp, x1
-L1:     push    dx                                  ; plot x..x1, y--
+
+		// plot y decreasing octants for x.. x1
+L1:     push    dx                                  ; loop x.. x1
         push    cx
         push    ax
         mov     cx, ax
@@ -154,6 +158,10 @@ P1 		mov     dx, x1
 		mov     bx, y0                            ; y = y0
 		// select x++ or x--
 
+		// plot x increasing octants for y.. y1
+L2 	
+
+		// plot y decreasing octants for y.. y1
 END:    //pop     bp
     }
 
