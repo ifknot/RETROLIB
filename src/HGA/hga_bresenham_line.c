@@ -159,7 +159,20 @@ P1: 	mov     dx, x1
 		mov     ax, x0                            ; x = x0
 		mov     bx, y0                            ; y = y0
 		// select x++ or x--
-
+		// select hard coded x++ or x-- execution path
+		cmp     dx, 0                             ; if dx < 0
+		jge     J8                                ; x++
+		jmp     J9                                ; x--
+J8:     // x++ set up registers DI = D, SI = 2 * 
+        mov     di, cx                            ; D = dy
+		add     di, cx                            ; D = 2 * dy
+		sub     di, dx                            ; D = (2 * dy) - dx
+        mov     si, cx                            ; SI = dy
+        sub     si, dx                            ; SI = dy - dx
+        shl     si, 1                             ; SI = 2 * (dy - dx)
+        //push    bp
+        //mov     bp, y1
+	
 		// plot x increasing octants for y.. y1
 L2: 	
 
