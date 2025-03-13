@@ -1,4 +1,4 @@
-#include "hga_bresenham_line.h"
+d#include "hga_bresenham_line.h"
 
 #include "hga_table_lookup_y.h"
 
@@ -13,7 +13,7 @@ void hga_bline0(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_t x1, ui
 	    // set up VRAM segment in ES
 	    mov   	ax, vram_segment
 		mov   	es, ax
-		// select hard colour execution path
+		// select hard coded colour execution path
 
 		// white pixel octant function dispatcher
 		mov     dx, x1
@@ -49,7 +49,7 @@ P0:     mov     dx, x1
         sub     cx, y0                            ; dy = y1 - y0
 		mov     ax, x0                            ; x = x0
 		mov     bx, y0                            ; y = y0
-		// select y++ or y--
+		// select hard coded y++ or y-- execution path
 		cmp     cx, 0                             ; if dy < 0
 		jge     J4                                ; y++
 		jmp     J5                                ; y--
