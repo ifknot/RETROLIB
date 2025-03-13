@@ -152,7 +152,7 @@ J7:     add     di, cx
         jne     L1									; loop
         jmp     END									; done
 		// set up registers AX = x, BX = y, DX = dx, CX = dy
-P1 		mov     dx, x1
+P1: 	mov     dx, x1
         sub     dx, x0                            ; dx = x1 - x0
         mov     cx, y1
         sub     cx, y0                            ; dy = y1 - y0
@@ -161,10 +161,10 @@ P1 		mov     dx, x1
 		// select x++ or x--
 
 		// plot x increasing octants for y.. y1
-L2 	
+L2: 	
 
 		// plot y decreasing octants for y.. y1
-L3
+L3:
 	
 END:    //pop     bp
     }
