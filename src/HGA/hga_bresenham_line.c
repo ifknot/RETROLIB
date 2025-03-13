@@ -5,7 +5,14 @@ d#include "hga_bresenham_line.h"
 #include <stdio.h>
 
 /**
-* Register optimised
+* Register optimised using the algorithm from Wikipedia Bresenham article 
+* @url https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+* The 8086 is register limited to only 7 registers and using memory variables, particularly in the pixel plotting loop, is clock cycle expensive
+* This can be amortized against memory by identifying parts of the algorithm that can be split into seperate hardcoded execution paths.
+* The initial split is into 2 sections one for hardcoded white pixels the other for black.
+* Within each of these 2 sections the pixel plotting loop is split into 4 hardcoded sections for incrementing y, decrementing y, incrementing x and decrementing x
+* This increases the memory footprint by 8 fold but the performance is 50% improved for diagonals.
+* Further, the code is split into much faster specializations for vertical and horizontal lines which more than double performance.
 */
 void hga_bline0(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t colour) {
     __asm {
