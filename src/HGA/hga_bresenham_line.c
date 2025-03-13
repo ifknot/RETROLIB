@@ -31,7 +31,7 @@ J1:     cmp     cx, dx                            ; if abs(y1 - y0) < abs(x1 - x
         cmp     ax, x1                            ; if x0 > x1
         jle     J3
 		mov 	ax, x0                            ; (10) xchg x0, x1 the 8086 way...
-        xchg    ax, x1                            ; (17)
+        xchg    ax, x1                            ; (17) this would be slower than MOV on later x86 as implict LOCK 
         mov     x0, ax                            ; (10)
         mov     ax, y0                            ; (10) xchg y0, y1 the 8086 way...
         xchg    ax, y1                            ; (17)
