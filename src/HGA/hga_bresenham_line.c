@@ -13,7 +13,9 @@ void hga_bline0(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_t x1, ui
 	    // set up VRAM segment in ES
 	    mov   	ax, vram_segment
 		mov   	es, ax
-		// octant function dispatcher
+		// select hard colour execution path
+
+		// white pixel octant function dispatcher
 		mov     dx, x1
 		sub     dx, x0                            ; dx = x1 - x0
 		jge     J0
@@ -162,6 +164,8 @@ P1 		mov     dx, x1
 L2 	
 
 		// plot y decreasing octants for y.. y1
+L3
+	
 END:    //pop     bp
     }
 
