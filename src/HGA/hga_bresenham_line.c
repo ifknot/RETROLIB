@@ -109,7 +109,7 @@ J6:     add     di, cx
         jne     L0                                  ; loop
         jmp     END                                 ; done
 
-        // y-- set up registers DI = D, SI = 2 * (dy - dx)
+        // y-- set up registers DI = D = (2 * dy) - dx, SI = 2 * (dy - dx)
 J5:     neg     cx                                  ; dy = -dy ie abs(dy)
         mov     di, cx                              ; D = dy
 		add     di, cx                              ; D = 2 * dy
@@ -165,18 +165,18 @@ P1: 	mov     dx, x1
         sub     cx, y0                            ; dy = y1 - y0
 		mov     ax, x0                            ; x = x0
 		mov     bx, y0                            ; y = y0
-		// select x++ or x--
+
 		// select hard coded x++ or x-- execution path
 		cmp     dx, 0                             ; if dx < 0
 		jge     J8                                ; x++
 		jmp     J9                                ; x--
-J8:     // x++ set up registers DI = D, SI = 2 * 
-        mov     di, cx                            ; D = dy
-		add     di, cx                            ; D = 2 * dy
-		sub     di, dx                            ; D = (2 * dy) - dx
-        mov     si, cx                            ; SI = dy
-        sub     si, dx                            ; SI = dy - dx
-        shl     si, 1                             ; SI = 2 * (dy - dx)
+J8:     // x++ set up registers DI = D = (2 * dx) - dy, SI =  (2 * (dx - dy))
+        mov     di, dx                            ; D = dx
+		add     di, dx                            ; D = 2 * dx
+		sub     di, cx                            ; D = (2 * dx) - dy
+        mov     si, dx                            ; SI = dx
+        sub     si, cx                            ; SI = dx - dy
+        shl     si, 1                             ; SI = 2 * (dx - dy)
         //push    bp
         //mov     bp, y1
 	
