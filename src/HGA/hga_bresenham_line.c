@@ -1,11 +1,11 @@
-d#include "hga_bresenham_line.h"
+#include "hga_bresenham_line.h"
 
 #include "hga_table_lookup_y.h"
 
 #include <stdio.h>
 
 /**
-* Register optimised using the algorithm from Wikipedia Bresenham article 
+* Register optimised using the algorithm from Wikipedia Bresenham article
 * @url https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 * The 8086 is register limited to only 7 registers and using memory variables, particularly in the pixel plotting loop, is clock cycle expensive
 * This can be amortized against memory by identifying parts of the algorithm that can be split into seperate hardcoded execution paths.
@@ -38,7 +38,7 @@ J1:     cmp     cx, dx                            ; if abs(y1 - y0) < abs(x1 - x
         cmp     ax, x1                            ; if x0 > x1
         jle     J3
 		mov 	ax, x0                            ; (10) xchg x0, x1 the 8086 way...
-        xchg    ax, x1                            ; (17) this would be slower than MOV on later x86 as implict LOCK 
+        xchg    ax, x1                            ; (17) this would be slower than MOV on later x86 as implict LOCK
         mov     x0, ax                            ; (10)
         mov     ax, y0                            ; (10) xchg y0, y1 the 8086 way...
         xchg    ax, y1                            ; (17)
@@ -179,13 +179,15 @@ J8:     // x++ set up registers DI = D = (2 * dx) - dy, SI =  (2 * (dx - dy))
         shl     si, 1                             ; SI = 2 * (dx - dy)
         //push    bp
         //mov     bp, y1
-	
+
 		// plot x increasing octants for y.. y1
-L2: 	
+L2:
 
 		// plot y decreasing octants for y.. y1
 L3:
-	
+
+J9:
+
 END:    //pop     bp
     }
 

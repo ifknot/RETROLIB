@@ -18,6 +18,8 @@
 #include "../HGA/hga_rectangle.h"
 #include "../HGA/hga_pixel.h"
 
+#include "../HGA/hga_bresenham_line_naive.h"
+
 
 #define ERR_GRAPHICS        "ERROR: No valid graphics adapter found!\n"
 #define ERR_GRAPHICS_INFO   "ERROR INFO: This version of %s requires an Hercules Graphics Adapter.\n"
@@ -27,7 +29,7 @@
 int bresenham(int argc, char** argv) {
     uint16_t x0 = HGA_SCREEN_X_MAX / 2;
     uint16_t y0 = HGA_SCREEN_Y_MAX / 2;
-    uint16_t r = x0 - 1;
+    uint16_t r = 150;
     int samples = 50;
     uint8_t adapter_type = hga_detect_adapter();
     bios_ticks_since_midnight_t t1, t2;
@@ -125,7 +127,8 @@ int bresenham(int argc, char** argv) {
 
     for (int i = 0; i < 360; ++i) {
         hga_plot_pixel(HGA_BUFFER_1, xx[i], yy[i], HGA_WHITE);
-        hga_bline0(HGA_BUFFER_1, x0, y0, xx[i], yy[i], HGA_WHITE);
+        //hga_bline0(HGA_BUFFER_1, x0, y0, xx[i], yy[i], HGA_WHITE);
+        hga_bresenham_line_naive(HGA_BUFFER_1, x0, y0, xx[i], yy[i], HGA_WHITE);
     }
     /*
     for (int i = 0; i < 360; ++i) {
