@@ -194,40 +194,15 @@ END:    //pop     bp
 }
 
 /**
-* This version uses Bresenham's principles of integer incremental error to perform all octant line draws.
-* Balancing the positive and negative error between the x and y coordinates.
-*
+* This version is a register, inlined and special case optimised version of Bresenham's principles of integer incremental error to perform all octant line draws.
+* @see hga_bresenham_line_naive.c
 * @url https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-* @url https://zingl.github.io/bresenham.html
 *
 * Performance gains can be made be de-generalizing the algorithm into hard-coded execution paths at the expense of increased memory footprint:
-* + My implementation uses 4 execution pathways with hard coded inc and dec for improved diagonal performace 7.5% faster.
+* + Implementation uses 4 execution pathways with hard coded inc and dec for improved diagonal performace 7.5% faster.
 * + Further, splitting the code into specific colour sections gains 17% faster.
 * + Selecting horizontal and vertical optimised routines delivers 89.8% speed gains for horizontal and vertical line cases!
 * + The canonical computing dichotomy, space and time.
-*
-* plotLine(x0, y0, x1, y1) {
-*     dx = abs(x1 - x0)
-*     sx = x0 < x1 ? 1 : -1
-*     dy = -abs(y1 - y0)
-*     sy = y0 < y1 ? 1 : -1
-*     error = dx + dy
-*
-*     while true {
-*         plot(x0, y0)
-*         e2 = 2 * error
-*         if e2 >= dy {
-*             if x0 == x1 break
-*             error = error + dy
-*             x0 = x0 + sx
-*         }
-*         if e2 <= dx {
-*             if y0 == y1 break
-*             error = error + dx
-*             y0 = y0 + sy
-*         }
-*     }
-* }
 */
 void hga_bresenham_line(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t colour) {
     __asm { // best time on IBM XT - diagonal 200 lines takes 125 bios system clock ticks
