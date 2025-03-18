@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 /**
-* Register optimised using the algorithm from Wikipedia Bresenham article
+* Bresenham line algorithm - 8086 register optimised version 
 * @url https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 * The 8086 is register limited to only 7 registers and using memory variables, particularly in the pixel plotting loop, is clock cycle expensive
 * This can be amortized against memory by identifying parts of the algorithm that can be split into seperate hardcoded execution paths.
