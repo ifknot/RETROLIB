@@ -29,7 +29,9 @@ test gif
 - [x] hga circle
 - [x] demo circle
 - [ ] InColor
-
+---
+- [ ] int16_t hga_load_vram_buffer((uint16_t vram_segment, char* file_path);
+- [ ] int16_t hga_save_vram_buffer((uint16_t vram_segment, char* file_path);
 
 ### TODO:
 ---
