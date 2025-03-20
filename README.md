@@ -35,6 +35,10 @@ test gif
 
 ### TODO:
 ---
+- [ ] screen capture
+- [ ] dosbox capture
+- [ ] side by side github
+---
 - [ ] union_point_t
 - [ ] poly_pixel
 - [ ] InColor
