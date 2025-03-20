@@ -26,6 +26,13 @@ test gif
   - [ ] register efficient and speeed optimised bresenham ?
   - [ ] hline vs vline ?
 ---
+- [x] hga circle
+- [x] demo circle
+- [ ] InColor
+
+
+### TODO:
+---
 - [ ] union_point_t
 - [ ] poly_pixel
 - [ ] InColor
@@ -45,13 +52,6 @@ test gif
 + Read/Write Colour Register both foreground and background colours set to pixel plot colour
 
   - [ ] text mode - set InColor registers back to power on mode 
----
-- [x] hga circle
-- [x] demo circle
-- [ ] InColor
-
--[ ] InColor
-### TODO:
 ---
 - [ ] demo hga pixelate text
   - [ ] hga_scroll_up
