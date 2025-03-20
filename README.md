@@ -21,7 +21,7 @@ test gif
 ---
 - [ ] which is faster on an IBM XT?
   - [ ] pixel calculate vs lookup
-  - [ ] precompute 360 parametric circle values into a handy header file 
+  - [x] precompute 360 parametric circle values into a handy header file 
   - [ ] memory efficient optimised bresenham ?
   - [ ] register efficient and speeed optimised bresenham ?
   - [ ] hline vs vline ?
