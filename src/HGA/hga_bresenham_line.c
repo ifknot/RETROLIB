@@ -34,9 +34,9 @@ J0:     mov     cx, y1
 J1:     cmp     cx, dx                            ; if abs(y1 - y0) < abs(x1 - x0)
         jge     J2
         // plot octants 0, 3, 4, and 7
-        mov     ax, x0                            ; x = x0
+        mov     ax, x0                            
         cmp     ax, x1                            ; if x0 > x1
-        jle     J3
+        jle     JX
 		mov 	ax, x0                            ; (10) xchg x0, x1 the 8086 way...
         xchg    ax, x1                            ; (17) this would be slower than MOV on later x86 as implict LOCK
         mov     x0, ax                            ; (10)
@@ -44,11 +44,20 @@ J1:     cmp     cx, dx                            ; if abs(y1 - y0) < abs(x1 - x
         xchg    ax, y1                            ; (17)
         mov     y0, ax                            ; (10)
         jmp     P0                                ; plotLineLow(x1, y1, x0, y0)
-J3:     jmp     P0                                ; plotLineLow(x0, y0, x1, y1)
+JX:     jmp     P0                                ; plotLineLow(x0, y0, x1, y1)
         // plot octants 1, 2, 5, and 6
-        //
-        //
-J2:     jmp END  //jmp P1 etc                                 ; else
+J2:  	mov     ax, y0                            
+        cmp     ax, y1                            ; if y0 > y1
+        jle     JY
+		mov 	ax, x0                            ; (10) xchg x0, x1 the 8086 way...
+        xchg    ax, x1                            ; (17) this would be slower than MOV on later x86 as implict LOCK
+        mov     x0, ax                            ; (10)
+        mov     ax, y0                            ; (10) xchg y0, y1 the 8086 way...
+        xchg    ax, y1                            ; (17)
+        mov     y0, ax                            ; (10)
+        jmp     P1                                ; plotLineHigh(x1, y1, x0, y0)
+JY:     jmp     P1                                ; plotLineHigh(x0, y0, x1, y1)
+
         // set up registers AX = x, BX = y, DX = dx, CX = dy
 P0:     mov     dx, x1
         sub     dx, x0                            ; dx = x1 - x0
@@ -179,14 +188,89 @@ J8:     // x++ set up registers DI = D = (2 * dx) - dy, SI =  (2 * (dx - dy))
         shl     si, 1                             ; SI = 2 * (dx - dy)
         //push    bp
         //mov     bp, y1
+L2:     push    dx                                  ; loop y.. y1 (BX)
+        push    cx
+        push    ax
+        mov     cx, ax
+        and     cx, 7
+        xor     cx, 7
+        mov     dx, 101h
+        shl		dx, cl
+        not     dh
+        shr		ax, 1
+        shr		ax, 1
+        shr		ax, 1
+        mov     cx, bx
+        shl     bx, 1
+        mov   	bx, HGA_TABLE_Y_LOOKUP[bx]
+        add     bx, ax
+        and		es:[bx], dh
+        or 		es:[bx], dl
+        pop     ax
+        mov     bx, cx
+        pop     cx
+        pop     dx
+        // decision variable
+        cmp     di, 0                               ; if D > 0
+        jle     J10
+        inc     ax                                  ; x++
+        add     di, si                              ; D = D + (2 * (dx - dy))
+        inc     bx                                  ; next y
+        cmp     bx, y1//bp
+        jne     L2									; loop
+        jmp     END									; done
+J10:    add     di, dx
+        add     di, dx                              ; D = D + 2*dx
+        inc     bx                                  ; next y
+        cmp     bx, y1//bp
+        jne     L2									; loop
+        jmp     END									; done
 
-		// plot x increasing octants for y.. y1
-L2:
-
-		// plot y decreasing octants for y.. y1
-L3:
-
-J9:
+J9:     // x-- set up registers DI = D = (2 * dx) - dy, SI =  (2 * (dx - dy))
+        mov     di, dx                            ; D = dx
+		add     di, dx                            ; D = 2 * dx
+		sub     di, cx                            ; D = (2 * dx) - dy
+        mov     si, dx                            ; SI = dx
+        sub     si, cx                            ; SI = dx - dy
+        shl     si, 1                             ; SI = 2 * (dx - dy)
+        //push    bp
+        //mov     bp, y1
+L3:     push    dx                                  ; loop y.. y1 (BX)
+        push    cx
+        push    ax
+        mov     cx, ax
+        and     cx, 7
+        xor     cx, 7
+        mov     dx, 101h
+        shl		dx, cl
+        not     dh
+        shr		ax, 1
+        shr		ax, 1
+        shr		ax, 1
+        mov     cx, bx
+        shl     bx, 1
+        mov   	bx, HGA_TABLE_Y_LOOKUP[bx]
+        add     bx, ax
+        and		es:[bx], dh
+        or 		es:[bx], dl
+        pop     ax
+        mov     bx, cx
+        pop     cx
+        pop     dx
+        // decision variable
+        cmp     di, 0                               ; if D > 0
+        jle     J10
+        dec     ax                                  ; x--
+        add     di, si                              ; D = D + (2 * (dx - dy))
+        inc     bx                                  ; next y
+        cmp     bx, y1//bp
+        jne     L2									; loop
+        jmp     END									; done
+J10:    add     di, dx
+        add     di, dx                              ; D = D + 2*dx
+        inc     bx                                  ; next y
+        cmp     bx, y1//bp
+        jne     L2									; loop
 
 END:    //pop     bp
     }
