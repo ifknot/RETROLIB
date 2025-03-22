@@ -30,7 +30,7 @@ int bresenham(int argc, char** argv) {
     uint16_t x0 = HGA_SCREEN_X_MAX / 2;
     uint16_t y0 = HGA_SCREEN_Y_MAX / 2;
     uint16_t r = 174;
-    int samples = 50;
+    int samples =2;
     uint8_t adapter_type = hga_detect_adapter();
     bios_ticks_since_midnight_t t1, t2;
     // 1. confirm appropriate graphics adapter presenddt
@@ -63,13 +63,13 @@ int bresenham(int argc, char** argv) {
     uint16_t x1, y1;
 
     bios_read_system_clock(&t1);
-    //for(int j = 0; j < 2; ++j) {
+    for(int j = 0; j < samples; ++j) {
         for (int i = 0; i < 360; ++i) {
             //hga_plot_pixel(HGA_BUFFER_1, xx[i], yy[i], HGA_WHITE);
             hga_bline0(HGA_BUFFER_1, x0, y0, xx[i], yy[i], HGA_WHITE);
             //hga_bresenham_line_naive(HGA_BUFFER_1, x0, y0, xx[i], yy[i], HGA_WHITE);
         }
-        //}
+    }
     bios_read_system_clock(&t2);
     printf("draw %i lines ticks=%li\n",samples * 360, t2 - t1);
     /*

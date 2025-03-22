@@ -35,19 +35,18 @@ J1:     cmp     cx, dx                            ; if abs(y1 - y0) < abs(x1 - x
         jge     J2
         // plot octants 0, 3, 4, and 7
         mov     ax, x0
-        cmp     ax, x1                            ; if x0 > x1
+        cmp     ax, x1                            ; if x1 > x0
         jle     JX
-        mov     ax, x1                            ; x = x0
-		mov     bx, y1                            ; y = y0
+        mov     ax, x1                            ; x = x1
+		mov     bx, y1                            ; y = y1
         mov     dx, x0
-        sub     dx, ax                            ; dx = x1 - x0
+        sub     dx, ax                            ; dx = x0 - x1
         mov     cx, y0
-        sub     cx, bx                            ; dy = y1 - y0
+        sub     cx, bx                            ; dy = y0 - y1
         push    bp
         mov     bp, x0
         jmp     P0                                ; plotLineLow(x1, y1, x0, y0)
-JX:     mov     ax, x0                            ; x = x0
-		mov     bx, y0                            ; y = y0
+JX:     mov     bx, y0                            ; y = y0
         mov     dx, x1
         sub     dx, ax                            ; dx = x1 - x0
         mov     cx, y1
@@ -59,27 +58,26 @@ JX:     mov     ax, x0                            ; x = x0
 J2:  	mov     ax, y0
         cmp     ax, y1                            ; if y0 > y1
         jle     JY
-        mov 	ax, x0
-        mov     bx, x1
-        mov     x0, bx
-        mov     x1, ax
-        mov 	ax, y0
-        mov     bx, y1
-        mov     y0, bx
-        mov     y1, ax
-        jmp     TEND//P1                                ; plotLineHigh(x1, y1, x0, y0)
-JY:     jmp     TEND//P1                                ; plotLineHigh(x0, y0, x1, y1)
+        mov     ax, x1                            ; x = x0
+		mov     bx, y1                            ; y = y0
+        mov     dx, x0
+        sub     dx, ax                            ; dx = x1 - x0
+        mov     cx, y0
+        sub     cx, bx                            ; dy = y1 - y0
+        push    bp
+        mov     bp, y0
+        jmp     P1                                ; plotLineHigh(x1, y1, x0, y0)
+JY:     mov     ax, x0                            ; x = x0
+		mov     bx, y0                            ; y = y0
+        mov     dx, x1
+        sub     dx, ax                            ; dx = x1 - x0
+        mov     cx, y1
+        sub     cx, bx                            ; dy = y1 - y0
+        push    bp
+        mov     bp, y1
+        jmp     P1                                ; plotLineHigh(x0, y0, x1, y1)
 
-        // set up registers AX = x, BX = y, DX = dx, CX = dy
-P0:     //mov     ax, x0                            ; x = x0
-		//mov     bx, y0                            ; y = y0
-        //mov     dx, x1
-        //sub     dx, ax                            ; dx = x1 - x0
-        //mov     cx, y1
-        //sub     cx, bx                            ; dy = y1 - y0
-        //push    bp
-        //mov     bp, x1
-		// select hard coded y++ or y-- execution path
+P0:     // select hard coded y++ or y-- execution path
 		cmp     cx, 0                             ; if dy < 0
 		jg      J4                                ; y++
 		jmp     J5                                ; y--
@@ -90,11 +88,8 @@ J4:     // y++ set up registers DI = D = (2 * dy), SI = 2 * (dy - dx)
         mov     si, cx                            ; SI = dy
         sub     si, dx                            ; SI = dy - dx
         shl     si, 1                             ; SI = 2 * (dy - dx)
-        //push    bp
-        //mov     bp, x1
 		// plot y increasing octants for x.. x1
-L0:	    push    dx                                ; loop x.. x1
-        push    cx
+L0:	    push    cx                                ; loop x.. x1
         push    ax
         mov     cx, ax
         and     cx, 7
@@ -111,17 +106,16 @@ L0:	    push    dx                                ; loop x.. x1
         add     bx, ax
         and		es:[bx], dh
         or 		es:[bx], dl
-        pop     ax
         mov     bx, cx
+        pop     ax
         pop     cx
-        pop     dx
         // decision variable
         cmp     di, 0                               ; if D > 0
         jle     J6
         inc     bx                                  ; y++
         add     di, si                              ; D = D + (2 * (dy - dx))
         inc     ax                                  ; x++
-        cmp     ax, bp                          ; x == x1?
+        cmp     ax, bp                              ; x == x1?
         jne     L0                                  ; loop
         jmp     END                                 ; done
 J6:     add     di, cx
@@ -139,11 +133,8 @@ J5:     neg     cx                                  ; dy = -dy ie abs(dy)
         mov     si, cx                              ; SI = dy
         sub     si, dx                              ; SI = dy - dx
         shl     si, 1                               ; SI = 2 * (dy - dx)
-        //push    bp
-        //mov     bp, x1
 		// plot y decreasing octants for x.. x1
-L1:     push    dx                                  ; loop x.. x1
-        push    cx
+L1:     push    cx                                  ; loop x.. x1
         push    ax
         mov     cx, ax
         and     cx, 7
@@ -163,7 +154,6 @@ L1:     push    dx                                  ; loop x.. x1
         pop     ax
         mov     bx, cx
         pop     cx
-        pop     dx
         // decision variable
         cmp     di, 0                               ; if D > 0
         jle     J7
@@ -179,15 +169,8 @@ J7:     add     di, cx
         cmp     ax, bp
         jne     L1									; loop
         jmp     END									; done
-		// set up registers AX = x, BX = y, DX = dx, CX = dy
-P1: 	mov     ax, x0                            ; x = x0
-		mov     bx, y0                            ; y = y0
-        mov     dx, x1
-        sub     dx, ax                            ; dx = x1 - x0
-        mov     cx, y1
-        sub     cx, bx                            ; dy = y1 - y0
 
-		// select hard coded x++ or x-- execution path
+P1: 	// select hard coded x++ or x-- execution path
 		cmp     dx, 0                             ; if dx < 0
 		jg      J8                                ; x++
 		jmp     J9                                ; x--
@@ -198,10 +181,7 @@ J8:     // x++ set up registers DI = D = (2 * dx) - dy, SI =  (2 * (dx - dy))
         mov     si, dx                            ; SI = dx
         sub     si, cx                            ; SI = dx - dy
         shl     si, 1                             ; SI = 2 * (dx - dy)
-        push    bp
-        mov     bp, y1
-L2:     push    dx                                  ; loop y.. y1 (BX)
-        push    cx
+L2:     push    dx                                ; loop y.. y1 (BX)
         push    ax
         mov     cx, ax
         and     cx, 7
@@ -220,7 +200,6 @@ L2:     push    dx                                  ; loop y.. y1 (BX)
         or 		es:[bx], dl
         pop     ax
         mov     bx, cx
-        pop     cx
         pop     dx
         // decision variable
         cmp     di, 0                               ; if D > 0
@@ -246,10 +225,7 @@ J9:     // x-- set up registers DI = D = (2 * dx) - dy, SI =  (2 * (dx - dy))
         mov     si, dx                            ; SI = dx
         sub     si, cx                            ; SI = dx - dy
         shl     si, 1                             ; SI = 2 * (dx - dy)
-        push    bp
-        mov     bp, y1
 L3:     push    dx                                  ; loop y.. y1 (BX)
-        push    cx
         push    ax
         mov     cx, ax
         and     cx, 7
@@ -268,7 +244,6 @@ L3:     push    dx                                  ; loop y.. y1 (BX)
         or 		es:[bx], dl
         pop     ax
         mov     bx, cx
-        pop     cx
         pop     dx
         // decision variable
         cmp     di, 0                               ; if D > 0
