@@ -67,9 +67,9 @@ void hga_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern);
 */
 void hga_knit_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern_a, uint8_t byte_pattern_b);
 
-int16_t hga_load_vram_buffer((uint16_t vram_segment, char* file_path);
+int16_t hga_load_vram_buffer(uint16_t vram_segment, char* file_path);
 
-int16_t hga_save_vram_buffer((uint16_t vram_segment, char* file_path);
+int16_t hga_save_vram_buffer(uint16_t vram_segment, char* file_path);
 
 /**
 * @brief clear the specified HGA VRAM buffer to black

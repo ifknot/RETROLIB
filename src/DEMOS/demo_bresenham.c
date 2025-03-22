@@ -29,7 +29,7 @@
 int bresenham(int argc, char** argv) {
     uint16_t x0 = HGA_SCREEN_X_MAX / 2;
     uint16_t y0 = HGA_SCREEN_Y_MAX / 2;
-    uint16_t r = 150;
+    uint16_t r = 174;
     int samples = 50;
     uint8_t adapter_type = hga_detect_adapter();
     bios_ticks_since_midnight_t t1, t2;
@@ -40,6 +40,17 @@ int bresenham(int argc, char** argv) {
         return EXIT_FAILURE;
     }
     printf(INFO_ADAPTER, hw_video_adapter_names[adapter_type]);
+    printf("HGA line drawing performance - no optimisation.\n");
+    printf("Calculating circle points...\n");
+    // 360 circle
+    float angle;
+    uint16_t xx[360];
+    uint16_t yy[360];
+    for (int a = 0; a < 360; a +=1) {
+        angle = (a * 3.14159) / 180.0;
+        xx[a] = x0 + r * cos(angle);
+        yy[a] = y0 + r * sin(angle);
+    }
     // 2. wait for ENTER key and switch to HGA graphics mode
     printf(PRESS_ENTER);
     getchar();
@@ -48,88 +59,19 @@ int bresenham(int argc, char** argv) {
     // white lines
     hga_cls(HGA_BUFFER_1);
     getchar();
-    float angle;
+
     uint16_t x1, y1;
-    /*
-    // performance loop horizontal and vertical
+
     bios_read_system_clock(&t1);
-    for(int i = 0; i < samples; ++i) {
-        // horizontal x++
-        hga_line(HGA_BUFFER_1, x0, y0, x0 + x0, y0, HGA_WHITE);
-        // vertical y++
-        hga_line(HGA_BUFFER_1, x0, y0, x0, y0 + y0, HGA_WHITE);
-        // horizontal x--
-        hga_line(HGA_BUFFER_1, x0, y0, x0 - x0, y0, HGA_WHITE);
-        // vertical y--
-        hga_line(HGA_BUFFER_1, x0, y0, x0, y0 - y0, HGA_WHITE);
+    for(int j = 0; j < 2; ++j) {
+        for (int i = 0; i < 360; ++i) {
+            hga_plot_pixel(HGA_BUFFER_1, xx[i], yy[i], HGA_WHITE);
+            hga_bline0(HGA_BUFFER_1, x0, y0, xx[i], yy[i], HGA_WHITE);
+            //hga_bresenham_line_naive(HGA_BUFFER_1, x0, y0, xx[i], yy[i], HGA_WHITE);
+        }
     }
     bios_read_system_clock(&t2);
-    printf("draw %i horiz & vert lines ticks=%li\n",samples * 4, t2 - t1);
-    // performance loop diagonal
-    bios_read_system_clock(&t1);
-    for(int i = 0; i < 50; ++i) {
-        // diagonal x++ y++
-        hga_line(HGA_BUFFER_1, x0, y0, x0 + x0, y0 + y0, HGA_WHITE);
-        // diagonal x-- y++
-        hga_line(HGA_BUFFER_1, x0, y0, x0 - x0, y0 + y0, HGA_WHITE);
-        // diagonal x++ y--
-        hga_line(HGA_BUFFER_1, x0, y0, x0 + x0, y0 - y0, HGA_WHITE);
-        // diagonal x-- y--
-        hga_line(HGA_BUFFER_1, x0, y0, x0 - x0, y0 - y0, HGA_WHITE);
-    }
-    bios_read_system_clock(&t2);
-    printf("draw %i diagonal lines ticks=%li\n",samples * 4, t2 - t1);
-    //getchar();
-    // 360 circle
-    for (int a = 0; a < 360; a +=1) {
-        angle = (a * 3.14159) / 180.0;
-        x1 = x0 + r * cos(angle);
-        y1 = y0 + r * sin(angle);
-        //hga_plot_pixel(HGA_BUFFER_1, x1, y1, HGA_WHITE);
-        hga_line(HGA_BUFFER_1, x0, y0, x1, y1, HGA_WHITE);
-    }
-    /*
-    // black lines
-    hga_fill_vram_buffer(HGA_BUFFER_1, 0xFF);
-    getchar();
-
-    for(int i = 0; i < 0; ++i) {
-        // horizontal x++
-        hga_line(HGA_BUFFER_1, x0, y0, x0 + x0, y0, HGA_BLACK);
-        // vertical y++
-        hga_line(HGA_BUFFER_1, x0, y0, x0, y0 + y0, HGA_BLACK);
-        // horizontal x--
-        hga_line(HGA_BUFFER_1, x0, y0, x0 - x0, y0, HGA_BLACK);
-        // vertical y--
-        hga_line(HGA_BUFFER_1, x0, y0, x0, y0 - y0, HGA_BLACK);
-    }
-
-    for(int i = 0; i < 0; ++i) {
-        // diagonal x++ y++
-        hga_line(HGA_BUFFER_1, x0, y0, x0 + x0, y0 + y0, HGA_BLACK);
-        // diagonal x-- y++
-        hga_line(HGA_BUFFER_1, x0, y0, x0 - x0, y0 + y0, HGA_BLACK);
-        // diagonal x++ y--
-        hga_line(HGA_BUFFER_1, x0, y0, x0 + x0, y0 - y0, HGA_BLACK);
-        // diagonal x-- y--
-        hga_line(HGA_BUFFER_1, x0, y0, x0 - x0, y0 - y0, HGA_BLACK);
-    }
-    */
-    //getchar();
-    // 360 circle
-    uint16_t xx[360];
-    uint16_t yy[360];
-    for (int a = 0; a < 360; a +=1) {
-        angle = (a * 3.14159) / 180.0;
-        xx[a] = x0 + r * cos(angle);
-        yy[a] = y0 + r * sin(angle);
-    }
-
-    for (int i = 0; i < 360; ++i) {
-        hga_plot_pixel(HGA_BUFFER_1, xx[i], yy[i], HGA_WHITE);
-        //hga_bline0(HGA_BUFFER_1, x0, y0, xx[i], yy[i], HGA_WHITE);
-        hga_bresenham_line_naive(HGA_BUFFER_1, x0, y0, xx[i], yy[i], HGA_WHITE);
-    }
+    printf("draw %i lines ticks=%li\n",samples * 360, t2 - t1);
     /*
     for (int i = 0; i < 360; ++i) {
         hga_plot_pixel(HGA_BUFFER_1, xx[i], yy[i], HGA_WHITE);
@@ -143,3 +85,71 @@ int bresenham(int argc, char** argv) {
 
     return 0;
 }
+
+
+/*
+// performance loop horizontal and vertical
+bios_read_system_clock(&t1);
+for(int i = 0; i < samples; ++i) {
+    // horizontal x++
+    hga_line(HGA_BUFFER_1, x0, y0, x0 + x0, y0, HGA_WHITE);
+    // vertical y++
+    hga_line(HGA_BUFFER_1, x0, y0, x0, y0 + y0, HGA_WHITE);
+    // horizontal x--
+    hga_line(HGA_BUFFER_1, x0, y0, x0 - x0, y0, HGA_WHITE);
+    // vertical y--
+    hga_line(HGA_BUFFER_1, x0, y0, x0, y0 - y0, HGA_WHITE);
+}
+bios_read_system_clock(&t2);
+printf("draw %i horiz & vert lines ticks=%li\n",samples * 4, t2 - t1);
+// performance loop diagonal
+bios_read_system_clock(&t1);
+for(int i = 0; i < 50; ++i) {
+    // diagonal x++ y++
+    hga_line(HGA_BUFFER_1, x0, y0, x0 + x0, y0 + y0, HGA_WHITE);
+    // diagonal x-- y++
+    hga_line(HGA_BUFFER_1, x0, y0, x0 - x0, y0 + y0, HGA_WHITE);
+    // diagonal x++ y--
+    hga_line(HGA_BUFFER_1, x0, y0, x0 + x0, y0 - y0, HGA_WHITE);
+    // diagonal x-- y--
+    hga_line(HGA_BUFFER_1, x0, y0, x0 - x0, y0 - y0, HGA_WHITE);
+}
+bios_read_system_clock(&t2);
+printf("draw %i diagonal lines ticks=%li\n",samples * 4, t2 - t1);
+//getchar();
+// 360 circle
+for (int a = 0; a < 360; a +=1) {
+    angle = (a * 3.14159) / 180.0;
+    x1 = x0 + r * cos(angle);
+    y1 = y0 + r * sin(angle);
+    //hga_plot_pixel(HGA_BUFFER_1, x1, y1, HGA_WHITE);
+    hga_line(HGA_BUFFER_1, x0, y0, x1, y1, HGA_WHITE);
+}
+/*
+// black lines
+hga_fill_vram_buffer(HGA_BUFFER_1, 0xFF);
+getchar();
+
+for(int i = 0; i < 0; ++i) {
+    // horizontal x++
+    hga_line(HGA_BUFFER_1, x0, y0, x0 + x0, y0, HGA_BLACK);
+    // vertical y++
+    hga_line(HGA_BUFFER_1, x0, y0, x0, y0 + y0, HGA_BLACK);
+    // horizontal x--
+    hga_line(HGA_BUFFER_1, x0, y0, x0 - x0, y0, HGA_BLACK);
+    // vertical y--
+    hga_line(HGA_BUFFER_1, x0, y0, x0, y0 - y0, HGA_BLACK);
+}
+
+for(int i = 0; i < 0; ++i) {
+    // diagonal x++ y++
+    hga_line(HGA_BUFFER_1, x0, y0, x0 + x0, y0 + y0, HGA_BLACK);
+    // diagonal x-- y++
+    hga_line(HGA_BUFFER_1, x0, y0, x0 - x0, y0 + y0, HGA_BLACK);
+    // diagonal x++ y--
+    hga_line(HGA_BUFFER_1, x0, y0, x0 + x0, y0 - y0, HGA_BLACK);
+    // diagonal x-- y--
+    hga_line(HGA_BUFFER_1, x0, y0, x0 - x0, y0 - y0, HGA_BLACK);
+}
+*/
+//getchar();

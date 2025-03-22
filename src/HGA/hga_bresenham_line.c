@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 /**
-* Bresenham line algorithm - 8086 register optimised version 
+* Bresenham line algorithm - 8086 register optimised version
 * @url https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 * The 8086 is register limited to only 7 registers and using memory variables, particularly in the pixel plotting loop, is clock cycle expensive
 * This can be amortized against memory by identifying parts of the algorithm that can be split into seperate hardcoded execution paths.
@@ -34,7 +34,7 @@ J0:     mov     cx, y1
 J1:     cmp     cx, dx                            ; if abs(y1 - y0) < abs(x1 - x0)
         jge     J2
         // plot octants 0, 3, 4, and 7
-        mov     ax, x0                            
+        mov     ax, x0
         cmp     ax, x1                            ; if x0 > x1
         jle     JX
 		mov 	ax, x0                            ; (10) xchg x0, x1 the 8086 way...
@@ -46,7 +46,7 @@ J1:     cmp     cx, dx                            ; if abs(y1 - y0) < abs(x1 - x
         jmp     P0                                ; plotLineLow(x1, y1, x0, y0)
 JX:     jmp     P0                                ; plotLineLow(x0, y0, x1, y1)
         // plot octants 1, 2, 5, and 6
-J2:  	mov     ax, y0                            
+J2:  	mov     ax, y0
         cmp     ax, y1                            ; if y0 > y1
         jle     JY
 		mov 	ax, x0                            ; (10) xchg x0, x1 the 8086 way...
@@ -67,9 +67,9 @@ P0:     mov     dx, x1
 		mov     bx, y0                            ; y = y0
 		// select hard coded y++ or y-- execution path
 		cmp     cx, 0                             ; if dy < 0
-		jge     J4                                ; y++
+		jg      J4                                ; y++
 		jmp     J5                                ; y--
-J4:     // y++ set up registers DI = D, SI = 2 * (dy - dx)
+J4:     // y++ set up registers DI = D = (2 * dy), SI = 2 * (dy - dx)
         mov     di, cx                            ; D = dy
 		add     di, cx                            ; D = 2 * dy
 		sub     di, dx                            ; D = (2 * dy) - dx
@@ -174,10 +174,9 @@ P1: 	mov     dx, x1
         sub     cx, y0                            ; dy = y1 - y0
 		mov     ax, x0                            ; x = x0
 		mov     bx, y0                            ; y = y0
-
 		// select hard coded x++ or x-- execution path
 		cmp     dx, 0                             ; if dx < 0
-		jge     J8                                ; x++
+		jg      J8                                ; x++
 		jmp     J9                                ; x--
 J8:     // x++ set up registers DI = D = (2 * dx) - dy, SI =  (2 * (dx - dy))
         mov     di, dx                            ; D = dx
@@ -227,6 +226,7 @@ J10:    add     di, dx
         jmp     END									; done
 
 J9:     // x-- set up registers DI = D = (2 * dx) - dy, SI =  (2 * (dx - dy))
+        neg     dx                                ; dx = -dx ie abs(dx)
         mov     di, dx                            ; D = dx
 		add     di, dx                            ; D = 2 * dx
 		sub     di, cx                            ; D = (2 * dx) - dy
@@ -259,18 +259,19 @@ L3:     push    dx                                  ; loop y.. y1 (BX)
         pop     dx
         // decision variable
         cmp     di, 0                               ; if D > 0
-        jle     J10
+        jle     J11
         dec     ax                                  ; x--
         add     di, si                              ; D = D + (2 * (dx - dy))
         inc     bx                                  ; next y
         cmp     bx, y1//bp
-        jne     L2									; loop
+        jne     L3									; loop
         jmp     END									; done
-J10:    add     di, dx
+J11:    add     di, dx
         add     di, dx                              ; D = D + 2*dx
         inc     bx                                  ; next y
         cmp     bx, y1//bp
-        jne     L2									; loop
+        jne     L3									; loop
+        jmp     END									; done
 
 END:    //pop     bp
     }
