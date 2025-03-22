@@ -11,7 +11,7 @@
 * This can be amortized against memory by identifying parts of the algorithm that can be split into seperate hardcoded execution paths.
 * The initial split is into 2 sections one for hardcoded white pixels the other for black.
 * Within each of these 2 sections the pixel plotting loop is split into 4 hardcoded sections for incrementing y, decrementing y, incrementing x and decrementing x
-* This increases the memory footprint by 8 fold but the performance is 50% improved for diagonals - faster still for black lines.
+* This increases the memory footprint by 8 fold but the performance is 33% improved for diagonals - faster still for black lines.
 * Further, the code is split into much faster specializations for vertical and horizontal lines which more than double performance.
 */
 void hga_bline0(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t colour) {
@@ -37,34 +37,48 @@ J1:     cmp     cx, dx                            ; if abs(y1 - y0) < abs(x1 - x
         mov     ax, x0
         cmp     ax, x1                            ; if x0 > x1
         jle     JX
-		mov 	ax, x0                            ; (10) xchg x0, x1 the 8086 way...
-        xchg    ax, x1                            ; (17) this would be slower than MOV on later x86 as implict LOCK
-        mov     x0, ax                            ; (10)
-        mov     ax, y0                            ; (10) xchg y0, y1 the 8086 way...
-        xchg    ax, y1                            ; (17)
-        mov     y0, ax                            ; (10)
+        mov     ax, x1                            ; x = x0
+		mov     bx, y1                            ; y = y0
+        mov     dx, x0
+        sub     dx, ax                            ; dx = x1 - x0
+        mov     cx, y0
+        sub     cx, bx                            ; dy = y1 - y0
+        push    bp
+        mov     bp, x0
         jmp     P0                                ; plotLineLow(x1, y1, x0, y0)
-JX:     jmp     P0                                ; plotLineLow(x0, y0, x1, y1)
+JX:     mov     ax, x0                            ; x = x0
+		mov     bx, y0                            ; y = y0
+        mov     dx, x1
+        sub     dx, ax                            ; dx = x1 - x0
+        mov     cx, y1
+        sub     cx, bx                            ; dy = y1 - y0
+        push    bp
+        mov     bp, x1
+        jmp     P0                                ; plotLineLow(x0, y0, x1, y1)
         // plot octants 1, 2, 5, and 6
 J2:  	mov     ax, y0
         cmp     ax, y1                            ; if y0 > y1
         jle     JY
-		mov 	ax, x0                            ; (10) xchg x0, x1 the 8086 way...
-        xchg    ax, x1                            ; (17) this would be slower than MOV on later x86 as implict LOCK
-        mov     x0, ax                            ; (10)
-        mov     ax, y0                            ; (10) xchg y0, y1 the 8086 way...
-        xchg    ax, y1                            ; (17)
-        mov     y0, ax                            ; (10)
-        jmp     P1                                ; plotLineHigh(x1, y1, x0, y0)
-JY:     jmp     P1                                ; plotLineHigh(x0, y0, x1, y1)
+        mov 	ax, x0
+        mov     bx, x1
+        mov     x0, bx
+        mov     x1, ax
+        mov 	ax, y0
+        mov     bx, y1
+        mov     y0, bx
+        mov     y1, ax
+        jmp     TEND//P1                                ; plotLineHigh(x1, y1, x0, y0)
+JY:     jmp     TEND//P1                                ; plotLineHigh(x0, y0, x1, y1)
 
         // set up registers AX = x, BX = y, DX = dx, CX = dy
-P0:     mov     dx, x1
-        sub     dx, x0                            ; dx = x1 - x0
-        mov     cx, y1
-        sub     cx, y0                            ; dy = y1 - y0
-		mov     ax, x0                            ; x = x0
-		mov     bx, y0                            ; y = y0
+P0:     //mov     ax, x0                            ; x = x0
+		//mov     bx, y0                            ; y = y0
+        //mov     dx, x1
+        //sub     dx, ax                            ; dx = x1 - x0
+        //mov     cx, y1
+        //sub     cx, bx                            ; dy = y1 - y0
+        //push    bp
+        //mov     bp, x1
 		// select hard coded y++ or y-- execution path
 		cmp     cx, 0                             ; if dy < 0
 		jg      J4                                ; y++
@@ -78,7 +92,6 @@ J4:     // y++ set up registers DI = D = (2 * dy), SI = 2 * (dy - dx)
         shl     si, 1                             ; SI = 2 * (dy - dx)
         //push    bp
         //mov     bp, x1
-
 		// plot y increasing octants for x.. x1
 L0:	    push    dx                                ; loop x.. x1
         push    cx
@@ -108,13 +121,13 @@ L0:	    push    dx                                ; loop x.. x1
         inc     bx                                  ; y++
         add     di, si                              ; D = D + (2 * (dy - dx))
         inc     ax                                  ; x++
-        cmp     ax, x1//bp                          ; x == x1?
+        cmp     ax, bp                          ; x == x1?
         jne     L0                                  ; loop
         jmp     END                                 ; done
 J6:     add     di, cx
         add     di, cx                              ; D = D + 2*dy
         inc     ax                                  ; x++
-        cmp     ax, x1//bp                          ; x == x1?
+        cmp     ax, bp                          ; x == x1?
         jne     L0                                  ; loop
         jmp     END                                 ; done
 
@@ -128,7 +141,6 @@ J5:     neg     cx                                  ; dy = -dy ie abs(dy)
         shl     si, 1                               ; SI = 2 * (dy - dx)
         //push    bp
         //mov     bp, x1
-
 		// plot y decreasing octants for x.. x1
 L1:     push    dx                                  ; loop x.. x1
         push    cx
@@ -158,22 +170,23 @@ L1:     push    dx                                  ; loop x.. x1
         dec     bx                                  ; y--
         add     di, si                              ; D = D + (2 * (dy - dx))
         inc     ax
-        cmp     ax, x1//bp
+        cmp     ax, bp
         jne     L1									; loop
         jmp     END									; done
 J7:     add     di, cx
         add     di, cx                              ; D = D + 2*dy
         inc     ax
-        cmp     ax, x1//bp
+        cmp     ax, bp
         jne     L1									; loop
         jmp     END									; done
 		// set up registers AX = x, BX = y, DX = dx, CX = dy
-P1: 	mov     dx, x1
-        sub     dx, x0                            ; dx = x1 - x0
-        mov     cx, y1
-        sub     cx, y0                            ; dy = y1 - y0
-		mov     ax, x0                            ; x = x0
+P1: 	mov     ax, x0                            ; x = x0
 		mov     bx, y0                            ; y = y0
+        mov     dx, x1
+        sub     dx, ax                            ; dx = x1 - x0
+        mov     cx, y1
+        sub     cx, bx                            ; dy = y1 - y0
+
 		// select hard coded x++ or x-- execution path
 		cmp     dx, 0                             ; if dx < 0
 		jg      J8                                ; x++
@@ -185,8 +198,8 @@ J8:     // x++ set up registers DI = D = (2 * dx) - dy, SI =  (2 * (dx - dy))
         mov     si, dx                            ; SI = dx
         sub     si, cx                            ; SI = dx - dy
         shl     si, 1                             ; SI = 2 * (dx - dy)
-        //push    bp
-        //mov     bp, y1
+        push    bp
+        mov     bp, y1
 L2:     push    dx                                  ; loop y.. y1 (BX)
         push    cx
         push    ax
@@ -215,13 +228,13 @@ L2:     push    dx                                  ; loop y.. y1 (BX)
         inc     ax                                  ; x++
         add     di, si                              ; D = D + (2 * (dx - dy))
         inc     bx                                  ; next y
-        cmp     bx, y1//bp
+        cmp     bx, bp
         jne     L2									; loop
         jmp     END									; done
 J10:    add     di, dx
         add     di, dx                              ; D = D + 2*dx
         inc     bx                                  ; next y
-        cmp     bx, y1//bp
+        cmp     bx, bp
         jne     L2									; loop
         jmp     END									; done
 
@@ -233,8 +246,8 @@ J9:     // x-- set up registers DI = D = (2 * dx) - dy, SI =  (2 * (dx - dy))
         mov     si, dx                            ; SI = dx
         sub     si, cx                            ; SI = dx - dy
         shl     si, 1                             ; SI = 2 * (dx - dy)
-        //push    bp
-        //mov     bp, y1
+        push    bp
+        mov     bp, y1
 L3:     push    dx                                  ; loop y.. y1 (BX)
         push    cx
         push    ax
@@ -263,17 +276,17 @@ L3:     push    dx                                  ; loop y.. y1 (BX)
         dec     ax                                  ; x--
         add     di, si                              ; D = D + (2 * (dx - dy))
         inc     bx                                  ; next y
-        cmp     bx, y1//bp
+        cmp     bx, bp
         jne     L3									; loop
         jmp     END									; done
 J11:    add     di, dx
         add     di, dx                              ; D = D + 2*dx
         inc     bx                                  ; next y
-        cmp     bx, y1//bp
+        cmp     bx, bp
         jne     L3									; loop
-        jmp     END									; done
 
-END:    //pop     bp
+END:    pop     bp
+TEND:
     }
 
 }

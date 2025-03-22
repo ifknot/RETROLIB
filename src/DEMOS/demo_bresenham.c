@@ -40,7 +40,7 @@ int bresenham(int argc, char** argv) {
         return EXIT_FAILURE;
     }
     printf(INFO_ADAPTER, hw_video_adapter_names[adapter_type]);
-    printf("HGA line drawing performance - no optimisation.\n");
+    printf("HGA line drawing performance - register optimisation, no xchg.\n");
     printf("Calculating circle points...\n");
     // 360 circle
     float angle;
@@ -63,13 +63,13 @@ int bresenham(int argc, char** argv) {
     uint16_t x1, y1;
 
     bios_read_system_clock(&t1);
-    for(int j = 0; j < 2; ++j) {
+    //for(int j = 0; j < 2; ++j) {
         for (int i = 0; i < 360; ++i) {
-            hga_plot_pixel(HGA_BUFFER_1, xx[i], yy[i], HGA_WHITE);
+            //hga_plot_pixel(HGA_BUFFER_1, xx[i], yy[i], HGA_WHITE);
             hga_bline0(HGA_BUFFER_1, x0, y0, xx[i], yy[i], HGA_WHITE);
             //hga_bresenham_line_naive(HGA_BUFFER_1, x0, y0, xx[i], yy[i], HGA_WHITE);
         }
-    }
+        //}
     bios_read_system_clock(&t2);
     printf("draw %i lines ticks=%li\n",samples * 360, t2 - t1);
     /*
