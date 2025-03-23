@@ -40,7 +40,7 @@ int bresenham(int argc, char** argv) {
         return EXIT_FAILURE;
     }
     printf(INFO_ADAPTER, hw_video_adapter_names[adapter_type]);
-    printf("HGA line drawing performance - register optimisation, no xchg.\n");
+    printf("HGA line drawing performance - register optimised.\n");
     printf("Calculating circle points...\n");
     // 360 circle
     float angle;
@@ -56,7 +56,6 @@ int bresenham(int argc, char** argv) {
     getchar();
     hga_graphics_mode();
     hga_select_display_buffer(HGA_BUFFER_1);
-    // white lines
     hga_cls(HGA_BUFFER_1);
     getchar();
 
@@ -71,13 +70,19 @@ int bresenham(int argc, char** argv) {
         }
     }
     bios_read_system_clock(&t2);
-    printf("draw %i lines ticks=%li\n",samples * 360, t2 - t1);
-    /*
-    for (int i = 0; i < 360; ++i) {
-        hga_plot_pixel(HGA_BUFFER_1, xx[i], yy[i], HGA_WHITE);
-        hga_bline0(HGA_BUFFER_1, x0, y0, xx[i], yy[i], HGA_BLACK);
+    printf("draw %i white lines ticks=%li\n",samples * 360, t2 - t1);
+
+    hga_fill_vram_buffer(HGA_BUFFER_1, 0xFF);
+    bios_read_system_clock(&t1);
+    for(int j = 0; j < samples; ++j) {
+        for (int i = 0; i < 360; ++i) {
+            //hga_plot_pixel(HGA_BUFFER_1, xx[i], yy[i], HGA_WHITE);
+            hga_bline0(HGA_BUFFER_1, x0, y0, xx[i], yy[i], HGA_BLACK);
+            //hga_bresenham_line_naive(HGA_BUFFER_1, x0, y0, xx[i], yy[i], HGA_BLACK);
+        }
     }
-    */
+    bios_read_system_clock(&t2);
+    printf("draw %i black lines ticks=%li\n",samples * 360, t2 - t1);
 
     //  wait for ENTER key and switch back to text mode
     getchar();
