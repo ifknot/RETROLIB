@@ -16,6 +16,7 @@
 * + 86Box    38%     45%
 * + DosBoxX  28%     31%
 * + IBM XT   ?       ?
+*
 * TODO: Further, the code is split into much faster specializations for vertical and horizontal lines which more than double performance for those line types.
 */
 void hga_bline0(uint16_t vram_segment, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t colour) {
@@ -107,12 +108,12 @@ M0:	    push    cx                                ; loop x.. x1
         shr		ax, 1
         shr		ax, 1
         shr		ax, 1
-        mov     cx, bx
+        mov     cx, bx                             ; copy bx
         shl     bx, 1
         mov   	bx, HGA_TABLE_Y_LOOKUP[bx]
         add     bx, ax
         and		es:[bx], dl
-        mov     bx, cx
+        mov     bx, cx                             ; restore bx
         pop     ax
         pop     cx
         // decision variable
@@ -145,9 +146,8 @@ M1:     push    cx                                  ; loop x.. x1
         mov     cx, ax
         and     cx, 7
         xor     cx, 7
-        mov     dx, 101h
-        shl		dx, cl
-        not     dh
+        mov     dl, 11111110b                      ; DL = pixel mask
+        rol     dl, cl                             ; roll mask around by x mod 8
         shr		ax, 1
         shr		ax, 1
         shr		ax, 1
@@ -155,7 +155,7 @@ M1:     push    cx                                  ; loop x.. x1
         shl     bx, 1
         mov   	bx, HGA_TABLE_Y_LOOKUP[bx]
         add     bx, ax
-        and		es:[bx], dh
+        and		es:[bx], dl
         pop     ax
         mov     bx, cx
         pop     cx
