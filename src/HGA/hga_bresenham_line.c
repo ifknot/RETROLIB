@@ -2,8 +2,6 @@
 
 #include "hga_table_lookup_y.h"
 
-#include <stdio.h>
-
 /**
 * Bresenham line algorithm - 8086 register optimised, hardcoded, heavily inlined version
 * @url https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
@@ -12,9 +10,9 @@
 * The initial split is into 2 sections one for hardcoded white pixels the other for black.
 * Within each of these 2 sections the pixel plotting loop is split into 4 hardcoded sections for incrementing y, decrementing y, incrementing x and decrementing x
 * This increases the memory footprint by 8 fold but on an IBM XT the performance over naive is improved:
-*           white   black
+*           white   black       328     328
 * + 86Box    38%     45%
-* + DosBoxX  28%     31%
+* + DosBoxX  28%     31%        237     226
 * + IBM XT   ?       ?
 *
 * TODO: Further, the code is split into much faster specializations for vertical and horizontal lines which more than double performance for those line types.
@@ -491,7 +489,110 @@ J11:    add     di, dx
         inc     bx                                  ; next y
         cmp     bx, bp
         jne     L3									; loop
+        jmp     END
+        // fast vertical line
+VLINE:  mov   	dh, 00000001                                ; DH is (proto)mask byte
+		mov     dl, colour                                  ; DL load 'colour'
+		mov		ax, x0			                           	; AX load x
+        mov		cx, ax			                           	; CX copy of x
+        and		cx, 7h			                           	; mask off 0111 lower bits i.e.mod 8 (thanks powers of 2)										; rotate mask bit by x mod 8
+		xor     cx, 7h                                      ; convert to bits to shift left
+	    shl		dx, cl			                           	; shift colour bit & proto-mask into position
+		not     dh                                          ; convert to mask
+	    shr		ax, 1			                           	; calculate column byte x / 8
+	    shr		ax, 1			                           	; poor old 8086 only has opcodes shifts by an implicit 1 or CL
+	    shr		ax, 1
+		mov 	bx, y0                                      ; BX load y0
+		mov 	cx, y1                                      ; CX load y1
+		cmp     bx, cx                                      ; ? x0 < x1
+		jl      VJ0
+		xchg    bx, cx                                      ; swap registers ie swap x0 x1
+VJ0:	sub 	cx, bx										; convert CX line length
+        shl     bx, 1                                       ; convert BX word pointer
+VL0:	mov   	di, HGA_TABLE_Y_LOOKUP[bx]                  ; lookup y offset
+		add   	di, ax                                      ; add in x / 8
+		add 	bx, 2 										; next line
+		and		es:[di], dh								    ; mask out target pixel
+		or 		es:[di], dl									; or in the 'colour'
+		loop 	VL0                                         ; for line length
+		jmp     DONE
+        // fast horizontal line
+HLINE:  cld                                                 ; clear direction flag
+		mov 	bx, y0										; BX load y0
+	    shl     bx, 1                                       ; convert BX word pointer
+		mov   	di, HGA_TABLE_Y_LOOKUP[bx]					; lookup y offset
+		mov 	bx, x0										; BX load x0
+		mov 	ax, x1 										; AX load x1
+		cmp     ax, bx                                      ; ? x0 < x1
+		jg      JG0
+		xchg    ax, bx                                      ; no - swap x0 and x1
+JG0:	mov 	dx, 0FFFFh 									; DL lhs DH rhs proto-masks (little endian)
+		mov 	cx, bx										; copy x0
+		and 	cx, 7h			                           	; CX is x0 mod 8
+		shr 	dl, cl										; shift lhs proto mask to starting pixel
+		mov 	cx, ax										; copy x1
+		and 	cx, 7h			                           	; CX is x1 mod 8
+		xor 	cx, 7h										; convert to bits to shift left
+		shl 	dh,cl 										; shift rhs proto mask to ending pixel
+		shr		bx, 1			                           	; calculate column byte x0 / 8
+	    shr		bx, 1			                            ; poor old 8086 only has opcodes shifts by an implicit 1 or CL
+	    shr		bx, 1
+		shr		ax, 1			                           	; calculate column byte x1 / 8
+	    shr		ax, 1
+	    shr		ax, 1
+		mov 	cx, ax
+		sub 	cx, bx										; CX line length (bytes)
+		mov 	al, colour
+		mov 	ah, al
+		test 	al, al
+		jz 		HBLK                                        ; branching to hard code 'colour' saves a few cycle
+		mov     ax, dx                                      ; proto-mask is white bits to 'colour'
+HWHT:   jcxz    HJ0                                         ; lhs and rhs share same byte?
+        dec     cx
+        jcxz    HJ1                                         ; lhs and rhs share same word?
+		not 	dx											; convert proto-mask to mask word
+		add 	di, bx										; have ES:DI point to lhs
+		and     es:[di], dl                            		; mask out target bits 	- 16 + EA(8)
+		or      es:[di], al                            		; colour target bits	- 16 + EA(8)
+		mov 	bx, cx										; rhs offset = length
+		inc 	di											; next byte
+		and     es:[di + bx], dh                            ; mask out target bits 	- 16 + EA(8)
+		or      es:[di + bx], ah                            ; colour target bits	- 16 + EA(8)
+		mov     ax, 0FFFFh                                  ; AX white
+		shr     cx, 1		                                ; number of words to fill, lsb -> carry flag
+		jnc     HNC1                                        ; even so no byte to fill
+		stosb	                                            ; odd do one byte al 'colour'
+		jcxz    DONE
+HNC1:	rep     stosw		                                ; CX is checked for !=0 before even the first step
+        jmp 	DONE
+HBLK:	jcxz    HJ0                                         ; lhs and rhs share same byte?
+        dec     cx
+        jcxz    HJ1                                  	    ; lhs and rhs share same word?
+		not 	dx										 	; convert proto-mask to mask word
+		add 	di, bx										; have ES:DI point to lhs
+		and     es:[di], dl                            		; mask out black bits
+		mov 	bx, cx										; rhs offset = length
+		inc 	di											; next byte
+		and     es:[di + bx], dh                            ; mask out black bits
+		mov     ax, 0                                       ; AX black
+		shr     cx, 1		                                ; number of words to fill, lsb -> carry flag
+		jnc     HNC0                                        ; even so no byte to fill
+		stosb	                                            ; odd do one byte al 'colour'
+		jcxz    DONE
+HNC0:	rep     stosw		                                ; CX is checked for !=0 before even the first step
+        jmp 	DONE
+HJ1:	not     dx                                          ; convert proto-mask to mask word
+        and     es:[di + bx], dx                            ; mask out target word 	- 16 + EA(8)
+		or      es:[di + bx], ax                            ; colour target word	- 16 + EA(8)
+		jmp 	DONE
+HJ0:    and     dl, dh                                      ; combine proto-mask into dl
+		not     dl		                                    ; convert proto-mask to mask
+		and     al, ah                                      ; combine 'colour' bits into al
+        and     es:[di + bx], dl                            ; mask out target bits 	- 16 + EA(8)
+		or      es:[di + bx], al                            ; colour target bits	- 16 + EA(8)
+		jmp     DONE
 END:    pop     bp
+DONE:
     }
 
 }

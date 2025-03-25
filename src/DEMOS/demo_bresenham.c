@@ -64,20 +64,20 @@ int bresenham(int argc, char** argv) {
     bios_read_system_clock(&t1);
     for(int j = 0; j < samples; ++j) {
         for (int i = 0; i < 360; ++i) {
-            //hga_plot_pixel(HGA_BUFFER_1, xx[i], yy[i], HGA_WHITE);
-            hga_bline0(HGA_BUFFER_1, x0, y0, xx[i], yy[i], HGA_WHITE);
+            hga_plot_pixel(HGA_BUFFER_1, xx[i], yy[i], HGA_WHITE);
+            //hga_bline0(HGA_BUFFER_1, x0, y0, xx[i], yy[i], HGA_WHITE);
             //hga_bresenham_line_naive(HGA_BUFFER_1, x0, y0, xx[i], yy[i], HGA_WHITE);
         }
     }
     bios_read_system_clock(&t2);
     printf("draw %i white lines ticks=%li\n",samples * 360, t2 - t1);
-
+    getchar();
     hga_fill_vram_buffer(HGA_BUFFER_1, 0xFF);
     bios_read_system_clock(&t1);
     for(int j = 0; j < samples; ++j) {
         for (int i = 0; i < 360; ++i) {
-            //hga_plot_pixel(HGA_BUFFER_1, xx[i], yy[i], HGA_WHITE);
-            hga_bline0(HGA_BUFFER_1, x0, y0, xx[i], yy[i], HGA_BLACK);
+            hga_plot_pixel(HGA_BUFFER_1, xx[i], yy[i], HGA_BLACK);
+            //hga_bline0(HGA_BUFFER_1, x0, y0, xx[i], yy[i], HGA_BLACK);
             //hga_bresenham_line_naive(HGA_BUFFER_1, x0, y0, xx[i], yy[i], HGA_BLACK);
         }
     }
