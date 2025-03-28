@@ -12,18 +12,18 @@ test gif
 ### DOING:
 ---
 - [ ] bresenham line
-  - [ ] rewrite into tight octant loops only using registers 
+  - [x] rewrite into tight octant loops only using registers 
   - [x] white pixels
   - [x] optimise
-  - [ ] black pixels
+  - [x] black pixels
   - [ ] dashed lines
   - [ ] InColor
 ---
 - [ ] which is faster on an IBM XT?
   - [ ] pixel calculate vs lookup
   - [x] precompute 360 parametric circle values into a handy header file 
-  - [ ] memory efficient optimised bresenham ?
-  - [ ] register efficient and speeed optimised bresenham ?
+  - [x] memory efficient optimised bresenham ?
+  - [x] register efficient and speeed optimised bresenham ?
   - [ ] hline vs vline ?
 ---
 - [x] hga circle
