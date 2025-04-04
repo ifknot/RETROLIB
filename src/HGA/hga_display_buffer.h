@@ -19,7 +19,6 @@ void hga_select_display_buffer(uint16_t vram_segment);
 * @brief Write an 8 bit byte pattern at byte count location (0 .. 31,320) to the specified HGA VRAM buffer
 * @note treats the VRAM as an indexable contiguous byte space (the quad bank HGA implementation is resolved in function)
 * @details
-* @note No sanity checking!
 */
 void hga_write_vram_buffer_byte_location(uint16_t vram_segment, uint16_t byte_location, uint8_t byte_pattern);
 
@@ -27,7 +26,6 @@ void hga_write_vram_buffer_byte_location(uint16_t vram_segment, uint16_t byte_lo
 * @brief Read an 8 bit byte pattern at byte count location (0 .. 31,320) to the specified HGA VRAM buffer
 * @note treats the VRAM as an indexable contiguous byte space (the quad bank HGA implementation is resolved in function)
 * @details
-* @note No sanity checking!
 */
 uint8_t hga_read_vram_buffer_byte_location(uint16_t vram_segment, uint16_t byte_location);
 
@@ -35,7 +33,6 @@ uint8_t hga_read_vram_buffer_byte_location(uint16_t vram_segment, uint16_t byte_
 * @brief Write an 8 bit byte pattern at (byte, line) coordinates x(0..89), y(0..347) to the specified HGA VRAM buffer
 * @details uses a lookup table to address the correct quad bank in the HGA VRAM buffer
 * @see hga_table_lookup_y.h
-* @note No sanity checking!
 */
 void hga_write_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t byte_pattern);
 
@@ -43,7 +40,6 @@ void hga_write_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y,
 * @brief Read an 8 bit byte pattern at (byte, line) coordinates x(0..89), y(0..347) from the specified HGA VRAM buffer
 * @details uses a lookup table to address the correct quad bank in the HGA VRAM buffer
 * @see hga_table_lookup_y.h
-* @note No sanity checking!
 */
 uint8_t hga_read_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y);
 
@@ -66,14 +62,12 @@ inline uint8_t hga_read_vram_buffer(uint16_t vram_segment, uint16_t x, uint16_t 
 /**
 * @brief Fast fill the specified HGA VRAM buffer with an 8 bit byte pattern
 * @details
-* @note No sanity checking! Expects vram_segment to be valid.
 */
 void hga_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern);
 
 /**
 * @brief fill the specified HGA VRAM buffer with two 8 bit byte patterns alternating byte patterns between rows
 * @details
-* @note No sanity checking! Expects vram_segment to be valid.
 */
 void hga_knit_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern_a, uint8_t byte_pattern_b);
 
@@ -82,7 +76,7 @@ int16_t hga_load_vram_buffer(uint16_t vram_segment, char* file_path);
 int16_t hga_save_vram_buffer(uint16_t vram_segment, char* file_path);
 
 /**
-* @brief clear the specified HGA VRAM buffer to black
+* @brief wrapper function to clear the specified HGA VRAM buffer to black
 */
 inline void hga_cls(uint16_t vram_segment) {
     hga_fill_vram_buffer(vram_segment, 0);
@@ -90,13 +84,13 @@ inline void hga_cls(uint16_t vram_segment) {
 
 /**
 * @brief scroll graphics vram up number of lines and blank last line
-* @note No sanity checking!
+* @note TODO
 */
 void hga_scroll_up(uint16_t vram_segment, uint16_t lines);
 
 /**
 * @breif repeat scroll up entire screen until whole screen blank
-* @note No sanity checking!
+* @note TODO
 */
 void hga_screen_scroll_up(uint16_t vram_segment);
 
