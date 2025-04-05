@@ -1,6 +1,16 @@
 #ifndef MEM_TOOLS_H
 #define MEM_TOOLS_H
 
+#include <stdint.h>
+
+/**
+* @brief Use DOS INT 21h, Function 48h, to determine the amount of memory available to a user's program.
+* @note By setting BX=FFFFh before calling, this function can be used to find the amount of
+* available memory, which will be returned in BX. (The call will return an error, which can be ignored,
+* since DOS cannot allocate more than 640k of memory.)
+*/
+uint16_t mem_available_low_paragraphs();
+
  /**
  * Offset Size		Description
  *	00   byte		'M' 4Dh  member of a MCB chain, (not last)

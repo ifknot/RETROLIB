@@ -9,6 +9,8 @@
 
 //#include "TESTS/test_lines.h"
 
+#include "MEM/mem_tools.h"
+
 int main(int argc, char** argv) {
 
 #ifndef __LARGE__
@@ -16,6 +18,8 @@ int main(int argc, char** argv) {
     printf("Rebuild RETROLIB using the large memory model with the -ml compiler option.\n");
     return 0;
 #endif
+
+    printf("DOS low memory size = %luKB\n", (mem_available_low_paragraphs() * 16L) / 1024L);
 
 	return bresenham(argc, argv);
 
