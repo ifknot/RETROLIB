@@ -5,13 +5,13 @@
 #include <stdlib.h>
 
 #include "../BIOS/bios_timer_io_services.h"
-#include "../BIOS/bios_tools_timer.h"
+#include "../TIME/time_tools.h"
 #include "../HGA/hga_constants.h"
 #include "../HGA/hga_detect_adapter.h"
 #include "../HGA/hga_video_mode.h"
 #include "../HGA/hga_display_buffer.h"
 #include "../DOS/dos_services_files.h"
-#include "../DOS/dos_tools_files.h"
+#include "../FILE/file_tools.h"
 #include "../MEM/mem_arena.h"
 
 // string constants
@@ -56,13 +56,13 @@ int pixelate(int argc, char** argv) {
 // 3.0 extract the file name given by user from the arguement list
     sscanf(argv[1], "%s", file_path);
 // 3.1 try open the file
-    fhandle = dos_open_file_using_handle(file_path, ACCESS_READ_ONLY);
+    fhandle = dos_open_file(file_path, ACCESS_READ_ONLY);
     if (!fhandle) {
         fprintf(stderr, ERR_FOPEN_INPUT, file_path);
         return EXIT_FAILURE;
     }
 // 3.2 total characters to process
-    file_size = dos_tools_file_size(fhandle);
+    file_size = file_get_size(fhandle);
     printf(INFO_FINPUT, argv[0], (unsigned long)file_size);
 // 4.0 create screen size block of memory space as an arena
     arena = mem_arena_new(MEM_ARENA_POLICY_DOS, HGA_BYTES_PER_SCREEN);
@@ -81,7 +81,7 @@ int pixelate(int argc, char** argv) {
     bios_read_system_clock(&t1);
 // 6.1 process all the characters from the input file a screen full at a time
     do {
-        file_bytes_read = dos_read_file_using_handle(fhandle, text_buffer, HGA_BYTES_PER_SCREEN);
+        file_bytes_read = dos_read_file(fhandle, text_buffer, HGA_BYTES_PER_SCREEN);
         x = y = tpos = 0;                                           // reset to top left of screen and start of text buffer
 // 6.2 convert file data into screen byte data 8 characters at a time per the given filter
         byte_count = file_bytes_read >> 3;                          // div 8
@@ -140,7 +140,7 @@ int pixelate(int argc, char** argv) {
     //getchar();
     //hga_text_mode();
 // 8. tidy up resources
-    dos_close_file_using_handle(fhandle);
+    dos_close_file(fhandle);
     mem_arena_delete(arena);
 // 9. display peformance metrics
     printf(INFO_METRICS, file_path, (unsigned long)char_count, bios_tools_timer_ticks_to_seconds(t2 - t1));

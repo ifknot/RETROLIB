@@ -11,28 +11,28 @@ void dos_get_disk_free_space(uint8_t drive_number, dos_file_disk_space_info_t* i
 // 38  Get/set country dependent information
 // 39  Create subdirectory (mkdir)
 // 3A  Remove subdirectory (rmdir)
-// 3B  Change current subdirectory (chdir) 
-// 
+// 3B  Change current subdirectory (chdir)
+//
 // 3C  Create file using handle
-dos_file_handle_t dos_create_file_using_handle(char * path_name, dos_file_attributes_t create_attributes);
+dos_file_handle_t dos_create_file(char * path_name, dos_file_attributes_t create_attributes);
 
 // 3D  Open file using handle
-dos_file_handle_t dos_open_file_using_handle(char * path_name, uint8_t access_attributes);
+dos_file_handle_t dos_open_file(char * path_name, uint8_t access_attributes);
 
 // 3E  Close file using handle
-dos_error_code_t dos_close_file_using_handle(dos_file_handle_t fhandle);
-    
+dos_error_code_t dos_close_file(dos_file_handle_t fhandle);
+
 // 3F  Read file or device using handle
-uint16_t dos_read_file_using_handle(dos_file_handle_t fhandle, char* buffer, uint16_t nbytes);
+uint16_t dos_read_file(dos_file_handle_t fhandle, char* buffer, uint16_t nbytes);
 
 // 40  Write file or device using handle
-uint16_t dos_write_file_using_handle(dos_file_handle_t fhandle, char* buffer, uint16_t nbytes);
-    
+uint16_t dos_write_file(dos_file_handle_t fhandle, char* buffer, uint16_t nbytes);
+
 // 41  Delete file
 dos_error_code_t dos_delete_file(char* path_name);
-    
+
 // 42  Move file pointer using handle
-void  dos_move_file_pointer_using_handle(dos_file_handle_t fhandle, uint8_t forigin, dos_file_position_t* fposition);
+dos_file_position_t dos_move_file_pointer(dos_file_handle_t fhandle, dos_file_position_t foffset, uint8_t forigin);
 
 // 43  Change file mode
 dos_file_attributes_t dos_get_file_attributes(char* path_name);

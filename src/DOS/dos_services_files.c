@@ -70,7 +70,7 @@ END:		popf
 *
 * @note - if file already exists, it is truncated to zero bytes on opening
 */
-dos_file_handle_t dos_create_file_using_handle(char* path_name, dos_file_attributes_t create_attributes) {
+dos_file_handle_t dos_create_file(char* path_name, dos_file_attributes_t create_attributes) {
 	dos_file_handle_t fhandle = 0;
 	dos_error_code_t err_code = 0;
 	__asm {
@@ -111,7 +111,7 @@ END:	popf
 * AX = file handle if CF not set
 *    = error code if CF set  (see DOS ERROR CODES)
 */
-dos_file_handle_t dos_open_file_using_handle(char* path_name, uint8_t access_attributes) {
+dos_file_handle_t dos_open_file(char* path_name, uint8_t access_attributes) {
 	dos_file_handle_t fhandle = 0;
 	dos_error_code_t err_code = 0;
 	__asm {
@@ -151,7 +151,7 @@ END:	popf
 * - if file is opened for update, file time and date stamp as well as file size are updated in the directory
 * - handle is freed
 */
-dos_error_code_t dos_close_file_using_handle(dos_file_handle_t fhandle) {
+dos_error_code_t dos_close_file(dos_file_handle_t fhandle) {
 	dos_error_code_t err_code = 0;
 	__asm {
 		.8086
@@ -190,7 +190,7 @@ END:		popf
 * - when AX is not equal to CX then a partial read occurred due to end of file
 * - if AX is zero, no data was read, and EOF occurred before read
 */
-uint16_t dos_read_file_using_handle(dos_file_handle_t fhandle, char* buffer, uint16_t nbytes) {
+uint16_t dos_read_file(dos_file_handle_t fhandle, char* buffer, uint16_t nbytes) {
 	uint16_t bytes_read = 0;
 	dos_error_code_t err_code = 0;
 	__asm {
@@ -234,7 +234,7 @@ END:		popf
 * - if AX is not equal to CX on return, a partial write occurred
 * - this function can be used to truncate a file to the current file position by writing zero bytes
 */
-uint16_t dos_write_file_using_handle(dos_file_handle_t fhandle, char* buffer, uint16_t nbytes) {
+uint16_t dos_write_file(dos_file_handle_t fhandle, char* buffer, uint16_t nbytes) {
 	uint16_t bytes_written = 0;
 	dos_error_code_t err_code = 0;
 	__asm {
@@ -332,12 +332,14 @@ END:		popf
 * can corrupt the FAT in some versions of DOS; the file should first
 * be grown from zero to one byte and then to the desired large size
 */
-void  dos_move_file_pointer_using_handle(dos_file_handle_t fhandle, uint8_t forigin, dos_file_position_t* fposition) {
+dos_file_position_t dos_move_file_pointer(dos_file_handle_t fhandle, dos_file_position_t foffset, uint8_t forigin) {
 	dos_error_code_t err_code = 0;
+	dos_file_position_t fposition = foffset;
+	dos_file_position_t* fpos_ptr = &fposition;
 	__asm {
 		.8086
 
-		lds 	si, fposition						; CX:DX = (signed) offset from origin of new file position
+		lds 	si, fpos_ptr						; CX:DX = (signed) offset from origin of new file position
 		mov		dx, [si]							; DX low order word of fposition
 		mov		cx, [si + 2]						; CX hi order word of fposition
 		mov		bx, fhandle
@@ -348,7 +350,7 @@ void  dos_move_file_pointer_using_handle(dos_file_handle_t fhandle, uint8_t fori
 		mov		err_code, ax
 		jmp		END
 
-OK:		lds 	di, fposition						; DX:AX = new file position in bytes from start of file
+OK:		lds 	di, fpos_ptr						; DX:AX = new file position in bytes from start of file
 		mov		[di], ax							; low order word of fposition = AX
 		mov		[di + 2], dx						; hi order word of fposition = DX
 
@@ -359,6 +361,7 @@ END:
 		fprintf(stderr, "%s file_handle=%i\n", dos_error_messages[err_code], fhandle);
 	}
 #endif
+    return fposition;
 }
 
 /**

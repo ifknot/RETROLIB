@@ -6,7 +6,6 @@
 #include <math.h>
 
 #include "../HW/hw_constants_graphics.h"
-#include "../BIOS/bios_tools_timer.h"
 #include "../BIOS/bios_timer_io_services.h"
 
 #include "../HGA/hga_constants.h"

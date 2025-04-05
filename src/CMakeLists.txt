@@ -27,8 +27,10 @@ file(GLOB SOURCES
     VGA/*.c
     DOS/*.c
     MEM/*c
+    FILE/*.c
     DEMOS/*.c
     TEST/*.c
+    TIME/*.c
 )
 
 message(Source list="${SOURCES}")
