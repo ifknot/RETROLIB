@@ -1,5 +1,8 @@
-#include "hga_constants.h"
 #include "hga_display_buffer.h"
+
+#include "../MEM/mem_tools.h"
+
+#include "hga_constants.h"
 #include "hga_table_lookup_y.h"
 
 void hga_select_display_buffer(uint16_t vram_segment) {
@@ -109,6 +112,16 @@ void hga_knit_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern_a, uint8_t
 		rep     stosw
 
 	}
+}
+
+dos_file_size_t  hga_load_vram_buffer(uint16_t vram_segment, const char* file_path) {
+    char* start = (char*)(vram_segment * 16L);
+    return mem_load_from_file(file_path, start, HGA_BYTES_PER_SCREEN);
+}
+
+dos_file_size_t  hga_save_vram_buffer(uint16_t vram_segment, const char* file_path) {
+    char* start = (char*)(vram_segment * 16L);
+    return mem_save_to_file(file_path, start, HGA_BYTES_PER_SCREEN);
 }
 
 void hga_scroll_up(uint16_t vram_segment, uint16_t lines) {

@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#include "../DOS/dos_services_files_types.h"
+
 /**
 * @brief Use DOS INT 21h, Function 48h, to determine the amount of memory available to a user's program.
 * @note By setting BX=FFFFh before calling, this function can be used to find the amount of
@@ -28,8 +30,23 @@ uint16_t mem_available_low_paragraphs();
  *
  * @note  An undocumented way to find the first or 'base' MemBlockRec to use DOS Fn 52H.
  */
-void mem_tools_dump_mcb(char* mcb);
+void mem_dump_mcb(char* mcb);
 
-//void mem_tools_dump_psp(char** psp);
+/**
+* @brief loads unformatted *upto* a page (64K bytes or 4096 paragraphs) of data from file to memory
+* @note loads raw bytes
+*
+* @return dos_file_size_t - the actual byte count loaded
+*/
+dos_file_size_t mem_load_from_file(const char* path_name, char* start, uint16_t nbytes);
+
+/**
+* @brief saves unformatted *upto* a page (64K bytes or 4096 paragraphs) of memory to file
+* @note saves raw bytes
+*
+* @return dos_file_size_t - the actual byte count saved
+*/
+dos_file_size_t mem_save_to_file(const char* path_name, char* start, uint16_t nbytes);
+
 
 #endif

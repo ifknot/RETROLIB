@@ -10,6 +10,8 @@
 
 #include <stdint.h>
 
+#include "../DOS/dos_services_files_types.h"
+
 /**
 * @brief select which of the 2 HGA adapter VRAM buffers ( 0 or 1 ) to be displayed on screen
 */
@@ -71,9 +73,15 @@ void hga_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern);
 */
 void hga_knit_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern_a, uint8_t byte_pattern_b);
 
-int16_t hga_load_vram_buffer(uint16_t vram_segment, char* file_path);
+/**
+* @brief load entire 32K VRAM from file of *raw* VRAM data i.e. page bank layout
+*/
+dos_file_size_t hga_load_vram_buffer(uint16_t vram_segment, const char* file_path);
 
-int16_t hga_save_vram_buffer(uint16_t vram_segment, char* file_path);
+/**
+* @brief saveentire 32K VRAM from file of *raw* VRAM data i.e. page bank layout
+*/
+dos_file_size_t hga_save_vram_buffer(uint16_t vram_segment, const char* file_path);
 
 /**
 * @brief wrapper function to clear the specified HGA VRAM buffer to black

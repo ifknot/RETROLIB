@@ -70,7 +70,7 @@ END:		popf
 *
 * @note - if file already exists, it is truncated to zero bytes on opening
 */
-dos_file_handle_t dos_create_file(char* path_name, dos_file_attributes_t create_attributes) {
+dos_file_handle_t dos_create_file(const char* path_name, dos_file_attributes_t create_attributes) {
 	dos_file_handle_t fhandle = 0;
 	dos_error_code_t err_code = 0;
 	__asm {
@@ -111,7 +111,7 @@ END:	popf
 * AX = file handle if CF not set
 *    = error code if CF set  (see DOS ERROR CODES)
 */
-dos_file_handle_t dos_open_file(char* path_name, uint8_t access_attributes) {
+dos_file_handle_t dos_open_file(const char* path_name, uint8_t access_attributes) {
 	dos_file_handle_t fhandle = 0;
 	dos_error_code_t err_code = 0;
 	__asm {
