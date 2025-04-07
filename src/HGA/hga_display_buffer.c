@@ -28,7 +28,6 @@ END:
 }
 
 void hga_write_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t byte_pattern) {
-
     __asm {
 		.8086
 
@@ -90,7 +89,7 @@ void hga_knit_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern_a, uint8_t
 		mov		ax, vram_segment
 		mov		es, ax						; ES:DI point to VRAM destination
 		// 2. set up the registers
-		cld									; increment ES:DI
+		cld									; increment mode
 		mov		al, byte_pattern_a
 		mov		ah, al						; duplicate byte pattern into AX word
 		mov     bl, byte_pattern_b

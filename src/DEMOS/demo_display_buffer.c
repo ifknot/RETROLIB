@@ -38,7 +38,17 @@ int display_buffer(int argc, char** argv) {
     getchar();
     hga_fill_vram_buffer(HGA_BUFFER_1, 255);
     getchar();
+    hga_knit_vram_buffer(HGA_BUFFER_1, 0xAA, 0x55);
+    hga_knit_vram_buffer(HGA_BUFFER_0, 0, 255);
+    getchar();
+    hga_select_display_buffer(HGA_BUFFER_0);
+    hga_cls(HGA_BUFFER_1);
+    int32_t n = hga_save_vram_buffer(HGA_BUFFER_1, "vram.raw");
+    //getchar();
+    //hga_load_vram_buffer(HGA_BUFFER_1, "test.exe");
     //
+    getchar();
     hga_text_mode();
+    printf("bytes written = %li", n);
     return EXIT_SUCCESS;
 }
