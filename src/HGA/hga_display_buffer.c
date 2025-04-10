@@ -1,5 +1,6 @@
 #include "hga_display_buffer.h"
 
+#include "../MEM/mem_address.h
 #include "../MEM/mem_tools.h"
 
 #include "hga_constants.h"
@@ -114,12 +115,14 @@ void hga_knit_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern_a, uint8_t
 }
 
 dos_file_size_t  hga_load_vram_buffer(uint16_t vram_segment, const char* file_path) {
-    char* start = (char*)(vram_segment * 16L);
+    mem_addres_t start = 0;
+	start.segoff.segment = vram_segment;
     return mem_load_from_file(file_path, start, HGA_BYTES_PER_SCREEN);
 }
 
 dos_file_size_t  hga_save_vram_buffer(uint16_t vram_segment, const char* file_path) {
-    char* start = (char*)(vram_segment * 16L);
+    mem_addres_t start = 0;
+	start.segoff.segment = vram_segment;
     return mem_save_to_file(file_path, start, HGA_BYTES_PER_SCREEN);
 }
 
