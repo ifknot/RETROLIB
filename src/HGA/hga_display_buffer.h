@@ -36,20 +36,20 @@ uint8_t hga_read_vram_buffer_byte_location(uint16_t vram_segment, uint16_t byte_
 * @details uses a lookup table to address the correct quad bank in the HGA VRAM buffer
 * @see hga_table_lookup_y.h
 */
-void hga_write_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t byte_pattern);
+void hga_write_vram_buffer_lookup(uint16_t vram_segment, uint16_t byte_column, uint16_t byte_row, uint8_t byte_pattern);
 
 /**
 * @brief Read an 8 bit byte pattern at (byte, line) coordinates x(0..89), y(0..347) from the specified HGA VRAM buffer
 * @details uses a lookup table to address the correct quad bank in the HGA VRAM buffer
 * @see hga_table_lookup_y.h
 */
-uint8_t hga_read_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y);
+uint8_t hga_read_vram_buffer_lookup(uint16_t vram_segment, uint16_t byte_column, uint16_t byte_row);
 
 /**
 * @brief Write an 8 bit byte pattern at (byte, line) coordinates x(0..89), y(0..347) to the specified HGA VRAM buffer
 * @details inline wrapper function for the policy chosen to address the correct quad bank in the HGA VRAM buffer i.e. calculate vs. look up table
 */
-inline void hga_write_vram_buffer(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t byte_pattern) {
+inline void hga_write_vram_buffer(uint16_t vram_segment, uint16_t byte_column, uint16_t byte_row, uint8_t byte_pattern) {
   hga_write_vram_buffer_lookup(vram_segment, x, y, byte_pattern);
 }
 
@@ -57,7 +57,7 @@ inline void hga_write_vram_buffer(uint16_t vram_segment, uint16_t x, uint16_t y,
 * @brief Read an 8 bit byte pattern at (byte, line) coordinates x(0..89), y(0..347) from the specified HGA VRAM buffer
 * @details inline wrapper function for the policy chosen to address the correct quad bank in the HGA VRAM buffer i.e. calculate vs. look up table
 */
-inline uint8_t hga_read_vram_buffer(uint16_t vram_segment, uint16_t x, uint16_t y) {
+inline uint8_t hga_read_vram_buffer(uint16_t vram_segment, uuint16_t byte_column, uint16_t byte_row) {
   return hga_read_vram_buffer_lookup(vram_segment, x, y);
 }
 
