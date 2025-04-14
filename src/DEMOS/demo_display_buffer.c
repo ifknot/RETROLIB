@@ -16,6 +16,11 @@
 #define PRESS_ENTER         "Press <Enter>"
 
 int display_buffer(int argc, char** argv) {
+    uint16_t x, y, w, h;         
+    w = 64 
+    h = w;
+    x = (HGA_SCREEN_X_MAX / 2) - (w / 2);
+    y = (HGA_SCREEN_Y_MAX / 2) - (h / 2);
     // confirm appropriate graphics adapter present
     uint8_t adapter_type = hga_detect_adapter();
     if (adapter_type < HW_VIDEO_ADAPTER_HGA) {
