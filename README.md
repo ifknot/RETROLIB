@@ -35,6 +35,12 @@ test gif
 
 ### TODO:
 ---
+- [ ] hga_screen_bounds_modifer - take an array of points and modify to fit inside screen bounds
+- [ ] hga_bounds_modifer - take an array of points and modify to fit inside bounds passed as arguments
+---
+- [ ] hga_polygon
+- [ ] hga_polyline
+---
 - [ ] screen capture
 - [ ] dosbox capture
 - [ ] side by side github
