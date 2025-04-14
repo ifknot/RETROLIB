@@ -16,8 +16,8 @@
 #define PRESS_ENTER         "Press <Enter>"
 
 int display_buffer(int argc, char** argv) {
-    uint16_t x, y, w, h;         
-    w = 8
+    uint16_t x, y, w, h;
+    w = 8;
     h = w * 8;
     x = (HGA_SCREEN_X_MAX / 2) - ((w / 2) * 8);
     y = (HGA_SCREEN_Y_MAX / 2) - (h / 2);
@@ -45,12 +45,12 @@ int display_buffer(int argc, char** argv) {
     hga_knit_vram_buffer(HGA_BUFFER_1, 0xAA, 0x55);
     hga_knit_vram_buffer(HGA_BUFFER_0, 0, 255);
     getchar();
+    printf("bytes written = %li", hga_save_vram_buffer(HGA_BUFFER_1, "vram.raw"));
+    hga_cls(HGA_BUFFER_1);
+    getchar();
+    printf("bytes read = %li", hga_load_vram_buffer(HGA_BUFFER_1, "vram.raw"));
+    getchar();
     hga_select_display_buffer(HGA_BUFFER_0);
-    //hga_cls(HGA_BUFFER_1);
-    int32_t n = hga_save_vram_buffer(HGA_BUFFER_1, "vram.raw");
-    //getchar();
-    //hga_load_vram_buffer(HGA_BUFFER_0, "vram.raw");
-    //hga_cls(HGA_BUFFER_0)
     /*
     for (int i = 0; i < HGA_BYTES_PER_SCREEN; i += 2) {
         hga_write_vram_buffer_byte_location(HGA_BUFFER_), i, 255);
@@ -62,10 +62,10 @@ int display_buffer(int argc, char** argv) {
     getchar();
     // draw a cross hatch box read it and draw reversed inner box
     getchar();
-    // scroll the box around 
+    // scroll the box around
     */
     getchar();
     hga_text_mode();
-    printf("bytes written = %li", n);
+
     return EXIT_SUCCESS;
 }

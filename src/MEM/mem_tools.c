@@ -40,8 +40,8 @@ dos_file_size_t mem_load_from_file(const char* path_name, char* start, uint16_t 
     dos_file_size_t bytes_loaded = 0;
     if (fhandle) {
         bytes_loaded = dos_read_file(fhandle, start, nbytes);
+        dos_close_file(fhandle);
     }
-    dos_close_file(fhandle);
     return bytes_loaded;
 }
 

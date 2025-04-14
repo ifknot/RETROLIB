@@ -1,6 +1,6 @@
 #include "hga_display_buffer.h"
 
-#include "../MEM/mem_address.h
+#include "../MEM/mem_address.h"
 #include "../MEM/mem_tools.h"
 
 #include "hga_constants.h"
@@ -115,15 +115,17 @@ void hga_knit_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern_a, uint8_t
 }
 
 dos_file_size_t  hga_load_vram_buffer(uint16_t vram_segment, const char* file_path) {
-    mem_addres_t start = 0;
-	start.segoff.segment = vram_segment;
-    return mem_load_from_file(file_path, start, HGA_BYTES_PER_SCREEN);
+    mem_address_t start;
+    start.segoff.segment = vram_segment;
+    start.segoff.offset = 0;
+    return mem_load_from_file(file_path, start.ptr, HGA_DISPLAY_PAGE_SIZE);
 }
 
 dos_file_size_t  hga_save_vram_buffer(uint16_t vram_segment, const char* file_path) {
-    mem_addres_t start = 0;
-	start.segoff.segment = vram_segment;
-    return mem_save_to_file(file_path, start, HGA_BYTES_PER_SCREEN);
+    mem_address_t start;
+    start.segoff.segment = vram_segment;
+    start.segoff.offset = 0;
+    return mem_save_to_file(file_path, start.ptr, HGA_DISPLAY_PAGE_SIZE);
 }
 
 void hga_scroll_up(uint16_t vram_segment, uint16_t lines) {

@@ -27,7 +27,7 @@ typedef struct {           // size undefined and compiler dependent
 typedef union {
 
   uint32_t memloc;
-  segoff_t segoff;
+  mem_segoff_t segoff;
   uint16_t words[2];
   uint8_t bytes[4];
   void* ptr;
