@@ -9,7 +9,7 @@
 void hga_select_display_buffer(uint16_t vram_segment) {
     __asm {
         .8086
-
+		// 1. set up the registers
         mov     dx, HGA_CONTROL_REGISTER
         mov     ax, vram_segment
         cmp     ax, HGA_BUFFER_0
@@ -17,6 +17,7 @@ void hga_select_display_buffer(uint16_t vram_segment) {
         cmp     ax, HGA_BUFFER_1
         je      J1
         jmp     END
+		// 2. write the HGA control registers
 J0:     mov     al, 00001010b     		; screen on buffer 0 default display page buffer B000 : 000
         out     dx, al
         jmp     END
@@ -28,33 +29,34 @@ END:
     }
 }
 
-void hga_write_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y, uint8_t byte_pattern) {
+void hga_write_vram_buffer_lookup(uint16_t vram_segment, uint16_t byte_column, uint16_t byte_row, uint8_t byte_pattern) {
     __asm {
 		.8086
 
 		mov   ax, vram_segment
 		mov   es, ax
-		mov   bx, y
-		add   bx, bx                                            ; y * 2 as word lookup table
+		mov   bx, byte_row
+		add   bx, bx                                            ; row * 2 as word lookup table
 		mov   di, HGA_TABLE_Y_LOOKUP[bx]                        ; lookup y offset
-		add   di, x                                             ; add in x
+		add   di, byte_column                                   ; add in column
         mov   al, byte_pattern
         mov   es:[di], al
 
 	}
 }
 
-uint8_t hga_read_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t y) {
+uint8_t hga_read_vram_buffer_lookup(uint16_t vram_segment, uint16_t byte_column, uint16_t byte_row) {
 	uint8_t byte_pattern;
 	__asm {
 		.8086
-
+		// 1. setup HGA quad bank VRAM destination pointer ES:DI
 		mov   ax, vram_segment
 		mov   es, ax
-		mov   bx, y
-		add   bx, bx                                            ; y * 2 as word lookup table
+		// 2. set up the registers
+		mov   bx, byte_row
+		add   bx, bx                                            ; row * 2 as word lookup table
 		mov   di, HGA_TABLE_Y_LOOKUP[bx]                        ; lookup y offset
-		add   di, x                                             ; add in x
+		add   di, byte_column                                   ; add in column
         mov   al, es:[di]
         mov   byte_pattern, al
 
@@ -65,7 +67,6 @@ uint8_t hga_read_vram_buffer_lookup(uint16_t vram_segment, uint16_t x, uint16_t 
 void hga_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern) {
 	__asm {
 		.8086
-
 		// 1. setup HGA quad bank VRAM destination pointer ES:DI
 		xor 	di, di						; top left screen(0, 0)
 		mov		ax, vram_segment
@@ -84,7 +85,6 @@ void hga_fill_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern) {
 void hga_knit_vram_buffer(uint16_t vram_segment, uint8_t byte_pattern_a, uint8_t byte_pattern_b) {
     __asm {
 		.8086
-
 		// 1. setup HGA quad bank VRAM destination pointer ES:DI
 		xor 	di, di						; top left screen(0, 0)
 		mov		ax, vram_segment
