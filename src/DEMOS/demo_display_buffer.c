@@ -45,20 +45,27 @@ int display_buffer(int argc, char** argv) {
     hga_knit_vram_buffer(HGA_BUFFER_1, 0xAA, 0x55);
     hga_knit_vram_buffer(HGA_BUFFER_0, 0, 255);
     getchar();
-    printf("bytes written = %li", hga_save_vram_buffer(HGA_BUFFER_1, "vram.raw"));
+    printf("bytes written = %li", hga_save_vram_buffer(HGA_BUFFER_0, "vram.raw"));
     hga_cls(HGA_BUFFER_1);
     getchar();
     printf("bytes read = %li", hga_load_vram_buffer(HGA_BUFFER_1, "vram.raw"));
     getchar();
     hga_select_display_buffer(HGA_BUFFER_0);
-    /*
-    for (int i = 0; i < HGA_BYTES_PER_SCREEN; i += 2) {
-        hga_write_vram_buffer_byte_location(HGA_BUFFER_), i, 255);
+    getchar();
+    hga_select_display_buffer(HGA_BUFFER_1);
+    hga_cls(HGA_BUFFER_1);
+    for(uint16_t row = 0; row < HGA_SCREEN_Y_MAX; ++row) {
+        for(uint16_t col = 0; col < HGA_BYTES_PER_LINE; col +=2) {
+            hga_write_vram_buffer(HGA_BUFFER_1, col, row, 255);
+        }
     }
     getchar();
-    for (int i = 0; i < HGA_BYTES_PER_SCREEN; i += 2) {
-        hga_write_vram_buffer_byte_location(HGA_BUFFER_0, i + 1, hga_read_vram_buffer_byte_location(HGA_BUFFER_0, i));
+    for(uint16_t row = 0; row < HGA_SCREEN_Y_MAX; ++row) {
+        for(uint16_t col = 0; col < HGA_BYTES_PER_LINE; col +=2) {
+            hga_write_vram_buffer(HGA_BUFFER_1, col + 1, row, hga_read_vram_buffer(HGA_BUFFER_0, col, row));
+        }
     }
+    /*
     getchar();
     // draw a cross hatch box read it and draw reversed inner box
     getchar();

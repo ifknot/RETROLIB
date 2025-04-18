@@ -18,20 +18,6 @@
 void hga_select_display_buffer(uint16_t vram_segment);
 
 /**
-* @brief Write an 8 bit byte pattern at byte count location (0 .. 31,320) to the specified HGA VRAM buffer
-* @note treats the VRAM as an indexable contiguous byte space (the quad bank HGA implementation is resolved in function)
-* @details
-*/
-void hga_write_vram_buffer_byte_location(uint16_t vram_segment, uint16_t byte_location, uint8_t byte_pattern);
-
-/**
-* @brief Read an 8 bit byte pattern at byte count location (0 .. 31,320) to the specified HGA VRAM buffer
-* @note treats the VRAM as an indexable contiguous byte space (the quad bank HGA implementation is resolved in function)
-* @details
-*/
-uint8_t hga_read_vram_buffer_byte_location(uint16_t vram_segment, uint16_t byte_location);
-
-/**
 * @brief Write an 8 bit byte pattern at (byte, line) coordinates x(0..89), y(0..347) to the specified HGA VRAM buffer
 * @details uses a lookup table to address the correct quad bank in the HGA VRAM buffer
 * @see hga_table_lookup_y.h

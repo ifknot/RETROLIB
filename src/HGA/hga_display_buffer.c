@@ -25,7 +25,6 @@ J1:     mov     al, 10001010b     		; screen on buffer 1 second display page buf
         out     dx, al
         jmp     END
 END:
-
     }
 }
 
