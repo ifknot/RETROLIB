@@ -33,7 +33,9 @@ int display_buffer(int argc, char** argv) {
     printf(PRESS_ENTER);
     getchar();
     hga_graphics_mode();
-    hga_select_display_buffer(HGA_BUFFER_0);
+    hga_select_display_buffer(HGA_BUFFER_1); //0);
+    hga_cls(HGA_BUFFER_1);
+    /*
     getchar();
     hga_cls(HGA_BUFFER_0);
     getchar();
@@ -65,6 +67,7 @@ int display_buffer(int argc, char** argv) {
             hga_write_vram_buffer(HGA_BUFFER_1, col + 1, row, hga_read_vram_buffer(HGA_BUFFER_0, col, row));
         }
     }
+    */
     getchar();
     hga_knit_vram_buffer(HGA_BUFFER_1, 0, 255);
     for(uint16_t row = 0; row < h; ++row) {
@@ -72,11 +75,8 @@ int display_buffer(int argc, char** argv) {
             hga_write_vram_buffer(HGA_BUFFER_1, x + col, y + row, 255);
         }
     }
-    // draw a cross hatch box read it and draw reversed inner box
-    /*
     getchar();
-    // scroll the box around
-    */
+    hga_scroll_up(HGA_BUFFER_1, 10);
     getchar();
     hga_text_mode();
 
