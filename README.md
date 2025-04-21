@@ -7,7 +7,7 @@ Check out the [Wiki](https://github.com/ifknot/RETROLIB/wiki) for details on set
 
 ##Demos
 
-![test_gif](https://cldup.com/Tet4aAIutk.gif))
+![test_gif](https://cldup.com/Tet4aAIutk.gif)
 
 ![test_gif](https://cldup.com/Mm6skX4QVR.gif)
 
