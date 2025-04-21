@@ -5,8 +5,6 @@ RETROLIB is written in C(99) and 8086 assembly language using the [Zed Editor](h
 
 Check out the [Wiki](https://github.com/ifknot/RETROLIB/wiki) for details on setting up Open Watcom 2 and CMake on Linux and Mac OS X.
 
-##Demos
-
 ![test_gif](https://cldup.com/Tet4aAIutk.gif)
 
 ![test_gif](https://cldup.com/Mm6skX4QVR.gif)
