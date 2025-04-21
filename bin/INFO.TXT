@@ -1,0 +1,16 @@
+
+ Volume in drive C is CDRIVE
+ Directory of C:\
+
+ASSETS                         <DIR> 11/24/2024 12:55p
+CMAKEF~1                       <DIR> 04/21/2025 11:26a
+CMAKEC~1 TXT                  11,262 04/05/2025  1:36p
+CMAKE_~1 CMA                   1,856 01/12/2025  5:43p
+HEX      EXE                  50,384 09/25/1991  8:20p
+INFO     TXT                       0 04/21/2025 11:48a
+MAKEFILE                      38,219 04/14/2025  8:29p
+TEST     EXE                 163,538 04/21/2025 11:26a
+TEST     MAP                  23,827 04/21/2025 11:26a
+VRAM     RAW                  32,768 04/21/2025 11:28a
+                8 file(s)               321,854 bytes
+                2 dir(s)            262,144,000 bytes free

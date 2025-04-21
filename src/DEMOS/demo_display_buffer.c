@@ -33,28 +33,23 @@ int display_buffer(int argc, char** argv) {
     printf(PRESS_ENTER);
     getchar();
     hga_graphics_mode();
-    hga_select_display_buffer(HGA_BUFFER_1); //0);
-    hga_cls(HGA_BUFFER_1);
-    /*
+    hga_select_display_buffer(HGA_BUFFER_0);
     getchar();
     hga_cls(HGA_BUFFER_0);
     getchar();
-    hga_cls(HGA_BUFFER_1);
+    hga_fill_vram_buffer(HGA_BUFFER_0, 255);
+    /*
+    getchar();
     hga_select_display_buffer(HGA_BUFFER_1);
     getchar();
-    hga_fill_vram_buffer(HGA_BUFFER_1, 255);
-    getchar();
     hga_knit_vram_buffer(HGA_BUFFER_1, 0xAA, 0x55);
-    hga_knit_vram_buffer(HGA_BUFFER_0, 0, 255);
     getchar();
+    hga_knit_vram_buffer(HGA_BUFFER_0, 0, 255);
     printf("bytes written = %li", hga_save_vram_buffer(HGA_BUFFER_0, "vram.raw"));
     hga_cls(HGA_BUFFER_1);
     getchar();
     printf("bytes read = %li", hga_load_vram_buffer(HGA_BUFFER_1, "vram.raw"));
     getchar();
-    hga_select_display_buffer(HGA_BUFFER_0);
-    getchar();
-    hga_select_display_buffer(HGA_BUFFER_1);
     hga_cls(HGA_BUFFER_1);
     for(uint16_t row = 0; row < HGA_SCREEN_Y_MAX; ++row) {
         for(uint16_t col = 0; col < HGA_BYTES_PER_LINE; col +=2) {
@@ -67,7 +62,7 @@ int display_buffer(int argc, char** argv) {
             hga_write_vram_buffer(HGA_BUFFER_1, col + 1, row, hga_read_vram_buffer(HGA_BUFFER_0, col, row));
         }
     }
-    */
+    /*
     getchar();
     hga_knit_vram_buffer(HGA_BUFFER_1, 0, 255);
     for(uint16_t row = 0; row < h; ++row) {
@@ -77,6 +72,7 @@ int display_buffer(int argc, char** argv) {
     }
     getchar();
     hga_scroll_up(HGA_BUFFER_1, 10);
+    */
     getchar();
     hga_text_mode();
 
