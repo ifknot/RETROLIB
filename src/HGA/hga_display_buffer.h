@@ -83,9 +83,9 @@ inline void hga_cls(uint16_t vram_segment) {
 void hga_scroll_up(uint16_t vram_segment, uint16_t lines, uint8_t byte_pattern);
 
 /**
-* @breif repeat scroll up entire screen until whole screen blank
+* @breif repeat scroll up entire screen until whole screen blank with byte pattern
 * @note TODO
 */
-void hga_screen_scroll_up(uint16_t vram_segment);
+void hga_screen_scroll_up(uint16_t vram_segment, uint8_t byte_pattern);
 
 #endif
