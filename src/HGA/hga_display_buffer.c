@@ -147,7 +147,7 @@ void hga_scroll_up(uint16_t vram_segment, uint16_t lines, uint8_t byte_pattern) 
 	}
 }
 
-void hga_screen_scroll_up(uint16_t vram_segment) {
+void hga_screen_scroll_up(uint16_t vram_segment, uint8_t byte_pattern) {
 	for(uint16_t i = HGA_SCREEN_Y_MAX; i > 0; --i) {
 		hga_scroll_up(vram_segment, i);
 	}
