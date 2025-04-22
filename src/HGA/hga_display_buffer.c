@@ -127,8 +127,24 @@ dos_file_size_t  hga_save_vram_buffer(uint16_t vram_segment, const char* file_pa
     return mem_save_to_file(file_path, start.ptr, HGA_DISPLAY_PAGE_SIZE);
 }
 
-void hga_scroll_up(uint16_t vram_segment, uint16_t lines) {
-	
+void hga_scroll_up(uint16_t vram_segment, uint16_t lines, uint8_t byte_pattern) {
+	__asm {
+		.8086
+		pushf								; preserve flags on entry (direction flag used)
+		// setup registers 
+		mov		ax, vram_segment
+		mov		es, ax						; ES:DI point to VRAM destination
+
+
+		// draw blank line at bottom of screen
+		mov 	di, 0x7E3C 					; last pixel row VRAM offset
+		mov 	cx, HGA_WORDS_PER_LINE 
+		mov     al, byte_pattern
+		mov 	ah, al
+		rep		stosw
+
+		popf 
+	}
 }
 
 void hga_screen_scroll_up(uint16_t vram_segment) {
