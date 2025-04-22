@@ -132,10 +132,17 @@ void hga_scroll_up(uint16_t vram_segment, uint16_t lines, uint8_t byte_pattern) 
 		.8086
 		pushf								; preserve flags on entry (direction flag used)
 		// setup registers 
+		cld
 		mov		ax, vram_segment
 		mov		es, ax						; ES:DI point to VRAM destination
-
-
+		mov		ds, ax						; DS:SI point to VRAM source
+		mov 	bx, 0						; BX = line counter
+		mov 	di, HGA_TABLE_Y_LOOKUP[bx]
+		inc		bx
+		mov 	si, HGA_TABLE_Y_LOOKUP[bx]
+		rep 	movsw 
+	
+	
 		// draw blank line at bottom of screen
 		mov 	di, 0x7E3C 					; last pixel row VRAM offset
 		mov 	cx, HGA_WORDS_PER_LINE 
