@@ -144,12 +144,12 @@ L1:		mov 	di, HGA_TABLE_Y_LOOKUP[bx]	; destination line offset
 		mov 	si, HGA_TABLE_Y_LOOKUP[bx]	; source line offset
 		mov 	cx, HGA_WORDS_PER_LINE 		; repeat counter 
 		rep 	movsw 						; move the words
-		cmp 	bx, HGA_SCREEN_Y_MAX 
+		cmp 	bx, lines 
 		jne		L1
 	
 	
-		// draw blank line at bottom of screen
-		mov 	di, 0x7E3C 					; last pixel row VRAM offset
+		// draw blank line over last copied line 
+		mov 	di, HGA_TABLE_Y_LOOKUP[bx]
 		mov     al, byte_pattern
 		mov 	ah, al
 		mov 	cx, HGA_WORDS_PER_LINE 
@@ -161,7 +161,7 @@ L1:		mov 	di, HGA_TABLE_Y_LOOKUP[bx]	; destination line offset
 
 void hga_screen_scroll_up(uint16_t vram_segment, uint8_t byte_pattern) {
 	for(uint16_t i = HGA_SCREEN_Y_MAX; i > 0; --i) {
-		hga_scroll_up(vram_segment, i);
+		hga_scroll_up(vram_segment, i, byte_pattern);
 	}
 }
 
