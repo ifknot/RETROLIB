@@ -128,40 +128,7 @@ dos_file_size_t  hga_save_vram_buffer(uint16_t vram_segment, const char* file_pa
 }
 
 void hga_scroll_up(uint16_t vram_segment, uint16_t lines) {
-	__asm {
-		.8086
-		push ds
-		// 1. skip if lines = 0
-		mov 	cx, 1
-		//jcxz	END
-		// 2. initialise registers
-		mov		ax, vram_segment
-		//mov		es, ax						; ES:DI point to VRAM destination
-		mov		ds, ax						; DS:SI point to VRAM source
-		mov 	bx, 0						; BX = line counter
-		// 3. loop over the number of lines to scroll up
-L1:		mov 	dx, cx 						; copy of number of lines to scroll
-		// 4. setup HGA quad bank VRAM *destination* pointer ES:DI
-		mov 	di, HGA_TABLE_Y_LOOKUP[bx]
-		inc 	bx 							; next line
-		// 5. setup HGA quad bank VRAM *source* pointer DS:SI
-	  	//mov		si, HGA_TABLE_Y_LOOKUP[bx]
-		//inc 	bx							; next line
-		// 6. repeat string operation copy line "below" (taking into account HGA quad bank VRAM) to line above as 45 words
-		mov 	cx, HGA_WORDS_PER_LINE
-		mov     ax, 0AAAAh
-		rep 	stosw //movsw
-		mov 	cx, dx
-		loop 	L1
-		// 7. write a blank last line
-		//mov 	ax, 0						; black
-		//mov 	bx, lines 					; last line
-		//mov 	di, HGA_TABLE_Y_LOOKUP[bx]
-		//mov 	cx, HGA_WORDS_PER_LINE
-		//rep 	stosw
-END:    pop ds
-	}
-	//blank last line
+	
 }
 
 void hga_screen_scroll_up(uint16_t vram_segment) {
@@ -169,3 +136,40 @@ void hga_screen_scroll_up(uint16_t vram_segment) {
 		hga_scroll_up(vram_segment, i);
 	}
 }
+
+/*
+__asm {
+		.8086
+		pushf							; preserve flags on entry (direction flag used)
+		// 1. skip if lines = 0
+		mov 	cx, 1
+		jcxz	END
+		// 2. initialise registers
+		mov		ax, vram_segment
+		mov		es, ax					; ES:DI point to VRAM destination
+		mov		ds, ax					; DS:SI point to VRAM source
+		mov 	bx, 0						; BX = line counter
+		// 3. loop over the number of lines to scroll up
+L1:		mov 	dx, cx 						; copy of number of lines to scroll
+		// 4. setup HGA quad bank VRAM *destination* pointer ES:DI
+		mov 	di, HGA_TABLE_Y_LOOKUP[bx]
+		inc 	bx 							; next line
+		// 5. setup HGA quad bank VRAM *source* pointer DS:SI
+	  	mov		si, HGA_TABLE_Y_LOOKUP[bx]
+		inc 	bx							; next line
+		// 6. repeat string operation copy line "below" (taking into account HGA quad bank VRAM) to line above as 45 words
+		mov 	cx, HGA_WORDS_PER_LINE
+		mov     ax, 0AAAAh
+		rep 	stosw //movsw
+		mov 	cx, dx
+		loop 	L1
+		// 7. write a blank last line
+		mov 	ax, 0						; black
+		mov 	bx, lines 					; last line
+		mov 	di, HGA_TABLE_Y_LOOKUP[bx]
+		mov 	cx, HGA_WORDS_PER_LINE
+		rep 	stosw
+	
+END:    	popf
+	}
+*/
