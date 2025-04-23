@@ -135,22 +135,19 @@ void hga_scroll_up(uint16_t vram_segment, uint16_t lines, uint8_t byte_pattern) 
 		cld
 		mov		ax, vram_segment
 		mov		es, ax						; ES:DI point to VRAM destination
-		//mov		ds, ax						; DS:SI point to VRAM source
-		mov 	bx, lines						; BX = line counter
+		mov		ds, ax						; DS:SI point to VRAM source
+		mov 	bx, 0						; BX = line counter
 
 		// copy VRAM line below to line above
-	/*
-L1:		mov 	di, HGA_TABLE_Y_LOOKUP[bx]	; destination line offset
+L1:     mov 	di, HGA_TABLE_Y_LOOKUP[bx]	; destination line offset
 		inc		bx							; next line
 		mov 	si, HGA_TABLE_Y_LOOKUP[bx]	; source line offset
 		mov 	cx, HGA_WORDS_PER_LINE 		; repeat counter
 		rep 	movsw 						; move the words
 		cmp 	bx, lines
 		jne		L1
-	*/
 
 		// draw blank line over last copied line
-
 		mov     al, byte_pattern
 		mov 	ah, al
 		mov 	cx, HGA_WORDS_PER_LINE
