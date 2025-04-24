@@ -133,9 +133,9 @@ void hga_scroll_up(uint16_t vram_segment, uint16_t lines, uint8_t byte_pattern) 
 		pushf								; preserve flags on entry (direction flag used)
 		// setup registers
 		cld
-		mov		ax, vram_segment
-		mov		es, ax						; ES:DI point to VRAM destination
-		mov		ds, ax						; DS:SI point to VRAM source
+		mov		dx, vram_segment			; keep a copy of VRAM segment in DX to use with DS later
+		mov 	ax, ds						; keep a copy of DATA segment in AX to use with DS later
+		mov		es, dx						; ES:DI point to VRAM destination
 		mov 	bx, 0						; BX = line counter
 
 		// copy VRAM line below to line above
@@ -143,7 +143,9 @@ L1:     mov 	di, HGA_TABLE_Y_LOOKUP[bx]	; destination line offset
 		inc		bx							; next line
 		mov 	si, HGA_TABLE_Y_LOOKUP[bx]	; source line offset
 		mov 	cx, HGA_WORDS_PER_LINE 		; repeat counter
+		mov 	ds, dx						; set DS to VRAM segment
 		rep 	movsw 						; move the words
+		mov 	ds, ax						; restore DS to DATA segment
 		cmp 	bx, lines
 		jne		L1
 
@@ -152,14 +154,7 @@ L1:     mov 	di, HGA_TABLE_Y_LOOKUP[bx]	; destination line offset
 		mov 	ah, al
 		mov 	cx, HGA_WORDS_PER_LINE
 		mov 	di, HGA_TABLE_Y_LOOKUP[bx]
-		rep		stosw
-
-		inc bx
-		inc bx
-
-		mov al, 0AAh
-		mov 	cx, HGA_WORDS_PER_LINE
-		mov 	di, HGA_TABLE_Y_LOOKUP[bx]
+		mov 	ds, dx						; set DS to VRAM segment
 		rep		stosw
 
 		popf
