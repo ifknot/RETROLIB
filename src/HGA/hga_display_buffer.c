@@ -127,7 +127,11 @@ dos_file_size_t  hga_save_vram_buffer(uint16_t vram_segment, const char* file_pa
     return mem_save_to_file(file_path, start.ptr, HGA_DISPLAY_PAGE_SIZE);
 }
 
-void hga_scroll_up(uint16_t vram_segment, uint16_t lines, uint8_t byte_pattern) {
+void hga_byte_scroll_left(uint16_t vram_segment, uint16_t column, uint16_t row, uint8_t byte_pattern) {
+
+}
+
+void hga_pixel_scroll_up(uint16_t vram_segment, uint16_t column, uint16_t row, uint8_t byte_pattern) {
 	__asm {
 		.8086
 		pushf								; preserve flags on entry (direction flag used)
@@ -136,7 +140,7 @@ void hga_scroll_up(uint16_t vram_segment, uint16_t lines, uint8_t byte_pattern) 
 		mov		dx, vram_segment			; keep a copy of VRAM segment in DX to use with DS later
 		mov 	ax, ds						; keep a copy of DATA segment in AX to use with DS later
 		mov		es, dx						; ES:DI point to VRAM sgment also as destination
-		mov 	bx, 0						; BX = line counter
+		mov 	bx, 0						; BX line ripple count
 
 		// copy VRAM line below to line above
 L1:     mov 	di, HGA_TABLE_Y_LOOKUP[bx]	; destination line offset
@@ -146,7 +150,7 @@ L1:     mov 	di, HGA_TABLE_Y_LOOKUP[bx]	; destination line offset
 		mov 	ds, dx						; set DS to VRAM segment
 		rep 	movsw 						; move the words
 		mov 	ds, ax						; restore DS to DATA segment
-		cmp 	bx, lines
+		cmp 	bx, row						; ?optimise w BP
 		jne		L1
 
 		// draw blank line over last copied line
