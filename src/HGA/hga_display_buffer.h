@@ -1,4 +1,4 @@
-l/**
+/**
 * C is an unconstrained language and most of its security is built around setting conventions.
 * @note UNSAFE none of the function arguements are sanity checked, processed, coded, formatted, or analyzed for safety
 * They are, however, fast.

@@ -1,4 +1,4 @@
-ment#include "hga_display_buffer.h"
+#include "hga_display_buffer.h"
 
 #include "../MEM/mem_address.h"
 #include "../MEM/mem_tools.h"
@@ -140,7 +140,7 @@ void hga_byte_scroll_left(uint16_t vram_segment, uint16_t column, uint16_t row, 
 
 		// copy VRAM column right to left
 
-END:	
+END:
 		popf
 	}
 }
@@ -154,7 +154,7 @@ void hga_pixel_scroll_up(uint16_t vram_segment, uint16_t column, uint16_t row, u
 		mov		dx, vram_segment			; keep a copy of VRAM segment in DX to use with DS later
 		mov 	ax, ds						; keep a copy of DATA segment in AX to use with DS later
 		mov		es, dx						; ES:DI point to VRAM sgment also as destination
-		mov 	bx, 0						; BX row ripple count
+		mov 	bx, 1						; BX row ripple count
 
 		// copy VRAM line below to line above
 L0:     mov 	di, HGA_TABLE_Y_LOOKUP[bx]	; destination line offset
@@ -162,10 +162,10 @@ L0:     mov 	di, HGA_TABLE_Y_LOOKUP[bx]	; destination line offset
 		mov 	si, HGA_TABLE_Y_LOOKUP[bx]	; source line offset
 		mov 	cx, column 					; repeat counter
 		mov 	ds, dx						; set DS to VRAM segment
-		test    cx, 1						; odd or even?
-		jnz     J0							; even - use MOVSW (faster)
-		rep		movsb						; odd - use MOVSB (slower)
-		jmp     J1
+		//test    cx, 1						; odd or even?
+		//jz     J0							; even - use MOVSW (faster)
+		//rep		movsb						; odd - use MOVSB (slower)
+		//jmp     J1
 J0:		shr 	cx, 1						; column count / 2
 		rep 	movsw 						; move the words
 J1:     mov 	ds, ax						; restore DS to DATA segment
@@ -178,19 +178,19 @@ J1:     mov 	ds, ax						; restore DS to DATA segment
 		mov 	di, HGA_TABLE_Y_LOOKUP[bx]
 		mov 	cx, column
 		test    cx, 1						; odd or even?
-		jnz     J2							; even - use STOSW 
+		jz     J2							; even - use STOSW
 		rep		stosb						; odd - store AL bytes (slower)
 		jmp     END
 J2:		shr 	cx, 1						; column count / 2
 		rep 	stosw 						; even - store AX words (faster)
-END:     
+END:
 		popf
 	}
 }
 
 void hga_screen_scroll_up(uint16_t vram_segment, uint8_t byte_pattern) {
 	for(uint16_t i = HGA_SCREEN_Y_MAX; i > 0; --i) {
-		hga_scroll_up(vram_segment, i, byte_pattern);
+		//hga_scroll_up(vram_segment, i, byte_pattern);
 	}
 }
 
