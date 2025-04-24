@@ -1,4 +1,4 @@
-#include "hga_display_buffer.h"
+ment#include "hga_display_buffer.h"
 
 #include "../MEM/mem_address.h"
 #include "../MEM/mem_tools.h"
@@ -135,7 +135,7 @@ void hga_scroll_up(uint16_t vram_segment, uint16_t lines, uint8_t byte_pattern) 
 		cld
 		mov		dx, vram_segment			; keep a copy of VRAM segment in DX to use with DS later
 		mov 	ax, ds						; keep a copy of DATA segment in AX to use with DS later
-		mov		es, dx						; ES:DI point to VRAM destination
+		mov		es, dx						; ES:DI point to VRAM sgment also as destination
 		mov 	bx, 0						; BX = line counter
 
 		// copy VRAM line below to line above
@@ -153,8 +153,8 @@ L1:     mov 	di, HGA_TABLE_Y_LOOKUP[bx]	; destination line offset
 		mov     al, byte_pattern
 		mov 	ah, al
 		mov 	cx, HGA_WORDS_PER_LINE
-		mov 	di, HGA_TABLE_Y_LOOKUP[bx]
 		mov 	ds, dx						; set DS to VRAM segment
+		mov 	di, HGA_TABLE_Y_LOOKUP[bx]
 		rep		stosw
 
 		popf
