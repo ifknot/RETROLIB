@@ -128,7 +128,21 @@ dos_file_size_t  hga_save_vram_buffer(uint16_t vram_segment, const char* file_pa
 }
 
 void hga_byte_scroll_left(uint16_t vram_segment, uint16_t column, uint16_t row, uint8_t byte_pattern) {
+	__asm {
+		.8086
+		pushf								; preserve flags on entry (direction flag used)
+		// setup registers
+		cld
+		mov		dx, vram_segment			; keep a copy of VRAM segment in DX to use with DS later
+		mov 	ax, ds						; keep a copy of DATA segment in AX to use with DS later
+		mov		es, dx						; ES:DI point to VRAM sgment also as destination
+		mov 	bx, 0						; BX column ripple count
 
+		// copy VRAM column right to left
+
+END:	
+		popf
+	}
 }
 
 void hga_pixel_scroll_up(uint16_t vram_segment, uint16_t column, uint16_t row, uint8_t byte_pattern) {
@@ -140,7 +154,7 @@ void hga_pixel_scroll_up(uint16_t vram_segment, uint16_t column, uint16_t row, u
 		mov		dx, vram_segment			; keep a copy of VRAM segment in DX to use with DS later
 		mov 	ax, ds						; keep a copy of DATA segment in AX to use with DS later
 		mov		es, dx						; ES:DI point to VRAM sgment also as destination
-		mov 	bx, 0						; BX line ripple count
+		mov 	bx, 0						; BX row ripple count
 
 		// copy VRAM line below to line above
 L0:     mov 	di, HGA_TABLE_Y_LOOKUP[bx]	; destination line offset
