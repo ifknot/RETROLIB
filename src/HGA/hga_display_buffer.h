@@ -1,4 +1,4 @@
-/**
+l/**
 * C is an unconstrained language and most of its security is built around setting conventions.
 * @note UNSAFE none of the function arguements are sanity checked, processed, coded, formatted, or analyzed for safety
 * They are, however, fast.
@@ -77,10 +77,14 @@ inline void hga_cls(uint16_t vram_segment) {
 }
 
 /**
-* @brief scroll graphics vram up number of lines and blank last line with byte pattern
-* @note TODO
+* @brief scroll vram left byte column starting at (column, row) and blank the last column with byte pattern
 */
-void hga_scroll_up(uint16_t vram_segment, uint16_t lines, uint8_t byte_pattern);
+void hga_byte_scroll_left(uint16_t vram_segment, uint16_t column, uint16_t row, uint8_t byte_pattern);
+
+/**
+* @brief scroll vram up a one pixel row starting at (column, row) and blank the last row with byte pattern
+*/
+void hga_pixel_scroll_up(uint16_t vram_segment, uint16_t column, uint16_t row, uint8_t byte_pattern);
 
 /**
 * @breif repeat scroll up entire screen until whole screen blank with byte pattern
