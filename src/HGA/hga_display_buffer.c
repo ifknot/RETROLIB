@@ -150,39 +150,39 @@ void hga_pixel_scroll_up(uint16_t vram_segment, uint16_t column, uint16_t row, u
 		.8086
 		pushf								; preserve flags on entry (direction flag used)
 		// setup registers
-		cld
-		mov		dx, vram_segment			; keep a copy of VRAM segment in DX to use with DS later
-		mov 	ax, ds						; keep a copy of DATA segment in AX to use with DS later
-		mov		es, dx						; ES:DI point to VRAM sgment also as destination
-		mov 	bx, 1						; BX row ripple count
-
+		mov 	cx, row					
+		jcxz	END
+		mov 	dx, cx						; DX row count
+		mov 	cx, column					; CX column count
+		jcxz	END
+		mov 	bx, 0						; BX row ripple count
+		mov		ax, vram_segment			
+		mov		es, ax						; ES:DI will point to VRAM segment destination
+		mov 	ds, ax						; DS:SI will point to VRAM segment destination
+		mov 	ax, cx						; AX copy column count
+		cld									; increment string ops
+		
 		// copy VRAM line below to line above
-L0:     mov 	di, HGA_TABLE_Y_LOOKUP[bx]	; destination line offset
-		inc		bx							; next line
-		mov 	si, HGA_TABLE_Y_LOOKUP[bx]	; source line offset
-		mov 	cx, column 					; repeat counter
-		mov 	ds, dx						; set DS to VRAM segment
-		//test    cx, 1						; odd or even?
-		//jz     J0							; even - use MOVSW (faster)
-		//rep		movsb						; odd - use MOVSB (slower)
-		//jmp     J1
-J0:		shr 	cx, 1						; column count / 2
-		rep 	movsw 						; move the words
-J1:     mov 	ds, ax						; restore DS to DATA segment
-		cmp 	bx, row						; ?optimise w BP
-		jne		L0
+		
+		// calculate VRAM offsets for SI and DI
+
+		test    cx, 1						; odd or even column count?
+		jz     	J1							; even - use STOSW
+		movsb								; odd - copy first byte
+		dec 	cx 							; row count even 
+J1:		shr 	cx, 1						; column count / 2
+		rep 	movsw 						; even - copy words 
 
 		// draw blank line over last copied line ES:DI STOS
 		mov     al, byte_pattern
 		mov 	ah, al
-		mov 	di, HGA_TABLE_Y_LOOKUP[bx]
-		mov 	cx, column
-		test    cx, 1						; odd or even?
-		jz     J2							; even - use STOSW
-		rep		stosb						; odd - store AL bytes (slower)
-		jmp     END
+		// calculate VRAM offset 
+		test    cx, 1						; odd or even column count?
+		jz     	J2							; even - use STOSW
+		stosb								; odd - store first AL
+		dec 	cx 							; row count even
 J2:		shr 	cx, 1						; column count / 2
-		rep 	stosw 						; even - store AX words (faster)
+		rep 	stosw 						; even - store AX
 END:
 		popf
 	}
