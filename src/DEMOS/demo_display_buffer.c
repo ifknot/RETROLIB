@@ -75,7 +75,8 @@ int display_buffer(int argc, char** argv) {
 */
     getchar();
     hga_pixel_scroll_up(HGA_BUFFER_1, 0);
-
+    getchar();
+    hga_screen_scroll_up(HGA_BUFFER_1,0);
     getchar();
     hga_text_mode();
 

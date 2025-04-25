@@ -151,7 +151,8 @@ void hga_pixel_scroll_up(uint16_t vram_segment, uint8_t byte_pattern) {
 		pushf								; preserve flags on entry (direction flag used)
 		// setup registers
 		mov 	bx, HGA_WORDS_PER_LINE		; BX column count
-		mov 	dx, 5 //HGA_SCREEN_Y_MAX - 1 	; DX row count
+		mov 	dx, HGA_SCREEN_Y_MAX - 1 	; DX row count
+		******* lines *******
 		mov		ax, vram_segment
 		mov		es, ax						; ES:DI will point to VRAM segment destination
 		mov 	ds, ax						; DS:SI will point to VRAM segment destination
@@ -186,7 +187,8 @@ L1:		mov 	cx, bx						; CX column count
 		inc 	ax
 		cmp		ax, dx
 		je		BLANK
-		sub		di, HGA_BANK_OFFSET * 3
+		sub		di, HGA_BANK_OFFSET * 3                     ; bank 0
+		add		si, HGA_BANK_OFFSET - HGA_BYTES_PER_LINE    ; bank 1
 		jmp 	L1
 
 		// draw blank line over last copied line ES:DI STOS
@@ -202,7 +204,7 @@ END:
 
 void hga_screen_scroll_up(uint16_t vram_segment, uint8_t byte_pattern) {
 	for(uint16_t i = HGA_SCREEN_Y_MAX; i > 0; --i) {
-		//hga_scroll_up(vram_segment, i, byte_pattern);
+		hga_pixel_scroll_up(vram_segment, byte_pattern);
 	}
 }
 
