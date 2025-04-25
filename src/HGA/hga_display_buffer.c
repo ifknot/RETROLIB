@@ -151,8 +151,8 @@ void hga_pixel_scroll_up(uint16_t vram_segment, uint8_t byte_pattern) {
 		pushf								; preserve flags on entry (direction flag used)
 		// setup registers
 		mov 	bx, HGA_WORDS_PER_LINE		; BX column count
-		mov 	dx, 10 ; test porpoises //HGA_SCREEN_Y_MAX - 1 	; DX row count
-		mov		ax, vram_segment			
+		mov 	dx, 5 //HGA_SCREEN_Y_MAX - 1 	; DX row count
+		mov		ax, vram_segment
 		mov		es, ax						; ES:DI will point to VRAM segment destination
 		mov 	ds, ax						; DS:SI will point to VRAM segment destination
 		mov 	ax, 0						; AX row ripple count
@@ -161,39 +161,40 @@ void hga_pixel_scroll_up(uint16_t vram_segment, uint8_t byte_pattern) {
 		mov 	di, 0						; bank 0
 		mov 	si, HGA_BANK_OFFSET			; bank 1
 L1:		mov 	cx, bx						; CX column count
-		rep 	movsw 						; copy words 
+		rep 	movsw 						; copy words
 		inc 	ax							; next line
 		cmp		ax, dx
 		je		BLANK
 		add		di, HGA_BANK_OFFSET - HGA_BYTES_PER_LINE	; bank 1
 		add		si, HGA_BANK_OFFSET - HGA_BYTES_PER_LINE	; bank 2
 		mov 	cx, bx						; CX column count
-		rep 	movsw 						; even - copy words 
+		rep 	movsw 						; even - copy words
 		inc 	ax
 		cmp		ax, dx
 		je		BLANK
 		add		di, HGA_BANK_OFFSET - HGA_BYTES_PER_LINE	; bank 2
 		add		si, HGA_BANK_OFFSET - HGA_BYTES_PER_LINE	; bank 3
 		mov 	cx, bx						; CX column count
-		rep 	movsw 						; copy words 
+		rep 	movsw 						; copy words
 		inc 	ax
 		cmp		ax, dx
 		je		BLANK
 		add		di, HGA_BANK_OFFSET - HGA_BYTES_PER_LINE	; bank 3
 		sub		si, HGA_BANK_OFFSET * 3						; bank 0
 		mov 	cx, bx						; CX column count
-		rep 	movsw 						; even - copy words 
+		rep 	movsw 						; even - copy words
 		inc 	ax
 		cmp		ax, dx
 		je		BLANK
 		sub		di, HGA_BANK_OFFSET * 3
 		jmp 	L1
-		
+
 		// draw blank line over last copied line ES:DI STOS
-BLANK:	mov		al, byte_pattern			
+BLANK:	mov		al, byte_pattern
 		mov 	ah, al
-		mov 	di, 
-		rep 	stosw 						; even - store AX
+		mov 	di, 7E3Ch
+		mov 	cx, bx						; CX column count
+		//rep 	stosw 						; store AX
 END:
 		popf
 	}
@@ -211,9 +212,9 @@ mov 	cx, bx						; CX column count
 		test    cx, 1						; odd or even column count?
 		jz     	J1							; even - use STOSW
 		movsb								; odd - copy first byte
-		dec 	cx 							; row count even 
+		dec 	cx 							; row count even
 J1:		shr 	cx, 1						; column count / 2
-		rep 	movsw 						; even - copy words 
+		rep 	movsw 						; even - copy words
 		cmp		ax, dx
 		jne		L1
 

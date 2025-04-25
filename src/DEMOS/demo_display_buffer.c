@@ -33,7 +33,7 @@ int display_buffer(int argc, char** argv) {
     printf(PRESS_ENTER);
     getchar();
     hga_graphics_mode();
-    hga_select_display_buffer(HGA_BUFFER_0);
+    hga_select_display_buffer(HGA_BUFFER_1);/*0);
     getchar();
     hga_cls(HGA_BUFFER_0);
     getchar();
@@ -49,7 +49,9 @@ int display_buffer(int argc, char** argv) {
     hga_cls(HGA_BUFFER_1);
     getchar();
     printf("bytes read = %li", hga_load_vram_buffer(HGA_BUFFER_1, "vram.raw"));
-    getchar();
+    */getchar();
+    hga_cls(HGA_BUFFER_0);
+    hga_knit_vram_buffer(HGA_BUFFER_0, 0, 255);
     hga_cls(HGA_BUFFER_1);
     for(uint16_t row = 0; row < HGA_SCREEN_Y_MAX; ++row) {
         for(uint16_t col = 0; col < HGA_BYTES_PER_LINE; col +=2) {
@@ -72,7 +74,7 @@ int display_buffer(int argc, char** argv) {
     }
 */
     getchar();
-    hga_pixel_scroll_up(HGA_BUFFER_1, 20, 1, 0);
+    hga_pixel_scroll_up(HGA_BUFFER_1, 0);
 
     getchar();
     hga_text_mode();
