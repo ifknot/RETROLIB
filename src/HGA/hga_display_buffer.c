@@ -152,36 +152,45 @@ void hga_pixel_scroll_up(uint16_t vram_segment, uint16_t column, uint16_t row, u
 		// setup registers
 		mov 	cx, column					; CX column count
 		jcxz	END
-		mov 	ax, cx						; AX column count
+		mov 	bx, cx						; BX column count
 		mov 	cx, row					
 		jcxz	END
 		mov 	dx, cx 						; DX row count
-		mov		bx, vram_segment			
-		mov		es, bx						; ES:DI will point to VRAM segment destination
-		mov 	ds, bx						; DS:SI will point to VRAM segment destination
-		mov 	bx, 0						; BX row ripple count
+		mov		ax, vram_segment			
+		mov		es, ax						; ES:DI will point to VRAM segment destination
+		mov 	ds, ax						; DS:SI will point to VRAM segment destination
+		mov 	ax, 0						; AX row ripple count
 		cld									; increment string ops
 		
 		// copy VRAM line below to line above
 L1:			
 		// calculate VRAM offsets for SI and DI
 
-		inc 	bx
+		inc 	ax
 	
-		mov 	cx, ax						; CX column count
+		mov 	cx, bx						; CX column count
 		test    cx, 1						; odd or even column count?
 		jz     	J1							; even - use STOSW
 		movsb								; odd - copy first byte
 		dec 	cx 							; row count even 
 J1:		shr 	cx, 1						; column count / 2
 		rep 	movsw 						; even - copy words 
-		cmp		bx, dx
+		cmp		ax, dx
 		jne		L1
 
 		// draw blank line over last copied line ES:DI STOS
+		
+		// The carry flag becomes 8000h which gets shifted down each rotation
+        shr     ax, 1                      	; (y div 2) NB carry flag CF = bit shifted off
+        rcr     di, 1                       ; BX = (x div 2) + 8000h * (y & 1) NB (y & 1) could be 0 hence selecting bank
+        shr     ax, 1                       ; AX = (y div 4) CF = select bank 2 ? NB y is now contained wholly in AL
+        rcr     di, 1                       ; BX = (x div 4) + 4000h * (y & 3) via CF
+        shr     di, 1                       ; BX = (x div 8) + 2000h * (y & 3) via CF
+        mov     ah, HGA_BYTES_PER_LINE
+        mul     ah                          ; AL = (y div 4) * 90
+        add     di, ax                      ; 2000h * (y & 3) + (x div 8) + ((y div 4) * 90)
 		mov     al, byte_pattern
 		mov 	ah, al
-		// calculate VRAM offset 
 		test    cx, 1						; odd or even column count?
 		jz     	J2							; even - use STOSW
 		stosb								; odd - store first AL
