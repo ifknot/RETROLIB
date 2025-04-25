@@ -150,28 +150,33 @@ void hga_pixel_scroll_up(uint16_t vram_segment, uint16_t column, uint16_t row, u
 		.8086
 		pushf								; preserve flags on entry (direction flag used)
 		// setup registers
-		mov 	cx, row					
-		jcxz	END
-		mov 	dx, cx						; DX row count
 		mov 	cx, column					; CX column count
 		jcxz	END
+		mov 	ax, cx						; AX column count
+		mov 	cx, row					
+		jcxz	END
+		mov 	dx, cx 						; DX row count
+		mov		bx, vram_segment			
+		mov		es, bx						; ES:DI will point to VRAM segment destination
+		mov 	ds, bx						; DS:SI will point to VRAM segment destination
 		mov 	bx, 0						; BX row ripple count
-		mov		ax, vram_segment			
-		mov		es, ax						; ES:DI will point to VRAM segment destination
-		mov 	ds, ax						; DS:SI will point to VRAM segment destination
-		mov 	ax, cx						; AX copy column count
 		cld									; increment string ops
 		
 		// copy VRAM line below to line above
-		
+L1:			
 		// calculate VRAM offsets for SI and DI
 
+		inc 	bx
+	
+		mov 	cx, ax						; CX column count
 		test    cx, 1						; odd or even column count?
 		jz     	J1							; even - use STOSW
 		movsb								; odd - copy first byte
 		dec 	cx 							; row count even 
 J1:		shr 	cx, 1						; column count / 2
 		rep 	movsw 						; even - copy words 
+		cmp		bx, dx
+		jne		L1
 
 		// draw blank line over last copied line ES:DI STOS
 		mov     al, byte_pattern
