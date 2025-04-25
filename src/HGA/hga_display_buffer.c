@@ -163,7 +163,7 @@ void hga_pixel_scroll_up(uint16_t vram_segment, uint16_t column, uint16_t row, u
 		cld									; increment string ops
 		
 		// copy VRAM line below to line above
-L1:			
+L1:		/*
 		// calculate VRAM offsets for SI and DI
 
 		inc 	ax
@@ -177,9 +177,10 @@ J1:		shr 	cx, 1						; column count / 2
 		rep 	movsw 						; even - copy words 
 		cmp		ax, dx
 		jne		L1
-
+		*/
 		// draw blank line over last copied line ES:DI STOS
-		
+		mov		ax, bx						; AX = row count ie y 
+		mov 	di, 0
 		// The carry flag becomes 8000h which gets shifted down each rotation
         shr     ax, 1                      	; (y div 2) NB carry flag CF = bit shifted off
         rcr     di, 1                       ; BX = (x div 2) + 8000h * (y & 1) NB (y & 1) could be 0 hence selecting bank
