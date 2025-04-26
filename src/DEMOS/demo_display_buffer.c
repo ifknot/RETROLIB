@@ -64,7 +64,7 @@ int display_buffer(int argc, char** argv) {
             hga_write_vram_buffer(HGA_BUFFER_1, col + 1, row, hga_read_vram_buffer(HGA_BUFFER_0, col, row));
         }
     }
-/*
+    /*
     getchar();
     hga_knit_vram_buffer(HGA_BUFFER_1, 0, 255);
     for(uint16_t row = 0; row < h; ++row) {
@@ -72,11 +72,15 @@ int display_buffer(int argc, char** argv) {
             hga_write_vram_buffer(HGA_BUFFER_1, x + col, y + row, 255);
         }
     }
-*/
     getchar();
     hga_pixel_scroll_up(HGA_BUFFER_1, 0);
     getchar();
-    hga_screen_scroll_up(HGA_BUFFER_1,0);
+    hga_screen_scroll_up(HGA_BUFFER_1, 0);
+    */
+    getchar();
+    hga_pixel_scroll_down(HGA_BUFFER_1, 0);
+
+
     getchar();
     hga_text_mode();
 
