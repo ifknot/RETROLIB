@@ -152,7 +152,6 @@ void hga_pixel_scroll_up(uint16_t vram_segment, uint8_t byte_pattern) {
 		// setup registers
 		mov 	bx, HGA_WORDS_PER_LINE		; BX column count
 		mov 	dx, HGA_SCREEN_Y_MAX - 1 	; DX row count
-		******* lines *******
 		mov		ax, vram_segment
 		mov		es, ax						; ES:DI will point to VRAM segment destination
 		mov 	ds, ax						; DS:SI will point to VRAM segment destination
@@ -196,8 +195,8 @@ BLANK:	mov		al, byte_pattern
 		mov 	ah, al
 		mov 	di, 7E3Ch
 		mov 	cx, bx						; CX column count
-		//rep 	stosw 						; store AX
-END:
+		rep 	stosw 						; store AX
+
 		popf
 	}
 }
