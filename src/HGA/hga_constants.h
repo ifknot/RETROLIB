@@ -39,11 +39,11 @@
 #define HGA_VIDEO_RAM_SEGMENT   0B000h
 #define HGA_PAGE_2_OFFSET       800h
 #define HGA_BANK_OFFSET         2000h       // 8K per each of the 4 banks of VRAM
-
+#define HGA_LAST_ROW_OFFSET     7E3Ch
  // Write a CRTC register number (0 to 11h) to this port to select the CRTC register that will appear at port 03B5h
 #define HGA_CRTC_ADDRESS_PORT       3B4h
 
-// Read from this port to the latched data of the register requested at 3B4h
+// Read from t1his port to the latched data of the register requested at 3B4h
 #define HGA_CRTC_DATA_PORT          3B5h
 
 /**

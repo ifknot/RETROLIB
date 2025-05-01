@@ -10,8 +10,9 @@
 * The initial split is into 2 sections one for hardcoded white pixels the other for black.
 * Within each of these 2 sections the pixel plotting loop is split into 4 hardcoded sections for incrementing y, decrementing y, incrementing x and decrementing x
 * This increases the memory footprint by 8 fold but on an IBM XT the performance over naive is improved:
-*           white   black       328     328
-* + 86Box    38%     45%
+*           white   black       
+* + naive baseline				328     328
+* + 86Box    38%     45%		
 * + DosBoxX  28%     31%        237     226
 * + IBM XT   ?       ?
 *

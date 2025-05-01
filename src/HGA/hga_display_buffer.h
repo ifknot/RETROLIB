@@ -77,15 +77,25 @@ inline void hga_cls(uint16_t vram_segment) {
 }
 
 /**
-* @brief scroll graphics vram up number of lines and blank last line
-* @note TODO
+* @brief scroll vram left 1 byte column and blank the last column with byte pattern
 */
-void hga_scroll_up(uint16_t vram_segment, uint16_t lines);
+void hga_byte_scroll_left(uint16_t vram_segment, uint8_t byte_pattern);
 
 /**
-* @breif repeat scroll up entire screen until whole screen blank
+* @brief scroll vram up a one pixel row and blank the last row with byte pattern
+*/
+void hga_pixel_scroll_up(uint16_t vram_segment, uint8_t byte_pattern);
+
+/**
+* @brief scroll vram down a one pixel row and blank the first row with byte pattern
+*/
+void hga_pixel_scroll_down(uint16_t vram_segment, uint8_t byte_pattern);
+
+
+/**
+* @breif repeat scroll up entire screen until whole screen blank with byte pattern
 * @note TODO
 */
-void hga_screen_scroll_up(uint16_t vram_segment);
+void hga_screen_scroll_up(uint16_t vram_segment, uint8_t byte_pattern);
 
 #endif
