@@ -37,7 +37,7 @@ int display_buffer(int argc, char** argv) {
     getchar();
     hga_cls(HGA_BUFFER_0);
     getchar();
-    hga_fill_vram_buffer(HGA_BUFFER_0, 255);
+    hga_fill_vram_buffer(HGA_BUFFER_0, 254);
     /*
     getchar();
     hga_select_display_buffer(HGA_BUFFER_1);
