@@ -33,7 +33,7 @@ int display_buffer(int argc, char** argv) {
     printf(PRESS_ENTER);
     getchar();
     hga_graphics_mode();
-    hga_select_display_buffer(HGA_BUFFER_1);/*0);
+    hga_select_display_buffer(HGA_BUFFER_1);
     getchar();
     hga_cls(HGA_BUFFER_0);
     getchar();
