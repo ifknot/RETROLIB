@@ -37,13 +37,8 @@ int display_buffer(int argc, char** argv) {
     getchar();
     hga_cls(HGA_BUFFER_0);
     getchar();
-<<<<<<< HEAD
     hga_fill_vram_buffer(HGA_BUFFER_0, 254);
-    /*
-=======
     hga_fill_vram_buffer(HGA_BUFFER_0, 255);
-
->>>>>>> 318170b753790a55a021dce1031754927a20dc46
     getchar();
     hga_select_display_buffer(HGA_BUFFER_1);
     getchar();
@@ -54,7 +49,7 @@ int display_buffer(int argc, char** argv) {
     hga_cls(HGA_BUFFER_1);
     getchar();
     printf("bytes read = %li", hga_load_vram_buffer(HGA_BUFFER_1, "vram.raw"));
-    */getchar();
+    getchar();
     hga_cls(HGA_BUFFER_0);
     hga_knit_vram_buffer(HGA_BUFFER_0, 0, 255);
     hga_cls(HGA_BUFFER_1);
