@@ -1,13 +1,13 @@
 #include <stdio.h>
 
 
-//#include "DEMOS/pixelate.h"
+#include "DEMOS/pixelate.h"
 //#include "DEMOS/demo_lines.h"
 //#include "DEMOS/demo_rectangles.h"
 //#include "DEMOS/demo_bresenham.h"
 //#include "DEMOS/demo_pixels.h"
 //#include "DEMOS/demo_circles.h"
-#include "DEMOS/demo_display_buffer.h"
+//#include "DEMOS/demo_display_buffer.h"
 
 #include "MEM/mem_tools.h"
 
@@ -21,6 +21,6 @@ int main(int argc, char** argv) {
 
     printf("DOS low memory size = %luKB\n", (mem_available_low_paragraphs() * 16L) / 1024L);
 
-	return display_buffer(argc, argv);
+	return pixelate(argc, argv);
 
 }

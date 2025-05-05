@@ -15,14 +15,14 @@
 #include "../MEM/mem_arena.h"
 
 // string constants
-#define USAGE_INFO          "INFO: Converts a text file's characters to white pixels, punctuation to black pixels and newlines to a new pixel row.\n"
+#define USAGE_INFO          "INFO: Converts a text file's characters to white pixels, \npunctuation to black pixels and newlines to a new pixel row.\n"
 #define USAGE_FMT           "\nUSAGE: %s [inputfile]\n"
 #define ERR_GRAPHICS        "ERROR: No valid graphics adapter found!\n"
 #define ERR_INFO_GRAPHICS   "ERROR INFO: This version of %s requires an Hercules Graphics Adapter.\n"
 #define ERR_MEMORY          "ERROR: Memory allocation failure!\n"
 #define ERR_FOPEN_INPUT     "ERROR: Unable to open input file %s!\n"
 #define INFO_FINPUT         "INFO: %s file size %lu bytes.\n"
-#define INFO_METRICS        "INFO: %s file %lu characters as pixels. Duration = %f secs\n"
+#define INFO_METRICS        "INFO: %s file %lu characters as pixels. \nDuration = %f secs\n"
 
 token_t tokenize_character(char c) {
     if(c < 33) return TOK_NO_PIXEL;
@@ -74,7 +74,7 @@ int pixelate(int argc, char** argv) {
     text_buffer = (char*)mem_arena_alloc(arena, HGA_BYTES_PER_SCREEN);
 // 5. switch to graphics mode
     //hga_graphics_mode();
-    //hga_select_display_buffer((char)HGA_BUFFER_1);
+    //hga_select_display_buffer(HGA_BUFFER_1);
     //hga_cls(HGA_BUFFER_1);
 // 6.0 reset the bios system clock to zero and take an initial reading
     bios_set_system_clock(0);
@@ -106,7 +106,7 @@ int pixelate(int argc, char** argv) {
                 tpos++;                                             // next character
                 char_count++;                                       // running total
             }
-            //hga_write_vram_buffer(HGA_BUFFER_0, x++, y);
+            //hga_write_vram_buffer(HGA_BUFFER_1, x++, y, pixel_byte);
         }
 // 6.4 process any remaining characters mod 8 into a final byte
         bit_count = file_bytes_read & 7;                            // mod 8
@@ -129,11 +129,11 @@ int pixelate(int argc, char** argv) {
             tpos++;                                             // next character
             char_count++;                                       // running total
         }
-        //hga_write_vram_buffer(HGA_BUFFER_0, x, y);
+        //hga_write_vram_buffer(HGA_BUFFER_1, x, y, pixel_byte);
 // 6.5 scroll screen up if char_count < files_size
-// hga_scroll_up(348);
+// hga_scroll_up(HGA_BUFFER_1);
 // 6.6 more file data to process?
-    } while (file_bytes_read);
+    } while (0); //(file_bytes_read);
 // 6.7 measure duration of conversion loop
     bios_read_system_clock(&t2);
 // 7. wait for ENTER key and switch back to text mode
