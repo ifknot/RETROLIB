@@ -156,7 +156,7 @@ void hga_pixel_scroll_up(uint16_t vram_segment, uint8_t byte_pattern) {
 		mov		es, ax						; ES:DI will point to VRAM segment destination
 		mov 	ds, ax						; DS:SI will point to VRAM segment destination
 		mov 	ax, 0						; AX row ripple count
-		cld									; increment string ops
+		cld									; *increment* string ops
 		// copy VRAM line below to line above
 		mov 	di, 0						; bank 0
 		mov 	si, HGA_BANK_OFFSET			; bank 1
@@ -212,53 +212,47 @@ void hga_pixel_scroll_down(uint16_t vram_segment, uint8_t byte_pattern) {
 		mov		es, ax						; ES:DI will point to VRAM segment destination
 		mov 	ds, ax						; DS:SI will point to VRAM segment destination
 		mov 	ax, 0						; AX row ripple count
-		cld									; increment string ops
-		// copy VRAM line below to line above
-		mov 	di, HGA_LAST_ROW_OFFSET - HGA_BANK_OFFSET   ; bank 2
-		mov 	si, HGA_LAST_ROW_OFFSET		                ; bank 3
+		std									; *decrement* string ops
+		// copy VRAM line above to line below
+		mov 	di, HGA_LAST_ROW_OFFSET + HGA_BYTES_PER_LINE - 2    ; bank 3
+		mov 	si, HGA_LAST_ROW_OFFSET + HGA_BYTES_PER_LINE - 2 - HGA_BANK_OFFSET  ; bank 2
 L1:		mov 	cx, bx						; CX column count
 		rep 	movsw 						; copy words
 		inc 	ax							; next line
 		cmp		ax, dx
 		je		BLANK
-		sub		di, HGA_BANK_OFFSET - HGA_BYTES_PER_LINE	; bank 1
-		sub		si, HGA_BANK_OFFSET - HGA_BYTES_PER_LINE	; bank 2
+		sub		di, HGA_BANK_OFFSET	- HGA_BYTES_PER_LINE    ; bank 2
+		sub		si, HGA_BANK_OFFSET - HGA_BYTES_PER_LINE	; bank 1
 		mov 	cx, bx						; CX column count
 		rep 	movsw 						; even - copy words
 		inc 	ax
 		cmp		ax, dx
 		je		BLANK
-		sub		di, HGA_BANK_OFFSET - HGA_BYTES_PER_LINE	; bank 0
-		sub		si, HGA_BANK_OFFSET - HGA_BYTES_PER_LINE	; bank 1
+		sub		di, HGA_BANK_OFFSET	- HGA_BYTES_PER_LINE    ; bank 1
+		sub		si, HGA_BANK_OFFSET	- HGA_BYTES_PER_LINE    ; bank 0
 		mov 	cx, bx						; CX column count
 		rep 	movsw 						; copy words
 		inc 	ax
 		cmp		ax, dx
 		je		BLANK
-		add		di, HGA_BANK_OFFSET * 3	                    ; bank 3
-		sub		si, HGA_BANK_OFFSET	- HGA_BYTES_PER_LINE	; bank 0
+		sub		di, HGA_BANK_OFFSET	- HGA_BYTES_PER_LINE    ; bank 0	                    ; bank 0
+		add		si, HGA_BANK_OFFSET * 3                     ; bank 3
 		mov 	cx, bx						; CX column count
 		rep 	movsw 						; even - copy words
 		inc 	ax
 		cmp		ax, dx
 		je		BLANK
-		sub		di, HGA_BANK_OFFSET - HGA_BYTES_PER_LINE    ; bank 2
-		add		si, HGA_BANK_OFFSET * 3                     ; bank 3
+		add     di, HGA_BANK_OFFSET * 3
+	    sub		si, HGA_BANK_OFFSET	- HGA_BYTES_PER_LINE    ; bank 2
 		jmp 	L1
 
 		// draw blank line over last copied line ES:DI STOS
 BLANK:	mov		al, byte_pattern
 		mov 	ah, al
-		mov 	di, 0
+		mov 	di, HGA_BYTES_PER_LINE - 2
 		mov 	cx, bx						; CX column count
 		rep 	stosw 						; store AX
 
 		popf
-	}
-}
-
-void hga_screen_scroll_up(uint16_t vram_segment, uint8_t byte_pattern) {
-	for(uint16_t i = HGA_SCREEN_Y_MAX; i > 0; --i) {
-		hga_pixel_scroll_up(vram_segment, byte_pattern);
 	}
 }

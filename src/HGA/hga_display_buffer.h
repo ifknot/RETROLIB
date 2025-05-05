@@ -91,11 +91,4 @@ void hga_pixel_scroll_up(uint16_t vram_segment, uint8_t byte_pattern);
 */
 void hga_pixel_scroll_down(uint16_t vram_segment, uint8_t byte_pattern);
 
-
-/**
-* @breif repeat scroll up entire screen until whole screen blank with byte pattern
-* @note TODO
-*/
-void hga_screen_scroll_up(uint16_t vram_segment, uint8_t byte_pattern);
-
 #endif
